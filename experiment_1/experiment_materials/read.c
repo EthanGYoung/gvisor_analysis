@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
         float trial_val = 0;
 
         for (int i = 0; i < NUM_TRIALS; i++) {
-                trial_val = execute("./file.txt");
+                trial_val = execute("experiment_1/experiment_materials/file.txt");
                 total += trial_val;
         }
 
