@@ -1,0 +1,8 @@
+{
+	"experiments" : [
+		{
+			"experiment_1" : "True",
+			"experiment_2" : "False"
+		}
+	]
+}
