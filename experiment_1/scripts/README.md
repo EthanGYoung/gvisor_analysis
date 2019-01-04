@@ -2,8 +2,6 @@
 
 This folder is meant to hold scripts for invoking this experiment. The intent is for the scripts to be invoked directly in this folder and will be able to run to completion.
 
-Config.txt is meant to be an easy way for the user to configure this specific experiment.
-
 List all of the scripts in this folder and their intended usage.
 
 Ex) Script1.py <num_cpus> <log_location> -> generates the number of virtual cpu's that you specify
