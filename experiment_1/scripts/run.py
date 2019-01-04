@@ -23,6 +23,8 @@ def printExperimentOverview(TRIALS, READ_SIZE):
 def runExperiment(TRIALS, READ_SIZE):
 	# Begin invoking experiment (Does 10 experiments for each config)
 	
+	
+	print("")
 	print("Running baremetal")
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
@@ -31,6 +33,7 @@ def runExperiment(TRIALS, READ_SIZE):
 		p = Popen(['/bin/bash', '-c',  "experiment_1/experiment_materials/read " + str(TRIALS) + " " +  str(exp_read)])
 		p.wait()
 
+	print("")
 	print("Running with Docker")
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
@@ -39,17 +42,46 @@ def runExperiment(TRIALS, READ_SIZE):
 		p = Popen(['/bin/bash', '-c',  "docker run --rm read " + str(TRIALS) + " " +  str(exp_read)])
 		p.wait()
 		
+	print("")
 	print("Running gVisor: Ptrace")
-	# TODO: Update deamon.json file, print it, and restart docker
+	
+	print("Modifying docker daemon file")
+	with open("/etc/docker/daemon.json") as f:
+		data = json.load(f)
+	data["runtimes"]["runsc"]["runtimeArgs"] = ["--platform=ptrace"]
+	print("Writing: " + str(data))
+	with open('/etc/docker/daemon.json', 'w') as outfile:
+    		json.dump(data, outfile)
+	
+	print("Restarting Docker")
+	p = Popen(['/bin/bash', '-c',  "systemctl restart docker")
+	p.wait()
+	p = Popen(['/bin/bash', '-c',  "systemctl status docker")
+	p.wait()
+	
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
 
 		print("Running exp " + str(i+1) + " of 10: sudo docker run --runtime=runsc --rm read " + str(TRIALS) + " " + str(exp_read))
 		p = Popen(['/bin/bash', '-c',  "docker run --runtime=runsc --rm read " + str(TRIALS) + " " +  str(exp_read)])
 		p.wait()
-
+	
+	print("")
 	print("Running gVisor: KVM")
-	# TODO: Update deamon.json file, print it, and restart docker
+	
+	print("Modifying docker daemon file")
+	with open("/etc/docker/daemon.json") as f:
+		data = json.load(f)
+	data["runtimes"]["runsc"]["runtimeArgs"] = ["--platform=kvm"]
+	print("Writing: " + str(data))
+	with open('/etc/docker/daemon.json', 'w') as outfile:
+    		json.dump(data, outfile)
+	
+	print("Restarting Docker")
+	p = Popen(['/bin/bash', '-c',  "systemctl restart docker")
+	p.wait()
+	p = Popen(['/bin/bash', '-c',  "systemctl status docker")
+	p.wait()
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
 
@@ -57,7 +89,6 @@ def runExperiment(TRIALS, READ_SIZE):
 		p = Popen(['/bin/bash', '-c',  "docker run --runtime=runsc --rm read " + str(TRIALS) + " " +  str(exp_read)])
 		p.wait()
 
-	# TODO: Update deamon.json file, print it, and restart docker
 
 	print("Completed experiment " + str(EXP_NUM))
 
