@@ -54,9 +54,9 @@ def runExperiment(TRIALS, READ_SIZE):
     		json.dump(data, outfile)
 	
 	print("Restarting Docker")
-	p = Popen(['/bin/bash', '-c',  "systemctl restart docker")
+	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
 	p.wait()
-	p = Popen(['/bin/bash', '-c',  "systemctl status docker")
+	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
 	p.wait()
 	
 	for i in range(0, 10):
@@ -78,9 +78,9 @@ def runExperiment(TRIALS, READ_SIZE):
     		json.dump(data, outfile)
 	
 	print("Restarting Docker")
-	p = Popen(['/bin/bash', '-c',  "systemctl restart docker")
+	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
 	p.wait()
-	p = Popen(['/bin/bash', '-c',  "systemctl status docker")
+	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
 	p.wait()
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
