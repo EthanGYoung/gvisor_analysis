@@ -7,6 +7,10 @@ This experiment tests the read throughput that can be achieved on bare metal, Do
 1) Spin up container, REPEAT( start timer, read X bytes, stop timer)
 2) Run in different types of containers
 
+# Current State
+
+Gvisor KVM containers do not complete successfully
+
 ## Notes
 Most likely memory being cached in OS, so will see very fast reads.
 
