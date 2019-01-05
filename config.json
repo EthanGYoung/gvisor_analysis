@@ -1,8 +1,9 @@
 {
 	"experiments" : [
 		{
-			"1_exp" : "True",
-			"2_exp" : "True"
+			"1_exp" : "False",
+			"2_exp" : "False",
+			"3_exp" : "True"
 		}
 	]
 }
