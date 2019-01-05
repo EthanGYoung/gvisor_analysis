@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
                 total += trial_val;
         }
 
-        printf("\n\nAverage for %d trials and WRITE_SIZE = %d: Write time = %f seconds, %f bytes/second\n\n", NUM_TRIALS, WRITE_SIZE, total/NUM_TRIALS, WRITE_SIZE*NUM_TRIALS/total);
+        printf("Average for %d trials and WRITE_SIZE = %d: Write time = %f seconds, %f bytes/second\n", NUM_TRIALS, WRITE_SIZE, total/NUM_TRIALS, WRITE_SIZE*NUM_TRIALS/total);
 
         return 0;
 }
