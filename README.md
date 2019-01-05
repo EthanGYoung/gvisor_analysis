@@ -10,7 +10,7 @@ A collection of programs used for benchmarking gVisor performance.
 
 Execute this command:
 
-sudo python run_experiments.py 2>&1 >> <Path to log>
+sudo python run_experiments.py 2>&1 >> "Path to log"
 
 # Future work
 
