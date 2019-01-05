@@ -4,12 +4,15 @@ This experiment tests the throughput for spinning up containers that can be achi
 
 ## Experiment Methods
 
-1) Spin up container, REPEAT( start timer, write X bytes, stop timer)
-2) Run in different types of containers
+1) Start X threads
+2) Start timer per thread
+3) Spinup Y number of containers with each thread
+4) Stop timer
+5) Run in different types of containers
 
-# Current State
+## Current State
 
-Not finished
+Finished. Future: May be best to move driver code from c to Python, since can't end program with ctr-c. 
 
 ## Notes
 

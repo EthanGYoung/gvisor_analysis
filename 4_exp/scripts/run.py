@@ -3,15 +3,12 @@ import json
 from subprocess import Popen
 
 ''' -----------Methods-------------------'''
-def flush():
-        sys.stdout.flush()
-        sys.stderr.flush()
 
 def handleConfig():
 	print("")
 	print("Printing config.txt")
 	
-	with open("3_exp/scripts/config.json") as f:
+	with open("4_exp/scripts/config.json") as f:
 		data = json.load(f)
 	
 	# print config
@@ -20,36 +17,43 @@ def handleConfig():
 
 	return data
 
-def printExperimentOverview(TRIALS, NUM_THREADS, NUM_SPINUPS):
-	print("Testing spinup throughput for " + TRIALS + " trials. Cycling from 1 to " + str(NUM_THREADS) + " threads used for spinning up " + str(NUM_SPINUPS) + " containers.") 
+def printExperimentOverview(TRIALS):
+	print("Testing network throughput for " + TRIALS + " trials.") 
 
-def runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS):
+def runExperiment(TRIALS, config):
+	print("")
+	print("Running baremetal")
+	for url in config["URLS"]:
+		print("Running exp: sudo docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " + str(config["URLS"][url]))
+		p = Popen(['/bin/bash', '-c',  "3_exp/experiment_materials/net " + str(TRIALS) + " " +  str(config["URLS"][url])])
+		p.wait()
+
 	print("")
 	print("Running with Docker")
 		
-	runDockerContainer("--runtime=runc", NUM_THREADS, TRIALS, NUM_SPINUPS)
+	runDockerContainer("--runtime=runc"", TRIALS, config)
 	
 	print("")
 	print("Running gVisor: Ptrace")
 	
 	modifyDockerConfig("ptrace")
-	runDockerContainer("--runtime=runsc", NUM_THREADS, TRIALS, NUM_SPINUPS)
+	runDockerContainer("--runtime=runsc", TRIALS, config)
 	
 	print("")
 	print("Running gVisor: KVM")
 	
 	modifyDockerConfig("kvm")
-	runDockerContainer("--runtime=runsc", NUM_THREADS, TRIALS, NUM_SPINUPS)
+	runDockerContainer("--runtime=runsc", TRIALS, config)
 
 
 	print("Completed experiment " + str(EXP_NUM))
 
 # runtime = "" if no runsc, else --runtime=runsc
-def runDockerContainer(runtime, NUM_THREADS, TRIALS, NUM_SPINUPS):
-	flush()
-	p = Popen(['/bin/bash', '-c', "3_exp/experiment_materials/spinup " + str(NUM_THREADS) + " " + str(TRIALS) + " " + str(runtime) + " " + str(NUM_SPINUPS)])
-	p.wait()
-	flush()
+def runDockerContainer(runtime, TRIALS, config):
+	for url in config["URLS"]:
+		print("Running exp: sudo docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " + str(config["URLS"][url]))
+		p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " +  str(config["URLS"][url])])
+		p.wait()
 
 def modifyDockerConfig(platform):
 	print("Modifying docker daemon file")
@@ -61,15 +65,13 @@ def modifyDockerConfig(platform):
     		json.dump(data, outfile)
 
 	print("Restarting Docker")
-	flush()
 	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
 	p.wait()
 	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
 	p.wait()
-	flush()
 
 ''' ---------------Executed Code---------------'''
-EXP_NUM = 3
+EXP_NUM = 4
 
 print("Running experiment " + str(EXP_NUM))
 print(os.getcwd())
@@ -78,24 +80,20 @@ print(os.getcwd())
 config = handleConfig()
 
 TRIALS = config["trials"]
-NUM_THREADS = config["num_threads"]
-NUM_SPINUPS = config["num_spinups"]
 
 if (config["built"] != "True"):
 	print("Building experiment")
-	flush()
-	p = Popen(['/bin/bash', '-c', 'python 3_exp/scripts/build.py'])
+	p = Popen(['/bin/bash', '-c', 'python 4_exp/scripts/build.py'])
 	p.wait()
-	flush()
 else:
 	print("Experiment already built")
 
 # Print experiment overview
-printExperimentOverview(TRIALS, NUM_THREADS, NUM_SPINUPS)
+printExperimentOverview(TRIALS)
 
 print("")
 print("Beginning experiment_" + str(EXP_NUM))
 print("")
 
-runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS)
+runExperiment(TRIALS, config)
 
