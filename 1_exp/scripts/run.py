@@ -8,7 +8,7 @@ def handleConfig():
 	print("")
 	print("Printing config.txt")
 	
-	with open("experiment_1/scripts/config.json") as f:
+	with open("1_exp/scripts/config.json") as f:
 		data = json.load(f)
 	
 	# print config
@@ -29,8 +29,8 @@ def runExperiment(TRIALS, READ_SIZE):
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
 
-		print("Running exp " + str(i+1) + " of 10: experiment_1/experiment_materials/read " + str(TRIALS) + " " + str(exp_read) + " experiment_1/experiment_materials/file.txt")
-		p = Popen(['/bin/bash', '-c',  "experiment_1/experiment_materials/read " + str(TRIALS) + " " +  str(exp_read) + " experiment_1/experiment_materials/file.txt"])
+		print("Running exp " + str(i+1) + " of 10: 1_exp/experiment_materials/read " + str(TRIALS) + " " + str(exp_read) + " 1_exp/experiment_materials/file.txt")
+		p = Popen(['/bin/bash', '-c',  "1_exp/experiment_materials/read " + str(TRIALS) + " " +  str(exp_read) + " 1_exp/experiment_materials/file.txt"])
 		p.wait()
 
 	print("")
@@ -91,7 +91,7 @@ READ_SIZE = config["read_size"]
 
 if (config["built"] != "True"):
 	print("Building experiment")
-	p = Popen(['/bin/bash', '-c', 'python experiment_1/scripts/build.py'])
+	p = Popen(['/bin/bash', '-c', 'python 1_exp/scripts/build.py'])
 	p.wait()
 else:
 	print("Experiment already built")
