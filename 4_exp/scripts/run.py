@@ -23,15 +23,16 @@ def printExperimentOverview(TRIALS):
 def runExperiment(TRIALS, config):
 	print("")
 	print("Running baremetal")
-	for url in config["URLS"]:
-		print("Running exp: sudo docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " + str(config["URLS"][url]))
-		p = Popen(['/bin/bash', '-c',  "3_exp/experiment_materials/net " + str(TRIALS) + " " +  str(config["URLS"][url])])
-		p.wait()
+	for names in config["URLS"]:
+		for url in names:
+			print("Running exp: 4_exp/experiment_materials/net " + str(TRIALS) + " " + str(names[url]))
+			p = Popen(['/bin/bash', '-c',  "4_exp/experiment_materials/net " + str(TRIALS) + " " +  str(names[url])])
+			p.wait()
 
 	print("")
 	print("Running with Docker")
 		
-	runDockerContainer("--runtime=runc"", TRIALS, config)
+	runDockerContainer("--runtime=runc", TRIALS, config)
 	
 	print("")
 	print("Running gVisor: Ptrace")
@@ -50,10 +51,11 @@ def runExperiment(TRIALS, config):
 
 # runtime = "" if no runsc, else --runtime=runsc
 def runDockerContainer(runtime, TRIALS, config):
-	for url in config["URLS"]:
-		print("Running exp: sudo docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " + str(config["URLS"][url]))
-		p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " +  str(config["URLS"][url])])
-		p.wait()
+	for names in config["URLS"]:
+		for url in names:
+			print("Running exp: sudo docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " + str(names[url]))
+			p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " +  str(names[url])])
+			p.wait()
 
 def modifyDockerConfig(platform):
 	print("Modifying docker daemon file")
