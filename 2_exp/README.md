@@ -9,7 +9,7 @@ This experiment tests the write throughput that can be achieved on bare metal, D
 
 # Current State
 
-Not finished
+Finished. Future: May include writing on tmpfs for bare metal.
 
 ## Notes
 
