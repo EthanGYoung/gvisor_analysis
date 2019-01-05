@@ -3,6 +3,9 @@ import json
 from subprocess import Popen
 
 ''' -----------Methods-------------------'''
+def flush():
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 def handleConfig():
 	print("")
@@ -43,8 +46,10 @@ def runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS):
 
 # runtime = "" if no runsc, else --runtime=runsc
 def runDockerContainer(runtime, NUM_THREADS, TRIALS, NUM_SPINUPS):
+	flush()
 	p = Popen(['/bin/bash', '-c', "3_exp/experiment_materials/spinup " + str(NUM_THREADS) + " " + str(TRIALS) + " " + str(runtime) + " " + str(NUM_SPINUPS)])
 	p.wait()
+	flush()
 
 def modifyDockerConfig(platform):
 	print("Modifying docker daemon file")
@@ -56,10 +61,12 @@ def modifyDockerConfig(platform):
     		json.dump(data, outfile)
 
 	print("Restarting Docker")
+	flush()
 	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
 	p.wait()
 	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
 	p.wait()
+	flush()
 
 ''' ---------------Executed Code---------------'''
 EXP_NUM = 3
@@ -76,8 +83,10 @@ NUM_SPINUPS = config["num_spinups"]
 
 if (config["built"] != "True"):
 	print("Building experiment")
+	flush()
 	p = Popen(['/bin/bash', '-c', 'python 3_exp/scripts/build.py'])
 	p.wait()
+	flush()
 else:
 	print("Experiment already built")
 

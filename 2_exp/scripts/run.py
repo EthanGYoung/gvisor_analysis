@@ -3,6 +3,9 @@ import json
 from subprocess import Popen
 
 ''' -----------Methods-------------------'''
+def flush():
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 def handleConfig():
 	print("")
@@ -30,8 +33,10 @@ def runExperiment(TRIALS, WRITE_SIZE):
 		exp_write = (int(WRITE_SIZE))*(10 - i)/10
 
 		print("Running exp " + str(i+1) + " of 10: 2_exp/experiment_materials/write " + str(TRIALS) + " " + str(exp_write))
+		flush()
 		p = Popen(['/bin/bash', '-c',  "2_exp/experiment_materials/write " + str(TRIALS) + " " +  str(exp_write)])
 		p.wait()
+		flush()
 
 	print("")
 	print("Running with Docker")
@@ -59,8 +64,10 @@ def runDockerContainer(runtime, WRITE_SIZE, TRIALS):
 		exp_write = (int(WRITE_SIZE))*(10 - i)/10
 
 		print("Running exp " + str(i+1) + " of 10: sudo docker run " + str(runtime) + " --rm write " + str(TRIALS) + " " + str(exp_write))
+		flush()
 		p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm write " + str(TRIALS) + " " +  str(exp_write)])
 		p.wait()
+		flush()
 
 def modifyDockerConfig(platform):
 	print("Modifying docker daemon file")
@@ -72,10 +79,12 @@ def modifyDockerConfig(platform):
     		json.dump(data, outfile)
 
 	print("Restarting Docker")
+	flush()
 	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
 	p.wait()
 	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
 	p.wait()
+	flush()
 
 ''' ---------------Executed Code---------------'''
 EXP_NUM = 2
@@ -91,8 +100,10 @@ WRITE_SIZE = config["write_size"]
 
 if (config["built"] != "True"):
 	print("Building experiment")
+	flush()
 	p = Popen(['/bin/bash', '-c', 'python 2_exp/scripts/build.py'])
 	p.wait()
+	flush()
 else:
 	print("Experiment already built")
 
