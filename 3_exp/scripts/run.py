@@ -18,13 +18,13 @@ def handleConfig():
 	return data
 
 def printExperimentOverview(TRIALS, NUM_THREADS, NUM_SPINUPS):
-	print("Testing write throughput for " + TRIALS + " trials. Cycling from 1 to " + str(NUM_THREADS) + " threads used for spinning up " + str(NUM_SPINUPS) + " containers.") 
+	print("Testing spinup throughput for " + TRIALS + " trials. Cycling from 1 to " + str(NUM_THREADS) + " threads used for spinning up " + str(NUM_SPINUPS) + " containers.") 
 
 def runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS):
 	print("")
 	print("Running with Docker")
 		
-	runDockerContainer("", NUM_THREADS, TRIALS, NUM_SPINUPS)
+	runDockerContainer("--runtime=runc", NUM_THREADS, TRIALS, NUM_SPINUPS)
 	
 	print("")
 	print("Running gVisor: Ptrace")

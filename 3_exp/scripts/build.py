@@ -6,5 +6,5 @@ p = Popen(['/bin/bash', '-c', 'docker build -t no_op 3_exp/experiment_materials/
 p.wait()
 
 print("Building C executable spinup")
-p = Popen(['/bin/bash', '-c' , 'gcc -o 3_exp/experiment_materials/spinup -std=gnu99 3_exp/experiment_materials/spinup.c'])
+p = Popen(['/bin/bash', '-c' , 'gcc -pthread -o 3_exp/experiment_materials/spinup -std=gnu99 3_exp/experiment_materials/spinup.c'])
 p.wait()
