@@ -1,3 +1,4 @@
+import sys
 import os
 import json
 from subprocess import Popen
@@ -20,6 +21,13 @@ def handleConfig():
 def printExperimentsOverview():
 	print("Running all experiments specified in config.py") 
 
+def redirectToLog(config):
+	if (config["log"] != ""):
+		# Redirects output to log file
+		f = open(config["log"], "w")
+		sys.stderr = f
+		sys.stdout = f
+
 def runExperiments(config):
 	for exp in config["experiments"]:
 		for name in exp:
@@ -34,7 +42,6 @@ def runExperiments(config):
 			p.wait()
 
 ''' ---------------Executed Code---------------'''
-EXP_NUM = 1
 
 print("Running automated experiments")
 
@@ -47,6 +54,9 @@ printExperimentsOverview()
 print("")
 print("Beginning execution")
 print("")
+
+# Redirect stdout and stderr
+redirectToLog(config)
 
 runExperiments(config)
 

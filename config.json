@@ -1,9 +1,10 @@
 {
 	"experiments" : [
 		{
-			"1_exp" : "False",
+			"1_exp" : "True",
 			"2_exp" : "False",
-			"3_exp" : "True"
+			"3_exp" : "False"
 		}
-	]
+	],
+	"log" : "logs/tests.log"
 }
