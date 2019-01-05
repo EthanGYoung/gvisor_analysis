@@ -29,68 +29,53 @@ def runExperiment(TRIALS, READ_SIZE):
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
 
-		print("Running exp " + str(i+1) + " of 10: experiment_1/experiment_materials/read " + str(TRIALS) + " " + str(exp_read))
-		p = Popen(['/bin/bash', '-c',  "experiment_1/experiment_materials/read " + str(TRIALS) + " " +  str(exp_read)])
+		print("Running exp " + str(i+1) + " of 10: experiment_1/experiment_materials/read " + str(TRIALS) + " " + str(exp_read) + " experiment_1/experiment_materials/file.txt")
+		p = Popen(['/bin/bash', '-c',  "experiment_1/experiment_materials/read " + str(TRIALS) + " " +  str(exp_read) + " experiment_1/experiment_materials/file.txt"])
 		p.wait()
 
 	print("")
 	print("Running with Docker")
-	for i in range(0, 10):
-		exp_read = (int(READ_SIZE))*(10 - i)/10
-
-		print("Running exp " + str(i+1) + " of 10: sudo docker run --rm read " + str(TRIALS) + " " + str(exp_read))
-		p = Popen(['/bin/bash', '-c',  "docker run --rm read " + str(TRIALS) + " " +  str(exp_read)])
-		p.wait()
 		
+	runDockerContainer("", READ_SIZE, TRIALS)
+	
 	print("")
 	print("Running gVisor: Ptrace")
 	
-	print("Modifying docker daemon file")
-	with open("/etc/docker/daemon.json") as f:
-		data = json.load(f)
-	data["runtimes"]["runsc"]["runtimeArgs"] = ["--platform=ptrace"]
-	print("Writing: " + str(data))
-	with open('/etc/docker/daemon.json', 'w') as outfile:
-    		json.dump(data, outfile)
-	
-	print("Restarting Docker")
-	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
-	p.wait()
-	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
-	p.wait()
-	
-	for i in range(0, 10):
-		exp_read = (int(READ_SIZE))*(10 - i)/10
-
-		print("Running exp " + str(i+1) + " of 10: sudo docker run --runtime=runsc --rm read " + str(TRIALS) + " " + str(exp_read))
-		p = Popen(['/bin/bash', '-c',  "docker run --runtime=runsc --rm read " + str(TRIALS) + " " +  str(exp_read)])
-		p.wait()
+	modifyDockerConfig("ptrace")
+	runDockerContainer("--runtime=runsc", READ_SIZE, TRIALS)
 	
 	print("")
 	print("Running gVisor: KVM")
 	
+	modifyDockerConfig("kvm")
+	runDockerContainer("--runtime=runsc", READ_SIZE, TRIALS)
+
+
+	print("Completed experiment " + str(EXP_NUM))
+
+# runtime = "" if no runsc, else --runtime=runsc
+def runDockerContainer(runtime, READ_SIZE, TRIALS):
+	for i in range(0, 10):
+		exp_read = (int(READ_SIZE))*(10 - i)/10
+
+		print("Running exp " + str(i+1) + " of 10: sudo docker run " + str(runtime) + " --rm read " + str(TRIALS) + " " + str(exp_read) + " ./file.txt")
+		p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm read " + str(TRIALS) + " " +  str(exp_read) + " ./file.txt"])
+		p.wait()
+
+def modifyDockerConfig(platform):
 	print("Modifying docker daemon file")
 	with open("/etc/docker/daemon.json") as f:
 		data = json.load(f)
-	data["runtimes"]["runsc"]["runtimeArgs"] = ["--platform=kvm"]
+	data["runtimes"]["runsc"]["runtimeArgs"] = ["--platform=" + str(platform)]
 	print("Writing: " + str(data))
 	with open('/etc/docker/daemon.json', 'w') as outfile:
     		json.dump(data, outfile)
-	
+
 	print("Restarting Docker")
 	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
 	p.wait()
 	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
 	p.wait()
-	for i in range(0, 10):
-		exp_read = (int(READ_SIZE))*(10 - i)/10
-
-		print("Running exp " + str(i+1) + " of 10: sudo docker run --runtime=runsc --rm read " + str(TRIALS) + " " + str(exp_read))
-		p = Popen(['/bin/bash', '-c',  "docker run --runtime=runsc --rm read " + str(TRIALS) + " " +  str(exp_read)])
-		p.wait()
-
-
-	print("Completed experiment " + str(EXP_NUM))
 
 ''' ---------------Executed Code---------------'''
 EXP_NUM = 1

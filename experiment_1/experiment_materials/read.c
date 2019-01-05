@@ -10,6 +10,7 @@
 
 int NUM_TRIALS;
 int READ_SIZE;
+char* FILE_PATH;
 
 // Gets the current time
 struct timespec diff(struct timespec start, struct timespec end)
@@ -67,20 +68,21 @@ float execute(char *file) {
 
 int main(int argc, char *argv[]) {
         // Parse command line args
-        if (argc != 3) {
-                printf("Usage: ./driver <number of trials> <size of file write in Bytes>\n");
+        if (argc != 4) {
+                printf("Usage: ./driver <number of trials> <size of file read in Bytes> <path to rile to read>\n");
                 return 0;
         }
 
 
         NUM_TRIALS = atoi(argv[1]);
         READ_SIZE = atoi(argv[2]);
+	FILE_PATH = argv[3];
 
         float total = 0;
         float trial_val = 0;
 
         for (int i = 0; i < NUM_TRIALS; i++) {
-                trial_val = execute("experiment_1/experiment_materials/file.txt");
+                trial_val = execute(FILE_PATH);
                 total += trial_val;
         }
 
