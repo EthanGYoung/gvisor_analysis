@@ -21,6 +21,7 @@ def handleConfig():
 def printExperimentsOverview():
 	print("Running all experiments specified in config.py") 
 
+# Not quite working yet
 #def redirectToLog(config):
 	#if (config["log"] != ""):
 		# Delete existing file first
@@ -32,7 +33,7 @@ def printExperimentsOverview():
 		#sys.stderr = f
 		#sys.stdout = f
 
-def runExperiments(config):
+def runExperiments(config, log):
 	for exp in config["experiments"]:
 		for name in exp:
 			print("")
@@ -45,7 +46,7 @@ def runExperiments(config):
 		#	if (config["log"] != ""):
 		#		p = Popen(['/bin/bash', '-c', "python " + str(name) + "/scripts/run.py 2>&1 >> " + config["log"]])  
 		#	else:
-			p = Popen(['/bin/bash', '-c', "python " + str(name) + "/scripts/run.py" ])  
+			p = Popen(['/bin/bash', '-c', "python " + str(name) + "/scripts/run.py " + str(name) + " " + str(config["log"])], stdout = log, stderr = log)  
 			p.wait()
 
 ''' ---------------Executed Code---------------'''
@@ -54,6 +55,12 @@ print("Running automated experiments")
 
 # Print config file
 config = handleConfig()
+
+os.remove(str(config["log"]))
+log = open(str(config["log"]), "a+")
+
+sys.stdout = log
+sys.stderr = log
 
 # Print experiment overview
 printExperimentsOverview()
@@ -65,5 +72,5 @@ print("")
 # Redirect stdout and stderr
 #redirectToLog(config)
 
-runExperiments(config)
+runExperiments(config, log)
 

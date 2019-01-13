@@ -1,0 +1,11 @@
+{
+	"URLS" : [
+			{
+				"10MB" : "http://speedtest.wdc01.softlayer.com/downloads/test10.zip",
+				"100MB" : "http://speedtest.wdc01.softlayer.com/downloads/test100.zip",
+				"1 GB" : "http://speedtest.wdc01.softlayer.com/downloads/test1000.zip"
+			}
+		],		
+	"trials" : "1",
+	"built" : "False"
+}
