@@ -1,3 +1,4 @@
+import sys
 import os
 import json
 from subprocess import Popen
@@ -20,42 +21,44 @@ def handleConfig(path):
 def printExperimentOverview(TRIALS):
 	print("Testing network throughput for " + TRIALS + " trials.") 
 
-def runExperiment(TRIALS, config, path):
+def runExperiment(TRIALS, config, path, log):
 	print("")
 	print("Running baremetal")
 	for names in config["URLS"]:
 		for url in names:
 			print("Running exp: " + str(path) + "/experiment_materials/net " + str(TRIALS) + " " + str(names[url]))
-			p = Popen(['/bin/bash', '-c',  str(path) + "/experiment_materials/net " + str(TRIALS) + " " +  str(names[url])])
+			p = Popen(['/bin/bash', '-c',  str(path) + "/experiment_materials/net " + str(TRIALS) + " " +  str(names[url])], stdout = log, stderr = log)
 			p.wait()
 
 	print("")
 	print("Running with Docker")
 		
-	runDockerContainer("--runtime=runc", TRIALS, config, path)
+	runDockerContainer("--runtime=runc", TRIALS, config, path, log)
 	
 	print("")
 	print("Running gVisor: Ptrace")
 	
 	modifyDockerConfig("ptrace")
-	runDockerContainer("--runtime=runsc", TRIALS, config, path)
+	runDockerContainer("--runtime=runsc", TRIALS, config, path, log)
 	
 	print("")
 	print("Running gVisor: KVM")
 	
 	modifyDockerConfig("kvm")
-	runDockerContainer("--runtime=runsc", TRIALS, config, path)
+	runDockerContainer("--runtime=runsc", TRIALS, config, path, log)
 
 
 	print("Completed experiment " + str(EXP_NUM))
 
 # runtime = "" if no runsc, else --runtime=runsc
-def runDockerContainer(runtime, TRIALS, config, path):
+def runDockerContainer(runtime, TRIALS, config, path, log):
 	for names in config["URLS"]:
 		for url in names:
+			flush()
 			print("Running exp: sudo docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " + str(names[url]))
-			p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " +  str(names[url])])
+			p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm net " + str(TRIALS) + " " +  str(names[url])], stdout = log, stderr = log)
 			p.wait()
+			flush()
 
 def modifyDockerConfig(platform):
 	print("Modifying docker daemon file")
@@ -78,11 +81,11 @@ EXP_NUM = 4
 print("Running experiment " + str(EXP_NUM))
 print(os.getcwd())
 
-if (len(sys.argv) < 2):
-        print("Incorrect args. Did you pass a path?")
-        return
+if (len(sys.argv) < 3):
+        print("Incorrect args. Did you pass a path or log?")
 
 path = sys.argv[1]
+log = open(str(sys.argv[2]), "a+")
 
 # Print config file
 config = handleConfig(path)
@@ -91,7 +94,7 @@ TRIALS = config["trials"]
 
 if (config["built"] != "True"):
 	print("Building experiment")
-	p = Popen(['/bin/bash', '-c', 'python ' + str(path) + '/scripts/build.py ' + str(path)])
+	p = Popen(['/bin/bash', '-c', 'python ' + str(path) + '/scripts/build.py ' + str(path) + " " + str(sys.argv[2])], stdout = log, stderr = log)
 	p.wait()
 else:
 	print("Experiment already built")
@@ -103,5 +106,5 @@ print("")
 print("Beginning experiment_" + str(EXP_NUM))
 print("")
 
-runExperiment(TRIALS, config, path)
+runExperiment(TRIALS, config, path, log)
 
