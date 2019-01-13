@@ -24,31 +24,31 @@ def handleConfig(path):
 def printExperimentOverview(TRIALS, NUM_THREADS, NUM_SPINUPS):
 	print("Testing spinup throughput for " + TRIALS + " trials. Cycling from 1 to " + str(NUM_THREADS) + " threads used for spinning up " + str(NUM_SPINUPS) + " containers.") 
 
-def runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS, path):
+def runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS, path, log):
 	print("")
 	print("Running with Docker")
 		
-	runDockerContainer("--runtime=runc", NUM_THREADS, TRIALS, NUM_SPINUPS, path)
+	runDockerContainer("--runtime=runc", NUM_THREADS, TRIALS, NUM_SPINUPS, path, log)
 	
 	print("")
 	print("Running gVisor: Ptrace")
 	
 	modifyDockerConfig("ptrace")
-	runDockerContainer("--runtime=runsc", NUM_THREADS, TRIALS, NUM_SPINUPS, path)
+	runDockerContainer("--runtime=runsc", NUM_THREADS, TRIALS, NUM_SPINUPS, path, log)
 	
 	print("")
 	print("Running gVisor: KVM")
 	
 	modifyDockerConfig("kvm")
-	runDockerContainer("--runtime=runsc", NUM_THREADS, TRIALS, NUM_SPINUPS, path)
+	runDockerContainer("--runtime=runsc", NUM_THREADS, TRIALS, NUM_SPINUPS, path, log)
 
 
 	print("Completed experiment " + str(EXP_NUM))
 
 # runtime = "" if no runsc, else --runtime=runsc
-def runDockerContainer(runtime, NUM_THREADS, TRIALS, NUM_SPINUPS, path):
+def runDockerContainer(runtime, NUM_THREADS, TRIALS, NUM_SPINUPS, path, log):
 	flush()
-	p = Popen(['/bin/bash', '-c', str(path) + "/experiment_materials/spinup " + str(NUM_THREADS) + " " + str(TRIALS) + " " + str(runtime) + " " + str(NUM_SPINUPS)])
+	p = Popen(['/bin/bash', '-c', str(path) + "/experiment_materials/spinup " + str(NUM_THREADS) + " " + str(TRIALS) + " " + str(runtime) + " " + str(NUM_SPINUPS)], stdout = log, stderr = log)
 	p.wait()
 	flush()
 
@@ -75,11 +75,11 @@ EXP_NUM = 3
 print("Running experiment " + str(EXP_NUM))
 print(os.getcwd())
 
-if (len(sys.argv) < 2):
-	print("Incorrect args. Did you pass a path?")
-	return
+if (len(sys.argv) < 3):
+	print("Incorrect args. Did you pass a path and log?")
 
 path = sys.argv[1]
+log = open(str(sys.argv[2]), "a+")
 
 # Print config file
 config = handleConfig(path)
@@ -91,7 +91,7 @@ NUM_SPINUPS = config["num_spinups"]
 if (config["built"] != "True"):
 	print("Building experiment")
 	flush()
-	p = Popen(['/bin/bash', '-c', 'python ' + str(path) + '/scripts/build.py ' + str(path)])
+	p = Popen(['/bin/bash', '-c', 'python ' + str(path) + '/scripts/build.py ' + str(path) + " " + str(sys.argv[2])], stdout = log, stderr = log)
 	p.wait()
 	flush()
 else:
@@ -104,5 +104,5 @@ print("")
 print("Beginning experiment_" + str(EXP_NUM))
 print("")
 
-runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS, path)
+runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS, path, log)
 
