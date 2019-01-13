@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
         int num_trials = atoi(argv[2]);
 	RUNTIME = argv[3];
 	NUM_SPINUPS = atoi(argv[4]);
-
+	printf("Here");
         for (int i = 0; i < max_num_threads; i++) {
                 printf("Running with %d threads\n", i+1);
                 drive(i+1, num_trials);

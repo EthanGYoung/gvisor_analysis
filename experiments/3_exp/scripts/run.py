@@ -3,7 +3,7 @@ import sys
 import json
 from subprocess import Popen
 
-''' -----------Methods-------------------'''
+""" -----------Methods-------------------"""
 def flush():
         sys.stdout.flush()
         sys.stderr.flush()
@@ -48,7 +48,7 @@ def runExperiment(TRIALS, NUM_THREADS, NUM_SPINUPS, path, log):
 # runtime = "" if no runsc, else --runtime=runsc
 def runDockerContainer(runtime, NUM_THREADS, TRIALS, NUM_SPINUPS, path, log):
 	flush()
-	p = Popen(['/bin/bash', '-c', str(path) + "/experiment_materials/spinup " + str(NUM_THREADS) + " " + str(TRIALS) + " " + str(runtime) + " " + str(NUM_SPINUPS)], stdout = log, stderr = log)
+	p = Popen(["/bin/bash", "-c", str(path) + "/experiment_materials/spinup " + str(NUM_THREADS) + " " + str(TRIALS) + " " + str(runtime) + " " + str(NUM_SPINUPS)], stdout = log, stderr = log)
 	p.wait()
 	flush()
 
@@ -58,18 +58,18 @@ def modifyDockerConfig(platform):
 		data = json.load(f)
 	data["runtimes"]["runsc"]["runtimeArgs"] = ["--platform=" + str(platform)]
 	print("Writing: " + str(data))
-	with open('/etc/docker/daemon.json', 'w') as outfile:
+	with open("/etc/docker/daemon.json", "w") as outfile:
     		json.dump(data, outfile)
 
 	print("Restarting Docker")
 	flush()
-	p = Popen(['/bin/bash', '-c',  "systemctl restart docker"])
+	p = Popen(["/bin/bash", "-c",  "systemctl restart docker"])
 	p.wait()
-	p = Popen(['/bin/bash', '-c',  "systemctl status docker"])
+	p = Popen(["/bin/bash", "-c",  "systemctl status docker"])
 	p.wait()
 	flush()
 
-''' ---------------Executed Code---------------'''
+""" ---------------Executed Code---------------"""
 EXP_NUM = 3
 
 print("Running experiment " + str(EXP_NUM))
@@ -81,6 +81,8 @@ if (len(sys.argv) < 3):
 path = sys.argv[1]
 log = open(str(sys.argv[2]), "a+")
 
+print("Printing to log dest: " + str(sys.argv[2]))
+
 # Print config file
 config = handleConfig(path)
 
@@ -91,7 +93,7 @@ NUM_SPINUPS = config["num_spinups"]
 if (config["built"] != "True"):
 	print("Building experiment")
 	flush()
-	p = Popen(['/bin/bash', '-c', 'python ' + str(path) + '/scripts/build.py ' + str(path) + " " + str(sys.argv[2])], stdout = log, stderr = log)
+	p = Popen(["/bin/bash", "-c", "python " + str(path) + "/scripts/build.py " + str(path) + " " + str(sys.argv[2])], stdout = log, stderr = log)
 	p.wait()
 	flush()
 else:

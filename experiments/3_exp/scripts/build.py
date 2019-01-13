@@ -9,7 +9,7 @@ log = open(str(sys.argv[2]), "a+")
 
 # Builds any images or binaries in the experiment_materials folder
 print("Deleting old image for no_op")
-p = Popen(["/bin/bash", "-c", "docker image rm no_op"], stdout = log, stderr = log)
+p = Popen(["/bin/bash", "-c", "docker image rm --force no_op"], stdout = log, stderr = log)
 p.wait()
 
 print("Building Docker image for no_op")

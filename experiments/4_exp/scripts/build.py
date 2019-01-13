@@ -9,7 +9,7 @@ log = open(str(sys.argv[2]), "a+")
 
 # Builds any images or binaries in the experiment_materials folder
 print("Deleting old image for net")
-p = Popen(["/bin/bash", "-c", "docker image rm net"], stdout = log, stderr = log)
+p = Popen(["/bin/bash", "-c", "docker image rm --force net"], stdout = log, stderr = log)
 p.wait()
 
 print("Building Docker image for net")
