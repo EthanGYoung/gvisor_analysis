@@ -13,9 +13,9 @@ A collection of programs used for benchmarking gVisor performance.
 
 # Usage 
 
-Execute this command:
+Execute this command in main repo:
 
-sudo python run_experiments.py 2>&1 >> "Path to log"
+sudo python run_experiments.py
 
 # Future work
 
