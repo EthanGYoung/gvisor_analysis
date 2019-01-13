@@ -4,6 +4,9 @@ import json
 from subprocess import Popen
 
 ''' -----------Methods-------------------'''
+def flush():
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 def handleConfig(path):
 	print("")
@@ -27,8 +30,10 @@ def runExperiment(TRIALS, config, path, log):
 	for names in config["URLS"]:
 		for url in names:
 			print("Running exp: " + str(path) + "/experiment_materials/net " + str(TRIALS) + " " + str(names[url]))
+			flush()
 			p = Popen(['/bin/bash', '-c',  str(path) + "/experiment_materials/net " + str(TRIALS) + " " +  str(names[url])], stdout = log, stderr = log)
 			p.wait()
+			flush()
 
 	print("")
 	print("Running with Docker")
