@@ -7,6 +7,7 @@ A collection of programs used for benchmarking gVisor performance.
 2) Write Throughput
 3) Thread Spinup Throughput
 4) Network Throughput
+5) getpid Throughput
 
 ## Future
 * Google Cloud Functions performance
