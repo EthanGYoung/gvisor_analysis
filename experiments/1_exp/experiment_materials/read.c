@@ -48,10 +48,13 @@ float execute(char *file) {
         struct timespec ts0;
         clock_gettime(CLOCK_REALTIME, &ts0);
 
-        // Writes the whole file
-	if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
-                total_read = total_read + r;
-        }
+	for (int i = 0; i < NUM_TRIALS; i++) {
+		total_read = 0;
+		// Writes the whole file
+		if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
+			total_read = total_read + r;
+		}
+	}
         // End timer
         struct timespec ts1;
         clock_gettime(CLOCK_REALTIME, &ts1);
@@ -79,14 +82,10 @@ int main(int argc, char *argv[]) {
 	FILE_PATH = argv[3];
 
         float total = 0;
-        float trial_val = 0;
 
-        for (int i = 0; i < NUM_TRIALS; i++) {
-                trial_val = execute(FILE_PATH);
-                total += trial_val;
-        }
+        total = execute(FILE_PATH);
 
-        printf("Average for %d trials and READ_SIZE = %d: Read time = %f seconds, %f bytes/second\n", NUM_TRIALS, READ_SIZE, total/NUM_TRIALS, READ_SIZE*NUM_TRIALS/total);
+        printf("Average for %d trials and READ_SIZE = %d: Read time average = %.12f seconds\n", NUM_TRIALS, READ_SIZE, total/NUM_TRIALS);
 
         return 0;
 }
