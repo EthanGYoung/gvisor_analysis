@@ -42,7 +42,6 @@ float execute(int NUM_CALLS) {
         struct timespec t = diff(ts0,ts1);
 
         float elapsed_time = t.tv_sec + t.tv_nsec/(float)1000000000;
-
         return elapsed_time;
 }
 
@@ -58,9 +57,9 @@ int main(int argc, char *argv[]) {
 
         float total = 0;
 
-        total = execute(NUM_CALlS);
+        total = execute(NUM_CALLS);
 
-        printf("Average for %d calls: getpid syscall time = %f seconds\n", NUM_CALLS, total/NUM_CALLS);
+        printf("Average for %d calls: getpid syscall time = %.12f seconds\n", NUM_CALLS, total/NUM_CALLS);
 
         return 0;
 }

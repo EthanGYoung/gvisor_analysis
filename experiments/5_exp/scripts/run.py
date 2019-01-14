@@ -28,10 +28,10 @@ def runExperiment(TRIALS, NUM_CALLS, path, log):
 	print("")
 	print("Running baremetal")
 
-	for i in range(0, TRIALS):
+	for i in range(0, int(TRIALS)):
 		print("Running exp " + str(i+1) + " of " + str(TRIALS) + ": " + str(path) + "/experiment_materials/getpid " + str(NUM_CALLS))
 		flush()
-		p = Popen(["/bin/bash", "-c",  str(path) + "/experiment_materials/getpid " + str(NUM_CALLS))], stdout = log, stderr = log)
+		p = Popen(["/bin/bash", "-c",  str(path) + "/experiment_materials/getpid " + str(NUM_CALLS)], stdout = log, stderr = log)
 		p.wait()
 		flush()
 
@@ -57,7 +57,7 @@ def runExperiment(TRIALS, NUM_CALLS, path, log):
 
 # runtime = "" if no runsc, else --runtime=runsc
 def runDockerContainer(runtime, NUM_CALLS, TRIALS, log):
-	for i in range(0, TRIALS):
+	for i in range(0, int(TRIALS)):
 		print("Running exp " + str(i+1) + " of 10: sudo docker run " + str(runtime) + " --rm getpid " + str(NUM_CALLS))
 		flush()
 		p = Popen(["/bin/bash", "-c",  "docker run " + str(runtime) + " --rm getpid " + str(TRIALS)], stdout = log, stderr = log)
@@ -115,5 +115,7 @@ print("")
 print("Beginning experiment_" + str(EXP_NUM))
 print("")
 
+print("TRIALS: " + str(TRIALS))
+print("NUM_CALLS: " + str(NUM_CALLS))
 runExperiment(TRIALS, NUM_CALLS, path, log)
 
