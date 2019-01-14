@@ -67,9 +67,9 @@ def runDockerContainer(runtime, READ_SIZE, TRIALS):
 	for i in range(0, 10):
 		exp_read = (int(READ_SIZE))*(10 - i)/10
 
-		print("Running exp " + str(i+1) + " of 10: sudo docker run " + str(runtime) + " --rm read " + str(TRIALS) + " " + str(exp_read) + " ./file.txt")
+		print("Running exp " + str(i+1) + " of 10: sudo docker run " + str(runtime) + " --rm --tmpfs /myapp read " + str(TRIALS) + " " + str(exp_read) + " ./file.txt")
 		flush()
-		p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm read " + str(TRIALS) + " " +  str(exp_read) + " ./file.txt"])
+		p = Popen(['/bin/bash', '-c',  "docker run " + str(runtime) + " --rm --tmpfs /myapp read " + str(TRIALS) + " " +  str(exp_read) + " ./file.txt"])
 		p.wait()
 
 def modifyDockerConfig(platform):
