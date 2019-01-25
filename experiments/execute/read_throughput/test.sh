@@ -34,11 +34,11 @@ Run_Docker_Container() {
 		exit 1
 	fi
 
-	RUNTIME = $1
-	TEST_TRIALS = $2
-	TEST_READ_SIZE = $3
+	RUNTIME=$1
+	TEST_TRIALS=$2
+	TEST_READ_SIZE=$3
 
-	cmd = "docker run --runtime=$RUNTIME --rm --tmpfs /myapp read $TEST_TRIALS $TEST_READ_SIZE ./file.txt"
+	cmd="docker run --runtime=$RUNTIME --rm --tmpfs /myapp read $TEST_TRIALS $TEST_READ_SIZE $FILE"
 	
 	echo "Executing: $cmd"
 	$cmd
@@ -60,4 +60,10 @@ gcc -o read -std=gnu99 read.c
 # Run the tests
 echo "Running tests"
 
-Run_Bare_Metal $TRIALS $READ_SIZE $FILE
+echo "Running tests on bare metal"
+Run_Bare_Metal $TRIALS $READ_SIZE
+
+echo "Running tests on docker"
+TEST_RUNTIME="runc"
+Run_Docker_Container $TEST_RUNTIME $TRIALS $READ_SIZE
+

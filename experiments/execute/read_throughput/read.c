@@ -50,18 +50,18 @@ float execute(char *file) {
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
 		total_read = 0;
-		// Writes the whole file
+		// Reads total read size
 		if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
 			total_read = total_read + r;
+		} else {
+			printf("Was not able to read READ_SIZE");
+			exit(1);
 		}
 	}
         // End timer
         struct timespec ts1;
         clock_gettime(CLOCK_REALTIME, &ts1);
         struct timespec t = diff(ts0,ts1);
-
-        // Remove the file
-        //remove(file);
 
         close(fd);
         float elapsed_time = t.tv_sec + t.tv_nsec/(float)1000000000;
