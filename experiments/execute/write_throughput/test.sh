@@ -9,6 +9,7 @@ fi
 TRIALS=$1
 WRITE_SIZE=$2
 FILE=$3
+SLEEP_DUR=5
  
 #### Functions ####
 
@@ -57,6 +58,7 @@ Update_Docker_Config() {
 	echo "Executing $cmd"
 	$cmd
 
+	sleep $SLEEP_DUR # Sleep to avoid error restarting docker too much
 	cmd="systemctl restart docker"
 	echo "Executing $cmd"
         $cmd
