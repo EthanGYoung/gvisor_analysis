@@ -44,6 +44,25 @@ Run_Docker_Container() {
 	$cmd
 }
 
+Update_Docker_Config() {
+	if [ "$#" -ne 1 ]; then
+                echo "Invalid args to Update_Docker_Config"
+                exit 1
+        fi
+
+	suffix=".json"
+	config="$1$suffix"
+		
+	cmd="cp $config  /etc/docker/daemon.json"
+	echo "Executing $cmd"
+	$cmd
+
+	cmd="systemctl restart docker"
+	echo "Executing $cmd"
+        $cmd
+}
+
+
 #### Main Code ####
 
 # Executes this test
@@ -51,8 +70,8 @@ echo "Executing test.sh for read throughput test"
 
 # Build the materials (Could make read a variable)
 echo "Building read image"
-#docker image rm read
-#docker build -t read .
+docker image rm read
+docker build -t read .
 
 echo "Compiling read binary"
 gcc -o read -std=gnu99 read.c
@@ -63,7 +82,18 @@ echo "Running tests"
 echo "Running tests on bare metal"
 Run_Bare_Metal $TRIALS $READ_SIZE
 
-echo "Running tests on docker"
+echo "Running tests on docker (runc)"
 TEST_RUNTIME="runc"
 Run_Docker_Container $TEST_RUNTIME $TRIALS $READ_SIZE
 
+echo "Running tests on docker (runsc)"
+TEST_RUNTIME="runsc"
+TEST_PLATFORM="ptrace"
+Update_Docker_Config $TEST_PLATFORM
+Run_Docker_Container $TEST_RUNTIME $TRIALS $READ_SIZE
+
+echo "Running tests on docker (runsc)"
+TEST_RUNTIME="runsc"
+TEST_PLATFORM="kvm"
+Update_Docker_Config $TEST_PLATFORM
+Run_Docker_Container $TEST_RUNTIME $TRIALS $READ_SIZE
