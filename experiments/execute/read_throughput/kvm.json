@@ -1,0 +1,10 @@
+{
+	"runtimes": {
+		"runsc": {
+			"runtimeArgs": [
+				"--platform=kvm"
+				], 
+			"path": "/usr/local/bin/runsc"
+		}
+	}
+}
