@@ -54,7 +54,7 @@ float execute(char *file) {
 		if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
 			total_read = total_read + r;
 		} else {
-			printf("Was not able to read READ_SIZE");
+			printf("Was not able to read READ_SIZE. Trial num is: %d\n", i);
 			exit(1);
 		}
 	}

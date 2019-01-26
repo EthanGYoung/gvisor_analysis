@@ -1,20 +1,26 @@
 #!/bin/bash
 
-
 #### Main Code ####
 
-if [ "$#" -ne 3 ]; then
-	echo "Usage: sh test.sh <APP_NAME> <RUNTIME> <NUM_CALLS>"
+FOLDER_PATH=$1
+
+echo "Changing directory to test directory $FOLDER_PATH"
+HOME_DIR=$(pwd)
+cd $HOME_DIR$(echo "/")$FOLDER_PATH
+source test_config.sh # To get NUM_ARGS and USAGE_CMD
+
+if [ "$#" -ne $NUM_ARGS ]; then
+	echo "Usage: $USAGE_CMD"
 	exit 1
 fi
 
-APP_NAME=$1
-RUNTIME=$2
-shift 2 # RUNTIME and APP_NAME not included in args
+APP_NAME=$2
+RUNTIME=$3
+shift 3 # FOLDER_PATH, RUNTIME and APP_NAME not included in args
 
 echo "Sourcing config and function files"
-source funcs.sh
-source test_config.sh $APP_NAME
+source ./funcs.sh
+source ./test_config.sh $APP_NAME
 
 PARAMS=$(join_by ' ' "$@")
 
@@ -35,6 +41,9 @@ case $RUNTIME in
 		rm $APP_NAME
 		;;
 	"runc" | "runsc")
+		echo "Removing old $APP_NAME image"
+		echo "Executing: $RM_CMD"
+		$RM_CMD
 		echo "Building $APP_NAME image"
 		echo "Executing: $BUILD_CMD"
 		$BUILD_CMD
@@ -46,3 +55,6 @@ case $RUNTIME in
 		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."
 		;;
 esac
+
+echo "Test completed. Returning to $HOME_DIR"
+cd $HOME_DIR
