@@ -42,8 +42,14 @@ generate_cmds() {
 				$THREAD_SPINUP_NUM_SPINUPS_PER_THREAD"
 }
 
-
 echo "Test Suite Initializing..."
+
+echo "Copying test.sh and funcs.sh to all directories"
+CMD="echo experiments/*/*/ | xargs -n 1 cp test.sh"
+$CMD
+
+CMD="echo experiments/*/*/ | xargs -n 1 cp funcs.sh"
+$CMD
 
 echo "Test Suite executing on bare metal."
 
@@ -58,5 +64,10 @@ TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
 for i in "${TEST_LIST[@]}"
 do
   echo "Initializing test: $i"
+  
   /bin/bash $i
 done
+
+echo "Deleting test.sh and funcs.sh from all directories"
+CMD="rm experiments/*/*/test.sh ; rm experiments/*/*/funcs.sh"
+$CMD

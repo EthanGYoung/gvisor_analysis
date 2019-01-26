@@ -1,83 +1,49 @@
 #!/bin/bash
 
-#### Constants ####
-if [ "$#" -ne 3 ]; then
-	echo "Usage: sh tests.sh <NUM_THREADS> <NUM_TRAILS> <NUM_SPINUPS_PER_THREAD>"
+#### Main Code ####
+
+source test_config.sh # To get NUM_ARGS and USAGE_CMD
+
+if [ "$#" -ne $NUM_ARGS ]; then
+	echo "Usage: $USAGE_CMD"
 	exit 1
 fi
 
-NUM_THREADS=$1
-NUM_TRIALS=$2
-NUM_SPINUPS=$3
-SLEEP_DUR=5
- 
-#### Functions ####
+APP_NAME=$1
+RUNTIME=$2
+shift 2 # RUNTIME and APP_NAME not included in args
 
-# Expects  arg1 = (number of trials), arg2 = (size to be spinup), arg3 = (file to spinup)
-Run_Bare_Metal() {
-	if [ "$#" -ne 4 ]; then
-		echo "Invalid args to Run_Bare_Metal"
-		exit 1
-	fi
+echo "Sourcing config and function files"
+source funcs.sh
+source test_config.sh $APP_NAME
 
-	TEST_NUM_THREADS=$1
-	TEST_NUM_TRIALS=$2
-	TEST_RUNTIME=$3
-	TEST_NUM_SPINUPS=$4
-
-	cmd="./spinup $TEST_NUM_THREADS $TEST_NUM_TRIALS $TEST_RUNTIME $TEST_NUM_SPINUPS"
-	echo "Executing: $cmd"
-	$cmd
-}
-
-Update_Docker_Config() {
-	if [ "$#" -ne 1 ]; then
-                echo "Invalid args to Update_Docker_Config"
-                exit 1
-        fi
-
-	suffix=".json"
-	config="$1$suffix"
-		
-	cmd="cp $config  /etc/docker/daemon.json"
-	echo "Executing $cmd"
-	$cmd
-
-	sleep $SLEEP_DUR # Sleep to avoid docker restarting too fast
-	cmd="systemctl restart docker"
-	echo "Executing $cmd"
-        $cmd
-}
-
-
-#### Main Code ####
+PARAMS=$(join_by ' ' "$@")
 
 # Executes this test
-echo "Executing test.sh for spinup throughput test"
+echo "Executing test.sh for $APP_NAME throughput test"
 
-# Build the materials (Could make spinup a variable)
-echo "Building spinup image"
-docker image rm spinup
-docker build -t spinup .
-
-echo "Compiling spinup binary"
-gcc -pthread -o spinup -std=gnu99 spinup.c
-
-# Run the tests
-echo "Running tests"
-
-echo "Running tests runc"
-TEST_RUNTIME="runc"
-Run_Bare_Metal $NUM_THREADS $NUM_TRIALS $TEST_RUNTIME $NUM_SPINUPS 
-
-echo "Running tests runsc ptrace"
-TEST_RUNTIME="runsc"
-TEST_PLATFORM="ptrace"
-Update_Docker_Config $TEST_PLATFORM
-Run_Bare_Metal $NUM_THREADS $NUM_TRIALS $TEST_RUNTIME $NUM_SPINUPS 
-
-echo "Running tests runsc kvm"
-TEST_RUNTIME="runsc"
-TEST_PLATFORM="kvm"
-Update_Docker_Config $TEST_PLATFORM
-Run_Bare_Metal $TEST_RUNTIME $NUM_THREADS $NUM_TRIALS $NUM_SPINUPS 
+# Can add more cases for test in future
+case $RUNTIME in 
+	"bare")
+		echo "Compiling $APP_NAME binary"
+		echo "Executing: $COMPILE_CMD"
+		$COMPILE_CMD
+			
+		echo "Running test on bare metal"
+		Run_Bare_Metal $PARAMS
+		
+		echo "Removing old binary"
+		rm $APP_NAME
+		;;
+	"runc" | "runsc")
+		echo "Building $APP_NAME image"
+		echo "Executing: $BUILD_CMD"
+		$BUILD_CMD
+		
+		echo "Running test on docker ($RUNTIME)"
+		Run_Docker_Container $RUNTIME $PARAMS 
+		;;
+	*)
+		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."
+		;;
+esac
