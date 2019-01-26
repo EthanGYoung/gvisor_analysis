@@ -47,7 +47,7 @@ case $RUNTIME in
 
 		echo "Running test on docker ($RUNTIME)"
 		Run_Docker_Container $RUNTIME $PARAMS
-		$REMOVE_CMD
+		$RM_CMD
 		;;
 	*)
 		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."

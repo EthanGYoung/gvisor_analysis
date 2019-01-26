@@ -6,4 +6,9 @@ USAGE_CMD="sh test.sh <FOLDER_PATH> <APP_NAME> <RUNTIME> <NUM_THREADs> <NUM_TRIA
 
 # Building the programs
 COMPILE_CMD="gcc -o $APP_NAME -std=gnu99 -pthread $APP_NAME$(echo ".c")"
+<<<<<<< HEAD
 BUILD_CMD="docker image rm $APP_NAME ; docker build -t read ."
+=======
+RM_CMD="docker image rm $APP_NAME"
+BUILD_CMD="docker build -t $APP_NAME ."
+>>>>>>> Ethan_reorg
