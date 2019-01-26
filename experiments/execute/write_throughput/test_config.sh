@@ -1,8 +1,9 @@
 #!/bin/bash
 
+
 #Usage
-NUM_ARGS=3
-USAGE_CMD="sh test.sh <APP_NAME> <RUNTIME> <NUM_CALLS>"
+NUM_ARGS=5
+USAGE_CMD="sh test.sh <APP_NAME> <RUNTIME> <NUM_TRIALS> <WRITE_SIZE> <WRITE_FILE_PATH>"
 
 # Building the programs
 COMPILE_CMD="gcc -o $APP_NAME -std=gnu99 $APP_NAME$(echo ".c")"
