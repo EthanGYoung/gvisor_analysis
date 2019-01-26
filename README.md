@@ -16,9 +16,8 @@ A collection of programs used for benchmarking gVisor performance.
 
 Execute this command in main repo:
 
-sudo python run_experiments.py
+sudo sh run.sh
 
 # Future work
 
 Adding more tests
-Fixing logging to be more robust
