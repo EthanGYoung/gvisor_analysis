@@ -1,10 +1,11 @@
 #!/bin/bash
 
-
 #### Main Code ####
 
-if [ "$#" -ne 3 ]; then
-	echo "Usage: sh test.sh <APP_NAME> <RUNTIME> <NUM_CALLS>"
+source test_config.sh # To get NUM_ARGS and USAGE_CMD
+
+if [ "$#" -ne $NUM_ARGS ]; then
+	echo "Usage: $USAGE_CMD"
 	exit 1
 fi
 
