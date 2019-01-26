@@ -55,10 +55,10 @@ echo "Test Suite executing on bare metal."
 
 generate_cmds "bare"
 
-TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
-            "${TEST_IMPORT_LIST[@]}" \
+TEST_LIST=( #"${TEST_SPINUP_LIST[@]}" \
+            #"${TEST_IMPORT_LIST[@]}" \
             "${TEST_EXECUTE_LIST[@]}" \
-            "${TEST_LIFECYCLE_LIST[@]}" \
+            #"${TEST_LIFECYCLE_LIST[@]}" \
           )
 
 for i in "${TEST_LIST[@]}"
