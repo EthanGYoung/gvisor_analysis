@@ -8,11 +8,13 @@ A collection of programs used for benchmarking gVisor performance.
 3) Thread Spinup Throughput
 4) Network Throughput
 5) getpid Throughput
+6) Container Spinup Speed
+7) Import Speed (Python)
 
 ## Future
 * Google Cloud Functions performance
 
-# Usage 
+# Usage
 
 Execute this command in main repo:
 

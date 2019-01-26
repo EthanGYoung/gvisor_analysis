@@ -130,8 +130,8 @@ generate_cmds "runc"
 
 TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
             "${TEST_IMPORT_LIST[@]}" \
-            #"${TEST_EXECUTE_LIST[@]}" \
-            #"${TEST_LIFECYCLE_LIST[@]}" \
+            "${TEST_EXECUTE_LIST[@]}" \
+            "${TEST_LIFECYCLE_LIST[@]}" \
           )
 
 HOME_DIR=$(pwd)
