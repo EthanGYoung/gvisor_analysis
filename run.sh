@@ -12,29 +12,29 @@ generate_cmds() {
 	TEST_IMPORT_LIST[0]="experiments/import/run.sh"
 
 	# Execute
-	TEST_EXECUTE_LIST[0]="experiments/execute/getpid_throughput/test.sh
+	TEST_EXECUTE_LIST[0]="$GETPID_FOLDER_PATH$(echo "test.sh")
 			      	$GETPID_APP_NAME
 				$RUNTIME
 				$GETPID_NUM_CALLS"
-	TEST_EXECUTE_LIST[1]="experiments/execute/network_throughput/test.sh
+	TEST_EXECUTE_LIST[1]="$NETWORK_FOLDER_PATH$(echo "test.sh")
 			      	$NETWORK_APP_NAME
 				$RUNTIME
 				$NETWORK_TRAILS
 			     	$NETWORK_URL"
-	TEST_EXECUTE_LIST[2]="experiments/execute/read_throughput/test.sh
+	TEST_EXECUTE_LIST[2]="$READ_FOLDER_PATH$(echo "test.sh")
 			      	$READ_APP_NAME
 				$RUNTIME
 				$READ_TRAILS
 			      	$READ_READ_SIZE
 				$READ_FILE"
-	TEST_EXECUTE_LIST[3]="experiments/execute/write_throughput/test.sh
+	TEST_EXECUTE_LIST[3]="$WRITE_FOLDER_PATH$(echo "test.sh")
 				$WRITE_APP_NAME
 				$RUNTIME
 				$WRITE_TRAILS
 			      	$WRITE_WRITE_SIZE
 			      	$WRITE_FILE"
 	# Lifecycle
-	TEST_LIFECYCLE_LIST[0]="experiments/execute/thread_spinup_throughput/test.sh
+	TEST_LIFECYCLE_LIST[0]="$THREAD_FOLDER_PATH$(echo "test.sh")
 				$THREAD_APP_NAME
 				$RUNTIME
 				$THREAD_SPINUP_NUM_THREADS
@@ -45,7 +45,7 @@ generate_cmds() {
 
 echo "Test Suite Initializing..."
 
-echo "Test Suite executing on bare metal"
+echo "Test Suite executing on bare metal."
 
 generate_cmds "bare"
 
