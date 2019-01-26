@@ -9,18 +9,22 @@ if [ "$#" -ne $NUM_ARGS ]; then
 	exit 1
 fi
 
-APP_NAME=$1
-RUNTIME=$2
-shift 2 # RUNTIME and APP_NAME not included in args
+FOLDER_PATH=$1
+APP_NAME=$2
+RUNTIME=$3
+shift 3 # FOLDER_PATH, RUNTIME and APP_NAME not included in args
 
 echo "Sourcing config and function files"
-source funcs.sh
-source test_config.sh $APP_NAME
+source ./funcs.sh
+source ./test_config.sh $APP_NAME
 
 PARAMS=$(join_by ' ' "$@")
 
 # Executes this test
 echo "Executing test.sh for $APP_NAME throughput test"
+echo "Changing directory to test directory $FOLDER_PATH"
+HOME_DIR=$(pwd)
+cd $HOME_DIR$(echo "/")$FOLDER_PATH
 
 # Can add more cases for test in future
 case $RUNTIME in 
@@ -47,3 +51,6 @@ case $RUNTIME in
 		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."
 		;;
 esac
+
+echo "Test completed. Returning to $HOME_DIR"
+cd $HOME_DIR
