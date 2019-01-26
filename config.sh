@@ -21,7 +21,7 @@ READ_FILE="./file.txt"
 # write_throughput
 WRITE_FOLDER_PATH="experiments/execute/write_throughput/"
 WRITE_APP_NAME="write"
-WRITE_TRAILS=10000
+WRITE_TRAILS=10010
 WRITE_WRITE_SIZE=10000
 WRITE_FILE="./file.txt"
 

@@ -47,6 +47,12 @@ generate_cmds() {
 				$THREAD_SPINUP_NUM_SPINUPS_PER_THREAD"
 }
 
+create_log() {
+  #Get correct path to log
+  LOG_PATH=$(echo $1 | cut -d' ' -f 1)
+  LOG_PATH=$(pwd)$(echo "/")$(echo $LOG_PATH | rev | cut -c 8- | rev)$(echo "logs/test.log")
+}
+
 echo "Test Suite Initializing..."
 
 echo "Copying test.sh and funcs.sh to all directories"
@@ -68,11 +74,10 @@ for i in "${TEST_LIST[@]}"
 do
   echo "Initializing test: $i"
   
-  # Changing to test directory	
-  #NEW_PATH=$(echo $i | cut -d' ' -f 1) # Change to correct directory
-  #cd $(echo $NEW_PATH | rev | cut -c 8- | rev)
+  create_log $i
+  echo "Saving log to $LOG_PATH"
   
-  /bin/bash $i
+  /bin/bash $i > $LOG_PATH
   cd $HOME_DIR
 done
 
