@@ -41,6 +41,9 @@ case $RUNTIME in
 		rm $APP_NAME
 		;;
 	"runc" | "runsc")
+		echo "Removing old $APP_NAME image"
+		echo "Executing: $RM_CMD"
+		$RM_CMD
 		echo "Building $APP_NAME image"
 		echo "Executing: $BUILD_CMD"
 		$BUILD_CMD

@@ -60,7 +60,7 @@ echo experiments/*/*/ | xargs -n 1 cp test.sh
 echo experiments/*/*/ | xargs -n 1 cp funcs.sh
 
 echo "Test Suite executing on bare metal."
-generate_cmds "bare"
+generate_cmds "runsc"
 
 TEST_LIST=( #"${TEST_SPINUP_LIST[@]}" \
             #"${TEST_IMPORT_LIST[@]}" \
@@ -74,10 +74,10 @@ for i in "${TEST_LIST[@]}"
 do
   echo "Initializing test: $i"
   
-  create_log $i
-  echo "Saving log to $LOG_PATH"
-  
-  /bin/bash $i > $LOG_PATH
+  #create_log $i
+  #echo "Saving log to $LOG_PATH"
+  /bin/bash $i
+  #/bin/bash $i > $LOG_PATH
   cd $HOME_DIR
 done
 
