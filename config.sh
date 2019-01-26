@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# getpid_throughput
+GETPID_NUM_CALLS=0
+
+# network_throughput
+NETWORK_TRAILS=0
+NETWORK_URL=0
+
+# read_throughput
+READ_TRAILS=0
+READ_READ_SIZE=0
+READ_FILE=0
+
+# write_throughput
+WRITE_TRAILS=0
+WRITE_WRITE_SIZE=0
+WRITE_FILE=0
+
+# thread_spinup_throughput
+THREAD_SPINUP_NUM_THREADS=0
+THREAD_SPINUP_NUM_TRAILS=0
+THREAD_SPINUP_NUM_SPINUPS_PER_THREAD=0
