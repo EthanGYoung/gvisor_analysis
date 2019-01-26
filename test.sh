@@ -2,6 +2,11 @@
 
 #### Main Code ####
 
+FOLDER_PATH=$1
+
+echo "Changing directory to test directory $FOLDER_PATH"
+HOME_DIR=$(pwd)
+cd $HOME_DIR$(echo "/")$FOLDER_PATH
 source test_config.sh # To get NUM_ARGS and USAGE_CMD
 
 if [ "$#" -ne $NUM_ARGS ]; then
@@ -9,7 +14,6 @@ if [ "$#" -ne $NUM_ARGS ]; then
 	exit 1
 fi
 
-FOLDER_PATH=$1
 APP_NAME=$2
 RUNTIME=$3
 shift 3 # FOLDER_PATH, RUNTIME and APP_NAME not included in args
@@ -22,9 +26,6 @@ PARAMS=$(join_by ' ' "$@")
 
 # Executes this test
 echo "Executing test.sh for $APP_NAME throughput test"
-echo "Changing directory to test directory $FOLDER_PATH"
-HOME_DIR=$(pwd)
-cd $HOME_DIR$(echo "/")$FOLDER_PATH
 
 # Can add more cases for test in future
 case $RUNTIME in 
