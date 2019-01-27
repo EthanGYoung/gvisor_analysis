@@ -1,0 +1,5 @@
+FROM python:latest
+COPY . /usr/src/python_spinup
+WORKDIR /usr/src/python_spinup
+RUN pip install jinja2
+CMD [ "python","./python_spinup_imports.py" ]

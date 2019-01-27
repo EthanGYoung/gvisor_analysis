@@ -28,28 +28,26 @@ PARAMS=$(join_by ' ' "$@")
 echo "Executing test.sh for $APP_NAME throughput test"
 
 # Can add more cases for test in future
-case $RUNTIME in 
+case $RUNTIME in
 	"bare")
 		echo "Compiling $APP_NAME binary"
 		echo "Executing: $COMPILE_CMD"
 		$COMPILE_CMD
-			
+
 		echo "Running test on bare metal"
 		Run_Bare_Metal $PARAMS
-		
+
 		echo "Removing old binary"
 		rm $APP_NAME
 		;;
 	"runc" | "runsc")
-		echo "Removing old $APP_NAME image"
-		echo "Executing: $RM_CMD"
-		$RM_CMD
 		echo "Building $APP_NAME image"
 		echo "Executing: $BUILD_CMD"
 		$BUILD_CMD
-		
+
 		echo "Running test on docker ($RUNTIME)"
-		Run_Docker_Container $RUNTIME $PARAMS 
+		Run_Docker_Container $RUNTIME $PARAMS
+		$RM_CMD
 		;;
 	*)
 		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."
