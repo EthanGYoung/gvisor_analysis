@@ -7,10 +7,12 @@ FOLDER_PATH=$1
 echo "Changing directory to test directory $FOLDER_PATH"
 HOME_DIR=$(pwd)
 cd $HOME_DIR$(echo "/")$FOLDER_PATH
+
 source test_config.sh # To get NUM_ARGS and USAGE_CMD
 
 if [ "$#" -ne $NUM_ARGS ]; then
 	echo "Usage: $USAGE_CMD"
+	cd $HOME_DIR
 	exit 1
 fi
 
@@ -19,8 +21,8 @@ RUNTIME=$3
 shift 3 # FOLDER_PATH, RUNTIME and APP_NAME not included in args
 
 echo "Sourcing config and function files"
-source ./funcs.sh
-source ./test_config.sh $APP_NAME
+source funcs.sh
+source test_config.sh $APP_NAME
 
 PARAMS=$(join_by ' ' "$@")
 

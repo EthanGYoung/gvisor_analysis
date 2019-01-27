@@ -13,7 +13,7 @@ Run_Bare_Metal() {
 Run_Docker_Container() {
         if [[ ($FOLDER_PATH == *"import"*) ]]; then
           cmd="docker run --runtime=$RUNTIME --rm --tmpfs /myapp $APP_NAME"
-          for (( i=1; i <= $PARAMS; ++i ))
+	  for (( i=1; i <= $PARAMS; ++i ))
           do
             $cmd
           done
@@ -29,8 +29,5 @@ Run_Docker_Container() {
         else
           cmd="docker run --runtime=$RUNTIME --rm --tmpfs /myapp $APP_NAME $PARAMS"
           echo "Executing: $cmd"
-
         fi
-
-
 }

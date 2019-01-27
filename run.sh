@@ -38,11 +38,13 @@ for i in "${TEST_LIST[@]}"
 do
   echo "Initializing test: $i"
 
-  #create_log $i
-  #echo "Saving log to $LOG_PATH"
+  create_log $i
+  echo "Saving log to $LOG_PATH"
+  
   /bin/bash $i
-  #/bin/bash $i > $LOG_PATH
-  cd $HOME_DIR
+  /bin/bash $i > $LOG_PATH
+  
+  echo "Completed test"
 done
 
 echo "Deleting test.sh and funcs.sh from all directories"
