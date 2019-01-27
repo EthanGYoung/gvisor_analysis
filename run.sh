@@ -122,6 +122,10 @@ echo "Copying test.sh and funcs.sh to all directories"
 echo experiments/*/*/ | xargs -n 1 cp test.sh
 echo experiments/*/*/ | xargs -n 1 cp funcs.sh
 
+echo "Creating log directories"
+for dir in experiments/*/*/; do mkdir -p -- "$dir/logs"; done
+
+echo "Copying test-configs to correct locations"
 echo experiments/import/*/ | xargs -n 1 cp experiments/import/test_config.sh
 echo experiments/spinup/*/ | xargs -n 1 cp experiments/spinup/test_config.sh
 
