@@ -1,5 +1,8 @@
 release = $(shell lsb_release -cs)
 
+all:
+	make docker gvisor
+
 docker:
 	sudo apt-get update
 	sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
@@ -21,9 +24,6 @@ gvisor:
 	cp kvm.json daemon.json
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
-
-all:
-	make docker gvisor
 
 test-all:
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
