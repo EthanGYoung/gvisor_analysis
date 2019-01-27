@@ -49,6 +49,8 @@ case $RUNTIME in
 
 		echo "Running test on docker ($RUNTIME)"
 		Run_Docker_Container $RUNTIME $PARAMS
+		
+		echo "Removing container"
 		$RM_CMD
 		;;
 	*)

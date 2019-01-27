@@ -14,8 +14,9 @@ echo "Copying test.sh and funcs.sh to all directories"
 echo experiments/*/*/ | xargs -n 1 cp test.sh
 echo experiments/*/*/ | xargs -n 1 cp funcs.sh
 
-echo "Creating log directories"
+echo "Creating log directories and remove old logs"
 for dir in experiments/*/*/; do mkdir -p -- "$dir/logs"; done
+#for dir in experiments/*/*; do rm -f "$dir/logs/test.log"; done
 
 echo "Copying test-configs to correct locations"
 echo experiments/import/*/ | xargs -n 1 cp experiments/import/test_config.sh
@@ -41,8 +42,8 @@ do
   create_log $i
   echo "Saving log to $LOG_PATH"
   
-  /bin/bash $i
-  /bin/bash $i > $LOG_PATH
+  #/bin/bash $i
+  /bin/bash $i >> $LOG_PATH
   
   echo "Completed test"
 done
