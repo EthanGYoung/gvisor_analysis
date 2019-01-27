@@ -1,6 +1,6 @@
 release = $(shell lsb_release -cs)
 
-make docker:
+docker:
 	sudo apt-get update
 	sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -11,7 +11,7 @@ make docker:
 	#apt-cache madison docker-ce
 	sudo apt-get install docker-ce=5:18.09.1~3-0~ubuntu-xenial
 
-make gvisor:
+gvisor:
 	wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc
 	wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc.sha512
 	sha512sum -c runsc.sha512
@@ -22,5 +22,26 @@ make gvisor:
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
 
-make all:
+all:
 	make docker gvisor
+
+test-all:
+	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
+
+test-bare:
+	sudo bash run.sh bare
+
+test-runc:
+	sudo bash run.sh runc
+
+test-runsc-ptrace:
+	cp ptrace.json daemon.json
+	sudo mv daemon.json /etc/docker/
+	sudo systemctl restart docker
+	sudo bash run.sh runsc
+
+test-runsc-kvm: 
+	cp kvm.json daemon.json
+	sudo mv daemon.json /etc/docker/
+	sudo systemctl restart docker
+	sudo bash run.sh runsc

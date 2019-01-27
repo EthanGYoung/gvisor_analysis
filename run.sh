@@ -125,8 +125,10 @@ echo experiments/*/*/ | xargs -n 1 cp funcs.sh
 echo experiments/import/*/ | xargs -n 1 cp experiments/import/test_config.sh
 echo experiments/spinup/*/ | xargs -n 1 cp experiments/spinup/test_config.sh
 
-echo "Test Suite executing on bare metal."
-generate_cmds "runc"
+PLATFORM=$1
+
+echo "Test Suite executing on $PLATFORM"
+generate_cmds "$PLATFORM"
 
 TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
             "${TEST_IMPORT_LIST[@]}" \
