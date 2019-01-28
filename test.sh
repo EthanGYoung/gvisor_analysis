@@ -58,5 +58,3 @@ case $RUNTIME in
 		;;
 esac
 
-echo "Test completed. Returning to $HOME_DIR"
-cd $HOME_DIR

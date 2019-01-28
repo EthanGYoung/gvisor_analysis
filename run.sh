@@ -1,11 +1,18 @@
 #!/bin/bash
 
-source config.sh
+if [ "$#" -ne $2 ]; then
+        echo "Usage: sudo bash run.sh <RUNTIME> <Config file>"
+        exit 1
+fi
 
-create_log() {
+CONFIG=$2
+
+source $CONFIG
+
+get_dir_path() {
   #Get correct path to log
-  LOG_PATH=$(echo $1 | cut -d' ' -f 1)
-  LOG_PATH=$(pwd)$(echo "/")$(echo $LOG_PATH | rev | cut -c 8- | rev)$(echo "logs/test.log")
+  DIR_PATH=$(echo $1 | cut -d' ' -f 1)
+  DIR_PATH=$(pwd)$(echo "/")$(echo $DIR_PATH | rev | cut -c 8- | rev)
 }
 
 echo "Test Suite Initializing..."
@@ -37,15 +44,17 @@ HOME_DIR=$(pwd)
 
 for i in "${TEST_LIST[@]}"
 do
-  echo "Initializing test: $i"
+	echo "Initializing test: $i"
 
-  create_log $i
-  echo "Saving log to $LOG_PATH"
-  
-  #/bin/bash $i
-  /bin/bash $i >> $LOG_PATH
-  
-  echo "Completed test"
+	get_dir_path $i
+
+	LOG_PATH=$DIR_PATH$(echo "logs/test.log")
+	echo "Saving log to $LOG_PATH"
+	  
+	#/bin/bash $i
+	/bin/bash $i >> $LOG_PATH
+	  
+	python $DIR_PATH$(echo parse.py) $DIR_PATH
 done
 
 echo "Deleting test.sh and funcs.sh from all directories"
