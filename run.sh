@@ -9,7 +9,6 @@ CONFIG=$2
 
 source $CONFIG
 
-
 get_dir_path() {
   #Get correct path to log
   DIR_PATH=$(echo $1 | cut -d' ' -f 1)
@@ -52,15 +51,14 @@ do
 
 	get_dir_path $i
 
-  DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
+  	DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
 
 	LOG_PATH=$(echo "logs/")$DIR_PATH$(echo "test.log")
 	echo "Saving log to $LOG_PATH"
-
-	#/bin/bash $i
+	
 	/bin/bash $i >> $LOG_PATH
 
-	#python $DIR_PATH$(echo parse.py) $DIR_PATH
+	python parse.py $LOG_PATH
 
 done
 
