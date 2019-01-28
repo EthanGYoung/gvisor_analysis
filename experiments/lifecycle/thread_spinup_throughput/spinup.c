@@ -91,19 +91,6 @@ float start_threads(int num_threads) {
         return calculate_stats(num_threads);
 }
 
-// Print the results of the threads and then avg them
-void report_trial_results(int num_threads) {
-        float total = 0;
-
-        for (int i = 0; i < num_threads; i++) {
-                printf("Throughput for thread %d is %f images/second\n", i, trial_results[i]);
-                total += trial_results[i];
-        }
-
-        printf("\n\n\nAverage throughput is %f images/second\n", total/num_threads);
-        printf("Total throughput is %f images/second\n", total);
-}
-
 // Tests for given num threads
 int drive(int num_threads, int num_trials)
 {
@@ -123,11 +110,11 @@ int drive(int num_threads, int num_trials)
                 // Start X number of threads to start up docker containers (no-op)
                 overall_results[i] = start_threads(num_threads);
                 total += overall_results[i];
-                printf("Throughput for trial %d is %f images/second\n", i+1, overall_results[i]);
+                printf("LOG_IGNORE: Throughput for trial %d is %f images/second\n", i+1, overall_results[i]);
         }
 
         // Print the results
-        printf("Num threads: %d Average throughput is %f images/second\n", num_threads, total/num_trials);
+        printf("LOG_OUTPUT: Num threads: %d Average throughput is %f images/second\n", num_threads, total/num_trials);
 	
 	return 0;
 }
@@ -135,7 +122,7 @@ int drive(int num_threads, int num_trials)
 int main(int argc, char *argv[]) {
         // Parse command line args
         if (argc != 5) {
-                printf("Usage: ./driver <max number of threads> <number of trials> <runtime> <number of spinups per thread>\n");
+                printf("ERROR: Usage: ./spinup <max number of threads> <number of trials> <runtime> <number of spinups per thread>\n");
                 return 0;
         }
 
@@ -145,7 +132,7 @@ int main(int argc, char *argv[]) {
 	NUM_SPINUPS = atoi(argv[4]);
         
 	for (int i = 0; i < max_num_threads; i++) {
-                printf("Running with %d threads\n", i+1);
+                printf("LOG_IGNORE: Running with %d threads\n", i+1);
                 drive(i+1, num_trials);
         }
 }
