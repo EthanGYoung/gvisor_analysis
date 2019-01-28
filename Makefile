@@ -1,5 +1,8 @@
 release = $(shell lsb_release -cs)
 
+all:
+	make docker gvisor
+
 docker:
 	sudo apt-get update
 	sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
@@ -22,26 +25,23 @@ gvisor:
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
 
-all:
-	make docker gvisor
-
 test-all:
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
 
 test-bare:
-	sudo bash run.sh bare
+	sudo bash run.sh bare configs/config.sh
 
 test-runc:
-	sudo bash run.sh runc
+	sudo bash run.sh runc configs/config.sh
 
 test-runsc-ptrace:
 	cp ptrace.json daemon.json
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
-	sudo bash run.sh runsc
+	sudo bash run.sh runsc configs/config.sh
 
 test-runsc-kvm: 
 	cp kvm.json daemon.json
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
-	sudo bash run.sh runsc
+	sudo bash run.sh runsc configs/config.sh
