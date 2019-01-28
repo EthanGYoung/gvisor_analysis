@@ -45,6 +45,7 @@ TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
           )
 
 HOME_DIR=$(pwd)
+OLD_DIR=""
 
 for i in "${TEST_LIST[@]}"
 do
@@ -52,15 +53,14 @@ do
 
 	get_dir_path $i
 
-  DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
+  	DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
 
 	LOG_PATH=$(echo "logs/")$DIR_PATH$(echo "test.log")
 	echo "Saving log to $LOG_PATH"
-
-	#/bin/bash $i
+	
 	/bin/bash $i >> $LOG_PATH
 
-	#python $DIR_PATH$(echo parse.py) $DIR_PATH
+	python parse.py $LOG_PATH
 
 done
 
