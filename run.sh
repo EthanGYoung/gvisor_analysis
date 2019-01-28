@@ -22,6 +22,7 @@ echo experiments/*/*/ | xargs -n 1 cp test.sh
 echo experiments/*/*/ | xargs -n 1 cp funcs.sh
 
 echo "Creating log directories and remove old logs"
+mkdir "logs/"
 for dir in experiments/*/*/; do mkdir -p -- "logs/$dir"; done
 #for dir in experiments/*/*; do rm -f "$dir/logs/test.log"; done
 
@@ -34,10 +35,10 @@ PLATFORM=$1
 echo "Test Suite executing on $PLATFORM"
 generate_cmds "$PLATFORM"
 
-TEST_LIST=( #"${TEST_SPINUP_LIST[@]}" \
+TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
             "${TEST_IMPORT_LIST[@]}" \
-            #"${TEST_EXECUTE_LIST[@]}" \
-            #"${TEST_LIFECYCLE_LIST[@]}" \
+            "${TEST_EXECUTE_LIST[@]}" \
+            "${TEST_LIFECYCLE_LIST[@]}" \
           )
 
 HOME_DIR=$(pwd)
@@ -47,14 +48,15 @@ do
 	echo "Initializing test: $i"
 
 	get_dir_path $i
+  DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
 
-	LOG_PATH=$DIR_PATH$(echo "logs/test.log")
+	LOG_PATH=$(echo "logs/")$DIR_PATH$(echo "test.log")
 	echo "Saving log to $LOG_PATH"
 
 	#/bin/bash $i
 	/bin/bash $i >> $LOG_PATH
 
-	python $DIR_PATH$(echo parse.py) $DIR_PATH
+	#python $DIR_PATH$(echo parse.py) $DIR_PATH
 done
 
 echo "Deleting test.sh and funcs.sh from all directories"
