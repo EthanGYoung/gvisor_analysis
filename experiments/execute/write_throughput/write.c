@@ -36,7 +36,7 @@ float execute(char *file) {
         // Open the specific file
         fd = open(file, O_WRONLY|O_CREAT);
         if (fd == 0) {
-                perror ("open");
+                perror ("ERROR: open");
                 return 1;
         }
 
@@ -54,7 +54,7 @@ float execute(char *file) {
 		if ( (r = write(fd, data, WRITE_SIZE)) == WRITE_SIZE) {
 			total_written = total_written + r;
 		} else {
-			printf("Was not able to write WRITE_SIZE");
+			printf("ERROR: Was not able to write WRITE_SIZE");
 			exit(1);
 		}
 	}
@@ -77,7 +77,7 @@ float execute(char *file) {
 int main(int argc, char *argv[]) {
         // Parse command line args
         if (argc != 4) {
-                printf("Usage: ./driver <number of trials> <size of file read in Bytes> <path to rile to read>\n");
+                printf("ERROR: Usage: ./write <number of trials> <size of file read in Bytes> <path to rile to read>\n");
                 return 0;
         }
 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
         total = execute(FILE_PATH);
 
-        printf("Average for %d trials and WRITE_SIZE = %d: Write time average = %.12f seconds\n", NUM_TRIALS, WRITE_SIZE, total/NUM_TRIALS);
+        printf("LOG_OUTPUT: Average for %d trials and WRITE_SIZE = %d: Write time average = %.12f seconds\n", NUM_TRIALS, WRITE_SIZE, total/NUM_TRIALS);
 
         return 0;
 }

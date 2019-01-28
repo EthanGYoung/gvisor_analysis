@@ -46,7 +46,7 @@ float execute(int NUM_CALLS) {
 int main(int argc, char *argv[]) {
 	// Parse command line args
 	if (argc != 2) {
-                printf("Usage: ./driver <number of calls>\n");
+                printf("ERROR: Usage: ./driver <number of calls>\n");
                 return 0;
         }
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
         total = execute(NUM_CALLS);
 
-        printf("Average for %d calls: getpid syscall time = %.12f seconds\n", NUM_CALLS, total/NUM_CALLS);
+        printf("LOG_OUTPUT: Average for %d calls: getpid syscall time = %.12f seconds\n", NUM_CALLS, total/NUM_CALLS);
 
         return 0;
 }

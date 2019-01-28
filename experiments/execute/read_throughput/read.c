@@ -36,7 +36,7 @@ float execute(char *file) {
         // Open the specific file
         fd = open(file, O_RDONLY);
         if (fd == 0) {
-                perror ("open");
+                perror ("ERROR: open");
                 return 1;
         }
 
@@ -54,7 +54,7 @@ float execute(char *file) {
 		if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
 			total_read = total_read + r;
 		} else {
-			printf("Was not able to read READ_SIZE. Trial num is: %d\n", i);
+			printf("ERROR: Was not able to read READ_SIZE. Trial num is: %d\n", i);
 			exit(1);
 		}
 	}
@@ -72,7 +72,7 @@ float execute(char *file) {
 int main(int argc, char *argv[]) {
         // Parse command line args
         if (argc != 4) {
-                printf("Usage: ./driver <number of trials> <size of file read in Bytes> <path to rile to read>\n");
+                printf("ERROR: Usage: ./read <number of trials> <size of file read in Bytes> <path to rile to read>\n");
                 return 0;
         }
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 
         total = execute(FILE_PATH);
 
-        printf("Average for %d trials and READ_SIZE = %d: Read time average = %.12f seconds\n", NUM_TRIALS, READ_SIZE, total/NUM_TRIALS);
+        printf("LOG_OUTPUT: Average for %d trials and READ_SIZE = %d: Read time average = %.12f seconds\n", NUM_TRIALS, READ_SIZE, total/NUM_TRIALS);
 
         return 0;
 }

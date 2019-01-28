@@ -9,7 +9,7 @@ char* URL;
 int main(int argc, char *argv[]) {
 	// Parse command line args
 	if (argc != 3) {
-                printf("Usage: ./driver <number of trials> <URL to curl>\n");
+                printf("ERROR: Usage: ./driver <number of trials> <URL to curl>\n");
                 return 0;
         }
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
                 printf("Trial: %d URL: %s\n", i+1, URL);
                 fflush(stdout);
                 char str[1000];
-                strcpy(str, "curl -so /dev/null -w '%{time_total} seconds\n' ");
+                strcpy(str, "curl -so /dev/null -w 'LOG_OUTPUT: %{time_total} seconds\n' ");
                 strcat(str, URL);
                 system(str);
         }
