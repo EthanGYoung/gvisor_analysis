@@ -9,6 +9,7 @@ CONFIG=$2
 
 source $CONFIG
 
+
 get_dir_path() {
   #Get correct path to log
   DIR_PATH=$(echo $1 | cut -d' ' -f 1)
@@ -22,7 +23,10 @@ echo experiments/*/*/ | xargs -n 1 cp test.sh
 echo experiments/*/*/ | xargs -n 1 cp funcs.sh
 
 echo "Creating log directories and remove old logs"
-for dir in experiments/*/*/; do mkdir -p -- "$dir/logs"; done
+
+mkdir "logs/"
+for dir in experiments/*/*/; do mkdir -p -- "logs/$dir"; done
+
 #for dir in experiments/*/*; do rm -f "$dir/logs/test.log"; done
 
 echo "Copying test-configs to correct locations"
@@ -48,13 +52,16 @@ do
 
 	get_dir_path $i
 
-	LOG_PATH=$DIR_PATH$(echo "logs/test.log")
+  DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
+
+	LOG_PATH=$(echo "logs/")$DIR_PATH$(echo "test.log")
 	echo "Saving log to $LOG_PATH"
-	  
+
 	#/bin/bash $i
 	/bin/bash $i >> $LOG_PATH
-	  
-	python $DIR_PATH$(echo parse.py) $DIR_PATH
+
+	#python $DIR_PATH$(echo parse.py) $DIR_PATH
+
 done
 
 echo "Deleting test.sh and funcs.sh from all directories"
