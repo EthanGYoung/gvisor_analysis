@@ -9,7 +9,6 @@ CONFIG=$2
 
 source $CONFIG
 
-
 get_dir_path() {
   #Get correct path to log
   DIR_PATH=$(echo $1 | cut -d' ' -f 1)
@@ -45,7 +44,6 @@ TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
           )
 
 HOME_DIR=$(pwd)
-OLD_DIR=""
 
 for i in "${TEST_LIST[@]}"
 do
