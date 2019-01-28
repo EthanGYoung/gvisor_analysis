@@ -14,12 +14,33 @@ A collection of programs used for benchmarking gVisor performance.
 ## Future
 * Google Cloud Functions performance
 
+# Installing
+
+To install all dependencies run the following command
+
+```
+$ make all
+```
+
+This will install all required dependencies for running gvisor_analysis on Ubuntu. This includes installing and configuring gvsior and docker.
+
 # Usage
 
-Execute this command in main repo:
+The following commands are available to execute the tests:
 
-sudo sh run.sh
+To execute all tests..
+```
+$ make test-all
+```
 
-# Future work
+To execute a subset of test configurations..
 
-Adding more tests
+```
+$ make test-bare           # To execute tests on only bare metal
+
+$ make test-runc           # To execute tests only on docker's default runc runtime
+
+$ make test-runsc-ptrace   # To execute tests only on gvisors runtime runsc using its ptrace platform
+
+$ make test-runsc-kvm      # To execute tests only on gvisors runtime runsc using its kvm platform
+```
