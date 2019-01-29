@@ -7,17 +7,17 @@ TEST_SPINUP_LIST=()
 TEST_FILE="test.sh"
 
 # spinup c
-C_SPINUP_FOLDER_PATH="experiments/spinup/c_spinup/"
+C_SPINUP_FOLDER_PATH="experiments/spinup/CSpinup/"
 C_SPINUP_APP_NAME="c_spinup"
 C_SPINUP_NUM_TRAILS=1
 
 # spinup python
-PYTHON_FOLDER_PATH="experiments/spinup/python_spinup/"
+PYTHON_FOLDER_PATH="experiments/spinup/PythonSpinup/"
 PYTHON_SPINUP_APP_NAME="python_spinup"
 PYTHON_SPINUP_NUM_TRAILS=1
 
 	# Generate list of tests
-generate_cmds() {
+gen_spinup_cmds() {
   RUNTIME=$1
 
   # spinup c

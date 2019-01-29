@@ -13,7 +13,7 @@ TEST_FILE="test.sh"
 
 
 # getpid_throughput
-GETPID_FOLDER_PATH="experiments/execute/getpid_throughput/"
+GETPID_FOLDER_PATH="experiments/execute/GetpidThroughput/"
 GETPID_APP_NAME="getpid"
 GETPID_NUM_CALLS=(1000 10000 100000)
 

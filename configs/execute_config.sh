@@ -9,33 +9,33 @@ TEST_FILE="test.sh"
 #### Execute ####
 
 # getpid_throughput
-GETPID_FOLDER_PATH="experiments/execute/getpid_throughput/"
+GETPID_FOLDER_PATH="experiments/execute/GetpidThroughput/"
 GETPID_APP_NAME="getpid"
 GETPID_NUM_CALLS=(1000 10000 100000)
 
 # network_throughput
-NETWORK_FOLDER_PATH="experiments/execute/network_throughput/"
+NETWORK_FOLDER_PATH="experiments/execute/NetworkThroughput/"
 NETWORK_APP_NAME="net"
 NETWORK_TRIALS=2
 NETWORK_URL=("http://speedtest.wdc01.softlayer.com/downloads/test10.zip" "http://speedtest.wdc01.softlayer.com/downloads/test100.zip" "http://speedtest.wdc01.softlayer.com/downloads/test1000.zip")
 
 # read_throughput
-READ_FOLDER_PATH="experiments/execute/read_throughput/"
+READ_FOLDER_PATH="experiments/execute/ReadThroughput/"
 READ_APP_NAME="read"
 READ_TRIALS=10000
 READ_READ_SIZE=(10 100) # Product of Trials and read size must be less than 10MB
 READ_FILE="./file.txt"
 
 # write_throughput
-WRITE_FOLDER_PATH="experiments/execute/write_throughput/"
+WRITE_FOLDER_PATH="experiments/execute/WriteThroughput/"
 WRITE_APP_NAME="write"
 WRITE_TRIALS=10000
 WRITE_WRITE_SIZE=(100 1000)
 WRITE_FILE="./file.txt"
 
 	# Generate list of tests
-generate_cmds() {
-  RUNTIME=$1
+gen_execute_cmds() {
+  	RUNTIME=$1
 	# Write throughput
 	for i in ${WRITE_WRITE_SIZE[@]}
 	do

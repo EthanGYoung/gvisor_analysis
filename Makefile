@@ -24,9 +24,11 @@ gvisor:
 	cp kvm.json daemon.json
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
+test:
+	sudo rm -rf logs
 
 test-all:
-	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
+	make test test-bare test-runc test-runsc-ptrace test-runsc-kvm
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
@@ -45,3 +47,11 @@ test-runsc-kvm:
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
 	sudo bash run.sh runsc configs/config.sh
+
+test-dev:
+	make test
+	sudo bash run.sh bare configs/test_config.sh
+	make parse
+	
+parse:
+	sudo bash parse.sh

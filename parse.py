@@ -2,14 +2,24 @@
 import os
 import sys
 
-if (len(sys.argv) != 2):
-        print("Usage: python parse.py <app_log_dir_name>")
+def present(words, string):
+	for word in words:	
+		if word in string:
+			return True
+	
+	return False
 
 FILE_PATH = str(sys.argv[1])
+INDICATORS = sys.argv[2:]
 
-print("Parsing log file in " + str(FILE_PATH))
+#print("Parsing log file in " + str(FILE_PATH))
+#print("Indicators are " + str(INDICATORS))
 
-with open(FILE_PATH, "r") as f:
-    for line in f:
-        if ("LOG_OUTPUT" in line):
-                print(line.split('\n')[0])
+for filename in os.listdir(FILE_PATH):
+	with open(FILE_PATH + filename, "r") as f:
+		print("Parsing log file: " + str(FILE_PATH + filename))
+		for line in f:
+			if (present(INDICATORS, line)):
+				print(line.split('\n')[0])
+		print("")
+

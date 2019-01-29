@@ -64,9 +64,10 @@ WERKZEUG_FOLDER_PATH="experiments/import/werkzeug/"
 WERKZEUG_APP_NAME="werkzeug"
 WERKZEUG_NUM_TRAILS=1
 
-	# Generate list of tests
-generate_cmds() {
+# Generate list of tests
+gen_import_cmds() {
   RUNTIME=$1
+  
   # import django
   TEST_IMPORT_LIST+=("$DJANGO_FOLDER_PATH$TEST_FILE $DJANGO_FOLDER_PATH $DJANGO_APP_NAME $RUNTIME $DJANGO_NUM_TRAILS")
   # import flask
