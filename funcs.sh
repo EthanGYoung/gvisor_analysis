@@ -4,16 +4,33 @@
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
+DIR_PATH=""
+get_dir_path() {
+  #Get correct path to log
+  DIR_PATH=$(echo $1 | cut -d' ' -f 1)
+}
+
 Run_Bare_Metal() {
-        cmd="./$APP_NAME $PARAMS"
-        echo "Executing: $cmd"
-        $cmd
+  if [[ ($FOLDER_PATH == *"import"*) ]]; then
+    cmd="python3 ./python_spinup_imports.py"
+     for (( i=1; i <= $PARAMS; ++i ))
+    do
+      echo "Executing: $cmd"
+      $cmd
+    done
+  elif [[ $FOLDER_PATH == *"spinup"* ]]; then
+    echo "Omitting spinup related tests for bare metal."
+  else
+    cmd="./$APP_NAME $PARAMS"
+    echo "Executing: $cmd"
+    $cmd
+  fi
 }
 
 Run_Docker_Container() {
         if [[ ($FOLDER_PATH == *"import"*) ]]; then
           cmd="sudo docker run --runtime=$RUNTIME --rm --tmpfs /myapp $APP_NAME"
-	  for (( i=1; i <= $PARAMS; ++i ))
+	         for (( i=1; i <= $PARAMS; ++i ))
           do
             $cmd
           done
@@ -29,6 +46,6 @@ Run_Docker_Container() {
         else
           cmd="sudo docker run --runtime=$RUNTIME --rm --tmpfs /myapp $APP_NAME $PARAMS"
           echo "Executing: $cmd"
-	  $cmd
+	        $cmd
         fi
 }
