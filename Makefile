@@ -64,3 +64,6 @@ test-runsc-kvm:
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
 	sudo bash run.sh runsc configs/config.sh
+
+parse_logs:
+	python parse.py
