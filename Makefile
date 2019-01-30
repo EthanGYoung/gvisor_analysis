@@ -1,7 +1,7 @@
 release = $(shell lsb_release -cs)
 
 all:
-	make docker gvisor
+	make docker gvisor python_libs
 
 docker:
 	sudo apt-get update
@@ -25,6 +25,24 @@ gvisor:
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
 
+python_libs:
+	sudo apt-get update
+	#Currently the latest version of python
+	sudo apt-get install python3
+	sudo apt-get install python3-pip
+	python3 --version
+	bash -i -c alias python=python3
+	pip install django
+	pip install flask
+	pip install jinja2
+	pip install matplotlib
+	pip install numpy
+	pip install pip
+	pip install requests
+	pip install setuptools
+	pip install --user sqlalchemy
+	pip install werkzeug
+
 test-all:
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
 
@@ -40,7 +58,7 @@ test-runsc-ptrace:
 	sudo systemctl restart docker
 	sudo bash run.sh runsc configs/config.sh
 
-test-runsc-kvm: 
+test-runsc-kvm:
 	cp kvm.json daemon.json
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker

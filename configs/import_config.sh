@@ -12,57 +12,62 @@ TEST_FILE="test.sh"
 # import django
 DJANGO_FOLDER_PATH="experiments/import/django/"
 DJANGO_APP_NAME="django"
-DJANGO_NUM_TRAILS=1
+DJANGO_NUM_TRAILS=5
 
 # import flask
 FLASK_FOLDER_PATH="experiments/import/flask/"
 FLASK_APP_NAME="flask"
-FLASK_NUM_TRAILS=1
+FLASK_NUM_TRAILS=5
 
 # import jinja2
 JINJA2_FOLDER_PATH="experiments/import/jinja2/"
 JINJA2_APP_NAME="jinja2"
-JINJA2_NUM_TRAILS=1
+JINJA2_NUM_TRAILS=5
 
 # import matplotlib
 MATPLOTLIB_FOLDER_PATH="experiments/import/matplotlib/"
 MATPLOTLIB_APP_NAME="matplotlib"
-MATPLOTLIB_NUM_TRAILS=1
+MATPLOTLIB_NUM_TRAILS=5
 
 # import numpy
 NUMPY_FOLDER_PATH="experiments/import/numpy/"
 NUMPY_APP_NAME="numpy"
-NUMPY_NUM_TRAILS=1
+NUMPY_NUM_TRAILS=5
 
 # import pip
 PIP_FOLDER_PATH="experiments/import/pip/"
 PIP_APP_NAME="pip"
-PIP_NUM_TRAILS=1
+PIP_NUM_TRAILS=5
 
 # import requests
 REQUESTS_FOLDER_PATH="experiments/import/requests/"
 REQUESTS_APP_NAME="requests"
-REQUESTS_NUM_TRAILS=1
+REQUESTS_NUM_TRAILS=5
 
 # import setuptools
 SETUPTOOLS_FOLDER_PATH="experiments/import/setuptools/"
 SETUPTOOLS_APP_NAME="setuptools"
-SETUPTOOLS_NUM_TRAILS=1
+SETUPTOOLS_NUM_TRAILS=5
 
 # import sqlalchemy
 SQLALCHEMY_FOLDER_PATH="experiments/import/sqlalchemy/"
 SQLALCHEMY_APP_NAME="sqlalchemy"
-SQLALCHEMY_NUM_TRAILS=1
+SQLALCHEMY_NUM_TRAILS=5
 
 # import Standard
 STANDARD_FOLDER_PATH="experiments/import/Standard/"
 STANDARD_APP_NAME="requests"
-STANDARD_NUM_TRAILS=1
+STANDARD_NUM_TRAILS=5
 
 # import werkzeug
 WERKZEUG_FOLDER_PATH="experiments/import/werkzeug/"
 WERKZEUG_APP_NAME="werkzeug"
-WERKZEUG_NUM_TRAILS=1
+WERKZEUG_NUM_TRAILS=5
+
+# check python version
+CHECK_VERSION_FOLDER_PATH="experiments/import/pyversion/"
+CHECK_VERSION_APP_NAME="pyversion"
+CHECK_VERSION_NUM_TRAILS=1
 
 	# Generate list of tests
 generate_cmds() {
@@ -89,5 +94,7 @@ generate_cmds() {
   TEST_IMPORT_LIST+=("$STANDARD_FOLDER_PATH$TEST_FILE $STANDARD_FOLDER_PATH $STANDARD_APP_NAME $RUNTIME $STANDARD_NUM_TRAILS")
   # import werkzeug
   TEST_IMPORT_LIST+=("$WERKZEUG_FOLDER_PATH$TEST_FILE $WERKZEUG_FOLDER_PATH $WERKZEUG_APP_NAME $RUNTIME $WERKZEUG_NUM_TRAILS")
+  # check python version
+  TEST_IMPORT_LIST+=("$CHECK_VERSION_FOLDER_PATH$TEST_FILE $CHECK_VERSION_FOLDER_PATH $CHECK_VERSION_APP_NAME $RUNTIME $CHECK_VERSION_NUM_TRAILS")
 
 }

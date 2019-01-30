@@ -9,12 +9,6 @@ CONFIG=$2
 
 source $CONFIG
 
-get_dir_path() {
-  #Get correct path to log
-  DIR_PATH=$(echo $1 | cut -d' ' -f 1)
-  DIR_PATH=$(pwd)$(echo "/")$(echo $DIR_PATH | rev | cut -c 8- | rev)
-}
-
 echo "Test Suite Initializing..."
 
 echo "Copying test.sh and funcs.sh to all directories"
@@ -49,16 +43,7 @@ for i in "${TEST_LIST[@]}"
 do
 	echo "Initializing test: $i"
 
-	get_dir_path $i
-
-  	DIR_PATH=$(echo $DIR_PATH | cut -d'_' -f 2 | cut -c 10-)
-
-	LOG_PATH=$(echo "logs/")$DIR_PATH$(echo "test.log")
-	echo "Saving log to $LOG_PATH"
-	
-	/bin/bash $i >> $LOG_PATH
-
-	python parse.py $LOG_PATH
+	/bin/bash $i
 
 done
 
