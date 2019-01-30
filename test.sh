@@ -44,6 +44,7 @@ case $RUNTIME in
 
 		echo "Running test on bare metal"
 		Run_Bare_Metal $PARAMS >> $LOG_PATH
+		echo " " >> $LOG_PATH
 		echo "Saved log to $LOG_PATH"
 
 		echo "Removing old binary"
@@ -56,6 +57,7 @@ case $RUNTIME in
 
 		echo "Running test on docker ($RUNTIME)"
 		Run_Docker_Container $RUNTIME $PARAMS >> $LOG_PATH
+		echo " " >> $LOG_PATH
 		echo "Saved log to $LOG_PATH"
 
 		echo "Removing container"

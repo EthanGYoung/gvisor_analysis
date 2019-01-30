@@ -105,3 +105,6 @@ venv.bak/
 
 #remote-sync
 .remote-sync.json
+
+#result .csv
+*.csv

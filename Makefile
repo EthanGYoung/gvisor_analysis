@@ -45,6 +45,7 @@ python_libs:
 
 test-all:
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
+	sudo chown -R $USER: logs/
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
