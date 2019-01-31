@@ -51,6 +51,7 @@ read_exp:
 
 test-all:
 	make clean
+	make read_exp
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
 	python parse.py
 

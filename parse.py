@@ -42,17 +42,17 @@ def write_csv_execute_lifecycle(curr_queue,current_dir, lines):
         if "Executing: " in line or "executing" in line:
             output_writer.writerow([line.rstrip("\n")+" in seconds"])
         if "LOG_OUTPUT: " in line:
-#            if "Num Threads" in line:
-#		output_writer.writerow(line)
-#	    else:
-	    num_array = re.findall(r"[-+]?\d*\.\d+|\d+", line)
-            curr_time = num_array[len(num_array)-1]
-            curr_queue.append(curr_time)
+            if "Num threads" in line:
+	    	curr_queue.append(line)
+	    else:
+	    	num_array = re.findall(r"[-+]?\d*\.\d+|\d+", line)
+            	curr_time = num_array[len(num_array)-1]
+            	curr_queue.append(curr_time)
         if line.isspace() and curr_queue:
             output_writer.writerow(curr_queue)
             curr_queue = []
             output_writer.writerow([])
-
+    
 # Parsing
 rootDir = 'logs/'
 for dirName, subdirList, fileList in os.walk(rootDir):
@@ -66,7 +66,10 @@ for dirName, subdirList, fileList in os.walk(rootDir):
             if "import" in current_dir:
                 write_csv_import_spinup(curr_queue,current_dir,lines,0,)
                 continue
-            # Spinup
+            # Thread Spinup
+	    if "thread" in current_dir:
+            	write_csv_execute_lifecycle(curr_queue,current_dir,lines)
+	    # Spinup
             if "spinup" in current_dir:
                 write_csv_import_spinup(curr_queue,current_dir,lines,1)
                 continue
