@@ -39,10 +39,13 @@ def write_csv_execute_lifecycle(curr_queue,current_dir, lines):
     output_writer.writerow([])
     for i in range(0, len(lines)):
         line = lines[i]
-        if "Executing: " in line:
+        if "Executing: " in line or "executing" in line:
             output_writer.writerow([line.rstrip("\n")+" in seconds"])
         if "LOG_OUTPUT: " in line:
-            num_array = re.findall(r"[-+]?\d*\.\d+|\d+", line)
+#            if "Num Threads" in line:
+#		output_writer.writerow(line)
+#	    else:
+	    num_array = re.findall(r"[-+]?\d*\.\d+|\d+", line)
             curr_time = num_array[len(num_array)-1]
             curr_queue.append(curr_time)
         if line.isspace() and curr_queue:

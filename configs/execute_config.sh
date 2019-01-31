@@ -12,29 +12,29 @@ TEST_FILE="test.sh"
 GETPID_FOLDER_PATH="experiments/execute/getpid_throughput/"
 GETPID_APP_NAME="getpid"
 GETPID_NUM_CALLS=(100000000)
-GETPID_TESTS=10
+GETPID_TESTS=1
 
 # network_throughput
 NETWORK_FOLDER_PATH="experiments/execute/network_throughput/"
 NETWORK_APP_NAME="net"
-NETWORK_TRIALS=10
+NETWORK_TRIALS=1
 NETWORK_URL=("http://speedtest.wdc01.softlayer.com/downloads/test10.zip" "http://speedtest.wdc01.softlayer.com/downloads/test100.zip" "http://speedtest.wdc01.softlayer.com/downloads/test500.zip" "http://speedtest.wdc01.softlayer.com/downloads/test1000.zip")
 
 # read_throughput
 READ_FOLDER_PATH="experiments/execute/read_throughput/"
 READ_APP_NAME="read"
-READ_TRIALS=1000000
+READ_TRIALS=100000
 READ_READ_SIZE=(10 100 1000 10000) # Product of Trials and read size must be less than 10MB
 READ_FILE="./file.txt"
-READ_TESTS=10
+READ_TESTS=1
 
 # write_throughput
 WRITE_FOLDER_PATH="experiments/execute/write_throughput/"
 WRITE_APP_NAME="write"
-WRITE_TRIALS=1000000
+WRITE_TRIALS=100000
 WRITE_WRITE_SIZE=(10 100 1000 10000)
 WRITE_FILE="./file.txt"
-WRITE_TESTS=10
+WRITE_TESTS=1
 
 	# Generate list of tests
 generate_cmds() {

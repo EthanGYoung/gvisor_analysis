@@ -46,6 +46,9 @@ python_libs:
 	sudo pip3 install  sqlalchemy
 	sudo pip3 install werkzeug
 
+read_exp:
+	dd if=/dev/urandom of=experiments/execute/read_throughput/file.txt bs=1M count=1000
+
 test-all:
 	make clean
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
@@ -80,3 +83,4 @@ parse_logs:
 
 clean:
 	sudo rm -rf logs/
+	sudo rm experiments/execute/read_throughput/file.txt
