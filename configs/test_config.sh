@@ -19,7 +19,7 @@ GETPID_NUM_CALLS=(1000 10000 100000)
 
 
 generate_cmds() {
-        RUNTIME=$1
+  RUNTIME=$1
 
 	#Getpid_throughput
 	for i in ${GETPID_NUM_CALLS[@]}

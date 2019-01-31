@@ -8,4 +8,4 @@ START=$(docker inspect --format='{{.State.StartedAt}}' $1)
 START_TIMESTAMP=$(date --date=$START +%s%N | cut -b1-13)
 CREATED_TIMESTAMP=$(date --date=$CREATED +%s%N | cut -b1-13)
 
-echo The startup time for $1 is $(($START_TIMESTAMP-$CREATED_TIMESTAMP)) ms
+echo "LOG_OUTPUT: The startup time for $1 is $(($START_TIMESTAMP-$CREATED_TIMESTAMP)) ms"
