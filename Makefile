@@ -5,14 +5,14 @@ all:
 
 docker:
 	sudo apt-get update
-	sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+	sudo apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 	sudo apt-key fingerprint 0EBFCD88
 	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(release) stable"
 	sudo apt-get update
-	sudo apt-get install docker-ce
+	sudo apt-get -y install docker-ce
 	#apt-cache madison docker-ce
-	sudo apt-get install docker-ce=5:18.09.1~3-0~ubuntu-xenial
+	sudo apt-get -y install docker-ce=5:18.09.1~3-0~ubuntu-xenial
 
 gvisor:
 	wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc
@@ -28,24 +28,28 @@ gvisor:
 python_libs:
 	sudo apt-get update
 	#Currently the latest version of python
-	sudo apt-get install python3
-	sudo apt-get install python3-pip
+	sudo apt-get -y install python3
+	sudo apt-get -y install python3-pip
 	python3 --version
 	bash -i -c alias python=python3
-	pip install django
-	pip install flask
-	pip install jinja2
-	pip install matplotlib
-	pip install numpy
-	pip install pip
-	pip install requests
-	pip install setuptools
-	pip install --user sqlalchemy
-	pip install werkzeug
+	sudo apt-get -y install python-setuptools
+	#sudo easy_install pip
+	sudo apt-get -y install python-dev   # for python2.x installs
+	sudo apt-get -y install python3-dev
+	sudo pip3 install  django
+	sudo pip3 install  flask
+	sudo pip3 install  jinja2
+	sudo pip3 install  matplotlib
+	sudo pip3 install  numpy
+	sudo pip3 install  requests
+	sudo pip3 install  setuptools
+	sudo pip3 install  sqlalchemy
+	sudo pip3 install werkzeug
 
 test-all:
+	make clean
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
-	sudo chown -R $USER: logs/
+	python parse.py
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
@@ -65,5 +69,14 @@ test-runsc-kvm:
 	sudo systemctl restart docker
 	sudo bash run.sh runsc configs/config.sh
 
+test-dev:
+	make clean
+	sudo bash run.sh bare configs/dev_config.sh
+	sudo bash run.sh runc configs/dev_config.sh
+	sudo bash run.sh runsc configs/dev_config.sh
+
 parse_logs:
 	python parse.py
+
+clean:
+	sudo rm -rf logs/

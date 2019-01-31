@@ -12,8 +12,8 @@ output_data = open('./result.csv', 'w')
 output_writer = csv.writer(output_data)
 
 test_env = ["bare","runc","runsc_ptrace","runsc_kvm"]
-email_list = ["pzhu6@wisc.edu","eyoung8@wisc.edu"]
-
+#email_list = ["pzhu6@wisc.edu","eyoung8@wisc.edu"]
+email_list = ["eyoung8@wisc.edu"]
 def write_csv_import_spinup(curr_queue,current_dir, lines, start_index):
     output_writer.writerow([])
     output_writer.writerow(['Parsing file: %s' % current_dir])

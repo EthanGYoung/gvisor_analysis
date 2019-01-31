@@ -49,7 +49,11 @@ void *spinup(void *id) {
         for (int i = 0; i < NUM_SPINUPS; i++) {
 		char str[100];
 		strcpy(str, "sudo docker run --runtime=");
-		strcat(str, RUNTIME);
+		if (strcmp(RUNTIME, "ptrace") == 0 || strcmp(RUNTIME,"kvm") == 0) {
+			strcat(str, "runsc");
+		} else {
+			strcat(str, RUNTIME);
+		}
 		strcat(str, "  --rm no_op");
         	system(str);
         }

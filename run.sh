@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -ne $2 ]; then
+if [ "$#" -ne 2 ]; then
         echo "Usage: sudo bash run.sh <RUNTIME> <Config file>"
         exit 1
 fi
@@ -14,7 +14,7 @@ echo "Test Suite Initializing..."
 echo "Copying test.sh and funcs.sh to all directories"
 echo experiments/*/*/ | xargs -n 1 cp test.sh
 echo experiments/*/*/ | xargs -n 1 cp funcs.sh
-
+ 
 echo "Creating log directories and remove old logs"
 
 mkdir "logs/"
@@ -36,7 +36,7 @@ TEST_LIST=( "${TEST_SPINUP_LIST[@]}" \
             "${TEST_EXECUTE_LIST[@]}" \
             "${TEST_LIFECYCLE_LIST[@]}" \
           )
-
+echo ${TEST_LIST[@]}
 HOME_DIR=$(pwd)
 
 for i in "${TEST_LIST[@]}"
