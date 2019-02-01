@@ -30,7 +30,7 @@ python_libs:
 	#Currently the latest version of python
 	sudo apt-get -y install python3
 	sudo apt-get -y install python3-pip
-	echo "alias python=$(echo python3)" >> ~/.bashrc
+	echo "alias python=python3" >> ~/.bashrc
 	source ~/.bashrc
 	sudo apt-get -y install python-setuptools
 	#sudo easy_install pip
