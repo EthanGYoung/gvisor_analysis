@@ -30,21 +30,14 @@ python_libs:
 	#Currently the latest version of python
 	sudo apt-get -y install python3
 	sudo apt-get -y install python3-pip
-	python3 --version
-	bash -i -c alias python=python3
 	sudo apt-get -y install python-setuptools
 	#sudo easy_install pip
-	sudo apt-get -y install python-dev   # for python2.x installs
 	sudo apt-get -y install python3-dev
 	sudo pip3 install  django
 	sudo pip3 install  flask
-	sudo pip3 install  jinja2
 	sudo pip3 install  matplotlib
-	sudo pip3 install  numpy
-	sudo pip3 install  requests
-	sudo pip3 install  setuptools
 	sudo pip3 install  sqlalchemy
-	sudo pip3 install werkzeug
+	python3 --version
 
 read_exp:
 	dd if=/dev/urandom of=experiments/execute/read_throughput/file.txt bs=1M count=1000
@@ -53,7 +46,7 @@ test-all:
 	make clean
 	make read_exp
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
-	python parse.py
+	python3 parse.py
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
@@ -80,7 +73,7 @@ test-dev:
 	sudo bash run.sh runsc configs/dev_config.sh
 
 parse_logs:
-	python parse.py
+	python3 parse.py
 
 clean:
 	sudo rm -rf logs/
