@@ -52,7 +52,7 @@ def write_csv_execute_lifecycle(curr_queue,current_dir, lines):
             output_writer.writerow(curr_queue)
             curr_queue = []
             output_writer.writerow([])
-    
+
 # Parsing
 rootDir = 'logs/'
 for dirName, subdirList, fileList in os.walk(rootDir):
@@ -61,15 +61,15 @@ for dirName, subdirList, fileList in os.walk(rootDir):
         curr_queue = []
         with open(current_dir) as f:
             lines = f.readlines()
-
             # Import
             if "import" in current_dir:
-                write_csv_import_spinup(curr_queue,current_dir,lines,0,)
+                write_csv_import_spinup(curr_queue,current_dir,lines,0)
                 continue
             # Thread Spinup
-	    if "thread" in current_dir:
+            if "thread" in current_dir:
             	write_csv_execute_lifecycle(curr_queue,current_dir,lines)
-	    # Spinup
+                continue
+	        # Spinup
             if "spinup" in current_dir:
                 write_csv_import_spinup(curr_queue,current_dir,lines,1)
                 continue
