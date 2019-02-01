@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
         total = execute(NUM_CALLS);
 
-        printf("LOG_OUTPUT: Average for %d calls: getpid syscall time = %.12f seconds\n", NUM_CALLS, total/NUM_CALLS);
+        printf("LOG_OUTPUT: Average for %d calls: getpid syscall time average = %.12f seconds\n", NUM_CALLS, total/NUM_CALLS);
 
         return 0;
 }
