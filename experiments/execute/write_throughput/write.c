@@ -58,7 +58,10 @@ float execute(char *file) {
 			exit(1);
 		}
 	}
-        
+       	if (fsync(fd) != 0) {
+		printf("ERROR: fsync returned error");
+	}
+ 
 	// End timer
         struct timespec ts1;
         clock_gettime(CLOCK_REALTIME, &ts1);

@@ -1,7 +1,7 @@
 release = $(shell lsb_release -cs)
 
 all:
-	make docker gvisor python_libs
+	make docker gvisor python_libs email
 
 docker:
 	sudo apt-get update
@@ -25,6 +25,9 @@ gvisor:
 	sudo mv daemon.json /etc/docker/
 	sudo systemctl restart docker
 
+email:
+	sudo apt-get -y install mutt
+
 python_libs:
 	sudo apt-get update
 	#Currently the latest version of python
@@ -47,9 +50,14 @@ test-all:
 	make read_exp
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
 	python3 parse.py
+	$(shell zip -r logs.zip logs/)
+	$(shell echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu")
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
+
+test-email:
+	$(shell echo "Message Body Here" | mutt -s "Subject Here" -a "./test.sh" eyoung8@wisc.edu)
 
 test-runc:
 	sudo bash run.sh runc configs/config.sh
