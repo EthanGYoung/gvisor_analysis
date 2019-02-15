@@ -12,7 +12,7 @@ docker:
 	sudo apt-get update
 	sudo apt-get -y install docker-ce
 	#apt-cache madison docker-ce
-	sudo apt-get -y install docker-ce=5:18.09.1~3-0~ubuntu-xenial
+	sudo apt-get -y install docker-ce=5:18.09.2~3-0~ubuntu-xenial
 
 gvisor:
 	wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc

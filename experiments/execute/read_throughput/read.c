@@ -49,7 +49,12 @@ float execute(char *file) {
         clock_gettime(CLOCK_REALTIME, &ts0);
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
-		total_read = 0;
+		// Reset ptr to front of file ASSUME 2GB file
+		if ((total_read + READ_SIZE) > 2000000000) {
+ 			lseek(fd, 0, SEEK_SET);
+			total_read = 0;
+		}
+
 		// Reads total read size
 		if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
 			total_read = total_read + r;
