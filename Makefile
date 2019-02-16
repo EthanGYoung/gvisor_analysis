@@ -54,17 +54,17 @@ read_exp:
 
 test-all:
 	make clean
-	make read_exp
-	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
+	#make read_exp
+	make test-runsc-kvm
 	python3 parse.py
-	$(shell zip -r logs.zip logs/)
-	$(shell echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu")
+	#$(shell zip -r logs.zip logs/)
+	#$(shell echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu")
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
 
 test-email:
-	$(shell echo "Message Body Here" | mutt -s "Subject Here" -a "./test.sh" eyoung8@wisc.edu)
+	#$(shell echo "Message Body Here" | mutt -s "Subject Here" -a "./test.sh" eyoung8@wisc.edu)
 
 test-runc:
 	sudo bash run.sh runc configs/config.sh

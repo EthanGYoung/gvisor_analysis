@@ -48,20 +48,20 @@ generate_cmds() {
 		done
 	done
 
-	#Getpid_throughput
-	for i in ${GETPID_NUM_CALLS[@]}
-	do
-		for (( j=1; j <= $GETPID_TESTS; ++j ))
-		do
-			TEST_EXECUTE_LIST+=("$GETPID_FOLDER_PATH$TEST_FILE $GETPID_FOLDER_PATH $GETPID_APP_NAME $RUNTIME $i")
-		done
-	done
-
-	#Network_throughput
-	for i in ${NETWORK_URL[@]}
-	do
-		TEST_EXECUTE_LIST+=("$NETWORK_FOLDER_PATH$TEST_FILE $NETWORK_FOLDER_PATH $NETWORK_APP_NAME $RUNTIME $NETWORK_TRIALS $i")
-	done
+	# #Getpid_throughput
+	# for i in ${GETPID_NUM_CALLS[@]}
+	# do
+	# 	for (( j=1; j <= $GETPID_TESTS; ++j ))
+	# 	do
+	# 		TEST_EXECUTE_LIST+=("$GETPID_FOLDER_PATH$TEST_FILE $GETPID_FOLDER_PATH $GETPID_APP_NAME $RUNTIME $i")
+	# 	done
+	# done
+  #
+	# #Network_throughput
+	# for i in ${NETWORK_URL[@]}
+	# do
+	# 	TEST_EXECUTE_LIST+=("$NETWORK_FOLDER_PATH$TEST_FILE $NETWORK_FOLDER_PATH $NETWORK_APP_NAME $RUNTIME $NETWORK_TRIALS $i")
+	# done
 
 	# Read_throughput
 	for i in ${READ_READ_SIZE[@]}

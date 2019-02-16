@@ -13,7 +13,7 @@ output_writer = csv.writer(output_data)
 
 test_env = ["bare","runc","runsc_ptrace","runsc_kvm"]
 #email_list = ["pzhu6@wisc.edu","eyoung8@wisc.edu"]
-email_list = ["eyoung8@wisc.edu"]
+email_list = ["pzhu6@wisc.edu"]
 def write_csv_import_spinup(curr_queue,current_dir, lines, start_index):
     output_writer.writerow([])
     output_writer.writerow(['Parsing file: %s' % current_dir])
@@ -33,25 +33,6 @@ def write_csv_import_spinup(curr_queue,current_dir, lines, start_index):
             if test_env_index <=3:
                 output_writer.writerow([test_env[test_env_index]])
 
-def write_csv_execute_lifecycle(curr_queue,current_dir, lines):
-    output_writer.writerow([])
-    output_writer.writerow(['Parsing file: %s' % current_dir])
-    output_writer.writerow([])
-    for i in range(0, len(lines)):
-        line = lines[i]
-        if "Executing: " in line or "executing" in line:
-            output_writer.writerow([line.rstrip("\n")+" in seconds"])
-        if "LOG_OUTPUT: " in line:
-            if "Num threads" in line:
-	    	curr_queue.append(line)
-	    else:
-	    	num_array = re.findall(r"[-+]?\d*\.\d+|\d+", line)
-            	curr_time = num_array[len(num_array)-1]
-            	curr_queue.append(curr_time)
-        if line.isspace() and curr_queue:
-            output_writer.writerow(curr_queue)
-            curr_queue = []
-            output_writer.writerow([])
 
 # Parsing
 rootDir = 'logs/'
@@ -66,15 +47,15 @@ for dirName, subdirList, fileList in os.walk(rootDir):
                 write_csv_import_spinup(curr_queue,current_dir,lines,0)
                 continue
             # Thread Spinup
-            if "thread" in current_dir:
-            	write_csv_execute_lifecycle(curr_queue,current_dir,lines)
-                continue
+            #if "thread" in current_dir:
+            	#write_csv_execute_lifecycle(curr_queue,current_dir,lines)
+                #continue
 	        # Spinup
             if "spinup" in current_dir:
                 write_csv_import_spinup(curr_queue,current_dir,lines,1)
                 continue
 
-            write_csv_execute_lifecycle(curr_queue,current_dir,lines)
+            #write_csv_execute_lifecycle(curr_queue,current_dir,lines)
 
 output_data.close()
 
