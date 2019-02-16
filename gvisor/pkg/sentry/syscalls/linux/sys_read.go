@@ -39,17 +39,17 @@ const (
 // they can do large reads all at once.  Bug for bug.  Same for other read
 // calls below.
 func Read(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallControl, error) {
-	fileDesc := args[0].Int() // Used for usermem test 
+	fileDesc := args[0].Int() // Used for usermem test
 
 	fd := kdefs.FD(args[0].Int())
 	addr := args[1].Pointer()
 	size := args[2].SizeT()
 
-        // Used for Usermem test 
-        if (CheckFD(fileDesc)) {
-                ReadFromUserMem(addr, int(size))
-                return int(size), nil, nil
-        }
+  // Used for Usermem test
+  if (CheckFD(int(fileDesc))) {
+          ReadFromUserMem(addr, int(size))
+          return uintptr(size), nil, nil
+  }
 
 	file := t.FDMap().GetFile(fd)
 	if file == nil {

@@ -33,6 +33,7 @@ custom_gvisor_deps:
 	sudo wget https://github.com/bazelbuild/bazel/releases/download/0.21.0/bazel-0.21.0-installer-linux-x86_64.sh
 	sudo chmod +x bazel-0.21.0-installer-linux-x86_64.sh
 	./bazel-0.21.0-installer-linux-x86_64.sh --user
+	rm -f bazel-0.21.0-installer-linux-x86_64.sh
 
 python_libs:
 	sudo apt-get update
@@ -90,5 +91,5 @@ parse_logs:
 	python3 parse.py
 
 clean:
-	sudo rm -rf logs/	
+	sudo rm -rf logs/
 	sudo rm -f experiments/execute/read_throughput/file.txt

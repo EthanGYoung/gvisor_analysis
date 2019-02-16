@@ -46,9 +46,9 @@ func Write(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscall
 	size := args[2].SizeT()
 
 	// Used for Usermem test
-	if (CheckFD(fileDesc)) {
+	if (CheckFD(int(fileDesc))) {
 		WriteToUserMem(addr, int(size))
-		return int(size), nil, nil
+		return uintptr(size), nil, nil
 	}
 
 	file := t.FDMap().GetFile(fd)
