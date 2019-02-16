@@ -49,12 +49,17 @@ float execute(char *file) {
         clock_gettime(CLOCK_REALTIME, &ts0);
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
-		total_written = 0;
+		// This is so we don't write large files when writing large chunks	
+		if ((total_written + WRITE_SIZE) > 2000000000) {
+                        lseek(fd, 0, SEEK_SET);
+                        total_written = 0;
+                }
+
 		// Reads total read size
 		if ( (r = write(fd, data, WRITE_SIZE)) == WRITE_SIZE) {
 			total_written = total_written + r;
 		} else {
-			printf("ERROR: Was not able to write WRITE_SIZE");
+			printf("ERROR: Was not able to write WRITE_SIZE. Trial: %d\n", i);
 			exit(1);
 		}
 	}
