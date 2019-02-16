@@ -1,15 +1,20 @@
 package linux
 
-var FilePtr = -1
-const TESTFD = 100;
+import (
+  "unsafe"
+	"gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
+)
 
-func WriteToUserMem(interface{} addr, int size){
-  *FilePtr = *addr;
+var FilePtr *uint64
+const (TESTFD = 100)
+
+func WriteToUserMem(addr usermem.Addr, size int){
+  ptrFromSystem := (*uint64)(unsafe.Pointer(addr))
+  *FilePtr = *ptrFromSystem;
 }
-func CheckFD(int FD){
-  return (FD == TESTFD);
+func CheckFD(FD int) bool{
+  return (FD == int(TESTFD))
 }
-func ReadToUserMem(interface{} addr, int size){
-  addr := make([]byte, size);
-  copy(addr, FilePtr);
+func ReadFromUserMem(addr usermem.Addr, size int){
+  *(*uint64)(unsafe.Pointer(addr)) = *FilePtr
 }
