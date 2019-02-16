@@ -46,12 +46,12 @@ read_exp:
 	dd if=/dev/urandom of=experiments/execute/read_throughput/file.txt bs=1M count=1000
 
 test-all:
-	make clean
-	make read_exp
+	#make clean
+	#make read_exp
 	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
-	python3 parse.py
-	$(shell zip -r logs.zip logs/)
-	$(shell echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu")
+	#python3 parse.py
+	zip -r logs.zip logs
+	echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu"
 
 test-bare:
 	sudo bash run.sh bare configs/config.sh
