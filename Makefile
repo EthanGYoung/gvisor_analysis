@@ -28,6 +28,12 @@ gvisor:
 email:
 	sudo apt-get -y install mutt
 
+custom_gvisor_deps:
+	sudo apt-get install pkg-config zip g++ zlib1g-dev unzip python
+	sudo wget https://github.com/bazelbuild/bazel/releases/download/0.21.0/bazel-0.21.0-installer-linux-x86_64.sh
+	sudo chmod +x bazel-0.21.0-installer-linux-x86_64.sh
+	./bazel-0.21.0-installer-linux-x86_64.sh --user
+
 python_libs:
 	sudo apt-get update
 	#Currently the latest version of python
