@@ -7,7 +7,7 @@ STATIC_FD = 100
 def TEST_1():
 	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
 	
-	str1 = "Test 1 string."
+	str1 = b'Test 1 string.'
 	ret = os.write(fd, str1)
 
 	if (ret != len(str1)):
@@ -25,7 +25,7 @@ def TEST_1():
 
 def TEST_2():
 	
-	str1 = "Test 2 string."
+	str1 = b'Test 2 string.'
 	ret = os.write(STATIC_FD, str1)
 
 	if (ret != len(str1)):
@@ -41,10 +41,11 @@ def TEST_2():
 	print("Finished TEST_2")
 try:
 	TEST_1()
-except:
+except Exception as e:
 	print("Exception on TEST_1")
-
+	print(e)
 try:
 	TEST_2()
-except:
+except Exception as e:
 	print("Exception on TEST_2")
+	print(e)
