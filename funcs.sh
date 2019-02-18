@@ -62,7 +62,9 @@ Run_Docker_Container() {
 	  echo "Omitting thread spinup from docker tests."
 	else
           cmd="sudo docker run --runtime=$RUNTIME --rm --tmpfs /myapp $APP_NAME $PARAMS"
-          echo "executing: $cmd"
+          platform=$(grep -w "platform" /etc/docker/daemon.json)
+	  echo "Platform: $platform"
+	  echo "executing: $cmd"
           $cmd
         fi
 }
