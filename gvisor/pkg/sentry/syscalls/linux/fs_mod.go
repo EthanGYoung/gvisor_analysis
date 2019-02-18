@@ -1,7 +1,6 @@
 package linux
 
 import (
- "fmt"
   "gvisor.googlesource.com/gvisor/pkg/sentry/kernel"
   "gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
 

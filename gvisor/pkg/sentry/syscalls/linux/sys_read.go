@@ -15,7 +15,6 @@
 package linux
 
 import (
-	"fmt"
 	"time"
 
 	"gvisor.googlesource.com/gvisor/pkg/abi/linux"
