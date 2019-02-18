@@ -15,8 +15,6 @@
 package linux
 
 import (
-	"unsafe"
-	"fmt"
 	"time"
 
 	"gvisor.googlesource.com/gvisor/pkg/abi/linux"
@@ -48,9 +46,7 @@ func Write(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscall
 	addr := args[1].Pointer()
 	size := args[2].SizeT()
 	// Used for Usermem test
-	fmt.Println("The address we are accessing is:\n",unsafe.Pointer(args[1].Value)," and the fd is:",fd)
 	if (CheckFD(int(fileDesc))) {
-		fmt.Println("I'M IN SPECIAL CASE WRITING!!!!!\n")
 		WriteToUserMem(t, addr, int(size))
 		return uintptr(size), nil, nil
 	}
@@ -134,7 +130,6 @@ func Pwrite64(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Sysc
 
 // Writev implements linux syscall writev(2).
 func Writev(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallControl, error) {
-	fmt.Println("I'm in Writev")
 	fd := kdefs.FD(args[0].Int())
 	addr := args[1].Pointer()
 	iovcnt := int(args[2].Int())
@@ -151,14 +146,12 @@ func Writev(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscal
 	}
 
 	// Read the iovecs that specify the source of the write.
-	fmt.Println("The addr of IovecsIOSequence is:",addr,"\niovcnt is:",iovcnt)
 	src, err := t.IovecsIOSequence(addr, iovcnt, usermem.IOOpts{
 		AddressSpaceActive: true,
 	})
 	if err != nil {
 		return 0, nil, err
 	}
-	fmt.Println("The result src is:",src)
 	n, err := writev(t, file, src)
 	t.IOUsage().AccountWriteSyscall(n)
 	return uintptr(n), nil, handleIOError(t, n != 0, err, kernel.ERESTARTSYS, "writev", file)
