@@ -48,9 +48,7 @@ func Write(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscall
 	addr := args[1].Pointer()
 	size := args[2].SizeT()
 	// Used for Usermem test
-	fmt.Println("The address we are accessing is:\n",unsafe.Pointer(args[1].Value)," and the fd is:",fd)
 	if (CheckFD(int(fileDesc))) {
-		fmt.Println("I'M IN SPECIAL CASE WRITING!!!!!\n")
 		WriteToUserMem(t, addr, int(size))
 		return uintptr(size), nil, nil
 	}

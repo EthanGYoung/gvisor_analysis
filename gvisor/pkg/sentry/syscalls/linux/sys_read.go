@@ -49,7 +49,6 @@ func Read(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 
   // Used for Usermem test
   if (CheckFD(int(fileDesc))) {
-		fmt.Println("I'M IN SPECIAL CASE READING!!!!!\n")
 		ReadFromUserMem(t, addr, int(size))
 		return uintptr(size), nil, nil
   }
