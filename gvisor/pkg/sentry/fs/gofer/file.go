@@ -210,6 +210,7 @@ func (f *fileOperations) readdirAll(ctx context.Context) (map[string]fs.DentAttr
 
 // Write implements fs.FileOperations.Write.
 func (f *fileOperations) Write(ctx context.Context, file *fs.File, src usermem.IOSequence, offset int64) (int64, error) {
+	fmt.Println("I'm in gofer write!!!!!!")
 	if fs.IsDir(file.Dirent.Inode.StableAttr) {
 		// Not all remote file systems enforce this so this client does.
 		return 0, syserror.EISDIR

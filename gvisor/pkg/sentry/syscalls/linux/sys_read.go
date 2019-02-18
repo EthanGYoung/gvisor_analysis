@@ -15,6 +15,7 @@
 package linux
 
 import (
+	"fmt"
 	"time"
 
 	"gvisor.googlesource.com/gvisor/pkg/abi/linux"
@@ -40,6 +41,7 @@ const (
 // calls below.
 func Read(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallControl, error) {
 	fileDesc := args[0].Int() // Used for usermem test
+	//testAddr := args[1]
 
 	fd := kdefs.FD(args[0].Int())
 	addr := args[1].Pointer()
@@ -47,8 +49,9 @@ func Read(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 
   // Used for Usermem test
   if (CheckFD(int(fileDesc))) {
-          ReadFromUserMem(addr, int(size))
-          return uintptr(size), nil, nil
+		fmt.Println("I'M IN SPECIAL CASE READING!!!!!\n")
+		ReadFromUserMem(t, addr, int(size))
+		return uintptr(size), nil, nil
   }
 
 	file := t.FDMap().GetFile(fd)
