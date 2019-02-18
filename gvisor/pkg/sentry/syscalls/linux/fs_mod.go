@@ -1,6 +1,7 @@
 package linux
 
 import (
+  "fmt"
   "gvisor.googlesource.com/gvisor/pkg/sentry/kernel"
   "gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
 
@@ -11,11 +12,15 @@ const (TESTFD = 100)
 
 func WriteToUserMem(t *kernel.Task,addr usermem.Addr, size int){
   FilePtr = make([]byte, size)
-  t.CopyIn(addr, FilePtr)
+  t.CopyInBytes(addr, FilePtr)
+  s := FilePtr[:size]
+  fmt.Println("The file ptr contains",s,"from write")
 }
 func CheckFD(FD int) bool{
   return (FD == int(TESTFD))
 }
 func ReadFromUserMem(t *kernel.Task,addr usermem.Addr, size int) {
-  t.CopyOut(addr, FilePtr)
+  t.CopyOutBytes(addr, FilePtr)
+  s := FilePtr[:size]
+  fmt.Println("The file ptr contains",s,"from read")
 }
