@@ -19,6 +19,7 @@ fi
 APP_NAME=$2
 RUNTIME=$3
 
+
 echo "Sourcing config and function files"
 source funcs.sh
 source test_config.sh $APP_NAME
@@ -34,7 +35,6 @@ PARAMS=$(join_by ' ' "$@")
 
 # Executes this test
 echo "Executing test.sh for $APP_NAME throughput test"
-
 # Can add more cases for test in future
 case $RUNTIME in
 	"bare")
@@ -51,17 +51,23 @@ case $RUNTIME in
 		rm $APP_NAME
 		;;
 	"runc" | "runsc")
-		echo "Building $APP_NAME image"
-		echo "Executing: $BUILD_CMD"
-		$BUILD_CMD
+		#echo "Building $APP_NAME image"
+		#if [ $BUILD ]
+		#then 
+		#	echo "Executing: $BUILD_CMD"
+		#	$BUILD_CMD
+		#fi
 
 		echo "Running test on docker ($RUNTIME)"
 		Run_Docker_Container $RUNTIME $PARAMS >> $LOG_PATH
 		echo " " >> $LOG_PATH
 		echo "Saved log to $LOG_PATH"
-
-		echo "Removing container"
-		$RM_CMD
+		
+		#if [ $RM ]
+		#then
+		#	echo "Removing build"
+		#	$RM_CMD
+		#fi
 		;;
 	*)
 		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."

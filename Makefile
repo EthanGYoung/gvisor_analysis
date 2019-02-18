@@ -60,6 +60,7 @@ test-all:
 	#$(shell zip -r logs.zip logs/)
 	#$(shell echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu")
 
+
 test-bare:
 	sudo bash run.sh bare configs/config.sh
 
