@@ -190,6 +190,7 @@ func (f *fileOperations) IterateDir(ctx context.Context, dirCtx *fs.DirCtx, offs
 
 // Write implements fs.FileOperations.Write.
 func (f *fileOperations) Write(ctx context.Context, file *fs.File, src usermem.IOSequence, offset int64) (int64, error) {
+	fmt.Println("I'm in host write!!!!!!")
 	// Would this file block?
 	if f.iops.ReturnsWouldBlock() {
 		// These files can't be memory mapped, assert this. This also

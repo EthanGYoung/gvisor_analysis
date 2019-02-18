@@ -6,8 +6,8 @@ generate_cmds(){
   generate_cmds $RUNTIME
   #source $(pwd)"/configs/import_config.sh"
   #generate_cmds $RUNTIME
-  source $(pwd)"/configs/lifecycle_config.sh"
-  generate_cmds $RUNTIME
-  #source $(pwd)"/configs/spinup_config.sh"
+  #source $(pwd)"/configs/lifecycle_config.sh"
   #generate_cmds $RUNTIME
+  source $(pwd)"/configs/spinup_config.sh"
+  generate_cmds $RUNTIME
 }
