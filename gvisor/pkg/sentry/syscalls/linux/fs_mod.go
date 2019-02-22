@@ -8,9 +8,13 @@ import (
 
 var FilePtr []byte
 const (TESTFD = 100)
+const (BLOCK_SIZE = 1000000)
+
+func init() {
+  FilePtr = make([]byte, BLOCK_SIZE)
+}
 
 func WriteToUserMem(t *kernel.Task,addr usermem.Addr, size int){
-  FilePtr = make([]byte, size)
   t.CopyInBytes(addr, FilePtr)
 }
 func CheckFD(FD int) bool{
