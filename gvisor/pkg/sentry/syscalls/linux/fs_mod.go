@@ -65,6 +65,33 @@ func init_inode_table() {
 	}
 }
 
+// In-Mem specific helper functions
+func FindFDEntry(fd int) fd_entry {
+	var f fd_entry
+	// Search fd_table to find corresponding fd_entry. If not found, return nil
+	for i:=0; i<NUM_FDS; i++ {
+		if (fd_table[i].used && fd_table[i].fd == fd) {
+			f = fd_table[i]
+			return f
+		}
+	}
+
+	return f
+}
+
+func FindDirEntry(filename string) dir_entry {
+	var d dir_entry
+	// Search dir_table to find entry cooresponding to filename. Returns nil if not found.
+	for i:=0; i<NUM_FILES; i++ {
+		if (dir_table[i].key == filename) {
+			d = dir_table[i]
+			return d
+		}
+	}
+
+	return d
+}
+
 // Helper functions for system calls
 func CheckFD(FD int) bool{
   return (FD == int(TESTFD))
