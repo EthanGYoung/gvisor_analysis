@@ -390,6 +390,25 @@ func createAt(t *kernel.Task, dirFD kdefs.FD, addr usermem.Addr, flags uint, mod
 // Open implements linux syscall open(2).
 func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallControl, error) {
 	addr := args[0].Pointer()
+
+	// Used for fs_mod
+	path, dirPath, err := copyInPath(t, addr, false /* allowEmpty */)
+	dir, name := fs.SplitLast(path)
+
+	// Just to compile
+	if (dirPath) {
+		dir = ""
+	}
+	if (dir == "m") {
+		return uintptr(0),nil,nil
+	}
+
+	fd := InmemOpen(name)
+	if (fd != -1) {
+		// If InMemOpen is successful then return FD immediately, else open on the host
+		return uintptr(fd), nil, nil
+	}
+
 	flags := uint(args[1].Uint())
 	if flags&linux.O_CREAT != 0 {
 		mode := linux.FileMode(args[2].ModeT())

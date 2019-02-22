@@ -119,8 +119,8 @@ func FindUnusedFD() (fd_entry, int) {
 }
 
 // Helper functions for system calls
-func CheckFD(FD int) bool{
-  return (FD == int(TESTFD))
+func CheckFdRange(FD int) bool{
+  return (FD >= FD_OFFSET && FD < FD_OFFSET + NUM_FDS)
 }
 
 // Checks if this file is an inmem file and does appropriate steps if it is and returns fd. Else returns nil
@@ -158,12 +158,20 @@ func InmemOpen(filename string) int {
 
 }
 
-func WriteToUserMem(t *kernel.Task,addr usermem.Addr, size int){
+func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
+	if (!CheckFdRange(fd)) {
+		return false
+	}
 
-
- // t.CopyInBytes(addr, FilePtr)
+	t.CopyInBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode)
+	return true
 }
 
-func ReadFromUserMem(t *kernel.Task,addr usermem.Addr, size int) {
- // t.CopyOutBytes(addr, FilePtr)
+func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
+	if (!CheckFdRange(fd)) {
+		return false
+	}
+
+	t.CopyOutBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode)
+	return true
 }

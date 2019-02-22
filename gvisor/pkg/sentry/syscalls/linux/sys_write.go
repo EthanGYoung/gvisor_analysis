@@ -45,9 +45,9 @@ func Write(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscall
 	fd := kdefs.FD(args[0].Int())
 	addr := args[1].Pointer()
 	size := args[2].SizeT()
-	// Used for Usermem test
-	if (CheckFD(int(fileDesc))) {
-		WriteToUserMem(t, addr, int(size))
+
+	// If successful return, then return immediately else do write to host
+	if (WriteToUserMem(t, int(fileDesc), addr, int(size))) {
 		return uintptr(size), nil, nil
 	}
 

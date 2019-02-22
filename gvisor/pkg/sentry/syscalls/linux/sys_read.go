@@ -46,11 +46,10 @@ func Read(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 	addr := args[1].Pointer()
 	size := args[2].SizeT()
 
-  // Used for Usermem test
-  if (CheckFD(int(fileDesc))) {
-		ReadFromUserMem(t, addr, int(size))
+	// If ReadFromUserMem successful then return immediately, else do read to host
+	if (ReadFromUserMem(t, int(fileDesc), addr, int(size))) {
 		return uintptr(size), nil, nil
-  }
+	}
 
 	file := t.FDMap().GetFile(fd)
 	if file == nil {
