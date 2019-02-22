@@ -66,35 +66,96 @@ func init_inode_table() {
 }
 
 // In-Mem specific helper functions
-func FindFDEntry(fd int) fd_entry {
+func FindFDEntry(fd int) (fd_entry,int) {
 	var f fd_entry
 	// Search fd_table to find corresponding fd_entry. If not found, return nil
 	for i:=0; i<NUM_FDS; i++ {
 		if (fd_table[i].used && fd_table[i].fd == fd) {
 			f = fd_table[i]
-			return f
+			return f, 0
 		}
 	}
 
-	return f
+	return f, -1
 }
 
-func FindDirEntry(filename string) dir_entry {
+func FindDirEntry(filename string) (dir_entry,int) {
 	var d dir_entry
 	// Search dir_table to find entry cooresponding to filename. Returns nil if not found.
 	for i:=0; i<NUM_FILES; i++ {
 		if (dir_table[i].key == filename) {
 			d = dir_table[i]
-			return d
+			return d, 0
 		}
 	}
 
-	return d
+	return d, -1
+}
+// Return errors for each
+func FindUnusedInode() (*inmem_inode_entry) {
+	var in inmem_inode_entry
+        // Search inode_table to find unused inode_entry. Returns nil if not found.
+        for i:=0; i<NUM_INODES; i++ {
+                if (inode_table[i].used == false) {
+                        return &(inode_table[i])
+                }
+        }
+
+        return &in
+}
+
+func FindUnusedFD() (fd_entry, int) {
+	var f fd_entry
+
+	// Search for first unused fd and init for use by a file
+	for i:=0; i<NUM_FDS; i++ {
+		if (!fd_table[i].used) {
+			f = fd_table[i]
+			return f, 0
+                }
+        }
+
+        return f, -1
 }
 
 // Helper functions for system calls
 func CheckFD(FD int) bool{
   return (FD == int(TESTFD))
+}
+
+// Checks if this file is an inmem file and does appropriate steps if it is and returns fd. Else returns nil
+func InmemOpen(filename string) int {
+	var n dir_entry
+	var err int
+
+	// Check if listed statically and/or open already
+	n,err = FindDirEntry(filename)
+
+	// Open file to host, not in-mem
+	if (err == -1) {
+		return -1
+	}
+
+	var f fd_entry
+	// Find unused FD and use as this files FD
+	f,err = FindUnusedFD()
+	f.used = true
+
+	if (n.inode_entry == nil) {
+
+		// Find unused inode to use
+		var in *inmem_inode_entry
+		in = FindUnusedInode()
+		(*in).used = true
+		f.inode_entry = in
+	} else {
+		// Reuse pointer from dir_entry
+		f.inode_entry = n.inode_entry
+	}
+
+	// File is now open
+	return f.fd
+
 }
 
 func WriteToUserMem(t *kernel.Task,addr usermem.Addr, size int){
