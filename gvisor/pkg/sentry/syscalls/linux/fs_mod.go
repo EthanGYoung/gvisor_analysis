@@ -3,7 +3,6 @@ package linux
 import (
   "gvisor.googlesource.com/gvisor/pkg/sentry/kernel"
   "gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
-  "fmt"
 )
 
 // Initailize constant values
@@ -87,7 +86,7 @@ func FindDirEntry(filename string) (*dir_entry,int) {
 
 	return d, -1
 }
-// Return errors for each
+
 func FindUnusedInode() (*inode_entry) {
 	var in inode_entry
         // Search inode_table to find unused inode_entry. Returns nil if not found.
@@ -124,8 +123,6 @@ func InmemOpen(filename string) int {
 	var n *dir_entry
 	var err int
 
-	fmt.Println("InmemOpen for filename: ", filename)
-
 	// Check if listed statically and/or open already
 	n,err = FindDirEntry(filename)
 
@@ -143,17 +140,13 @@ func InmemOpen(filename string) int {
 	(*f).used = true
 
 	if ((*n).inode_entry == nil) {
-		//fmt.Println("InmemOpen: Attempting to find a new inode")
-
 		// Find unused inode to use
 		var in *inode_entry
 		in = FindUnusedInode()
 		(*in).used = true
 		(*f).inode_entry = in
 		(*n).inode_entry = in
-		//fmt.Println("Successfully added inode to fd which is", *f.inode_entry)
 	} else {
-		//fmt.Println("InmemOpen: Reusing existing inode inode")
 		// Reuse pointer from dir_entry
 		f.inode_entry = n.inode_entry
 	}
@@ -165,22 +158,18 @@ func InmemOpen(filename string) int {
 
 func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 	if (!CheckFdRange(fd)) {
-		fmt.Println("FD", fd, "not in range in write")
 		return false
 	}
 
-	fmt.Println("About to write to fd", fd)
 	t.CopyInBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode[0:size])
 	return true
 }
 
 func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 	if (!CheckFdRange(fd)) {
-		fmt.Println("FD", fd, "not in range in read")
 		return false
 	}
 
-	fmt.Println("About to read to fd", fd)
 	t.CopyOutBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode[0:size])
 	return true
 }
