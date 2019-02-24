@@ -7,13 +7,14 @@ import (
 )
 
 // Initailize constant values
-const (BLOCK_SIZE = 4096)
+const (BLOCK_SIZE = 1000000)
 const (TESTFD = 100)
 const (NUM_FDS = 10)
 const (FD_OFFSET = 100) // This is the start FD claimed for in-mem files
 const (NUM_INODES = 10)
-const (NUM_FILES = 2)
-var STATIC_FILES = [NUM_FILES]string {"foo.txt", "bop.txt"}
+const (INMEM_FLAG = 346)
+
+var NUM_FILES = 0
 
 // Define structs
 type inode_entry struct {
@@ -38,17 +39,8 @@ var inode_table = []inode_entry{}
 
 // Initialize all structs and tables
 func init() {
-	init_dir_table()
 	init_fd_table()
 	init_inode_table()
-}
-
-func init_dir_table() {
-	// Add all static file names to dir table with not pointing to an inode entry
-	for i:= 0; i < NUM_FILES; i++ {
-		kv := dir_entry{key: STATIC_FILES[i], inode_entry: nil}
-		dir_table = append(dir_table, kv)
-	}
 }
 
 func init_fd_table() {
@@ -62,6 +54,12 @@ func init_inode_table() {
 	for i:=0; i<NUM_INODES; i++ {
 		inode_table = append(inode_table, inode_entry{inode: make([]byte, BLOCK_SIZE), used: false})
 	}
+}
+
+func addDirEntry(filename string) {
+	kv := dir_entry{key: filename, inode_entry: nil}
+	dir_table = append(dir_table, kv)
+	NUM_FILES = NUM_FILES + 1
 }
 
 // In-Mem specific helper functions
@@ -131,9 +129,12 @@ func InmemOpen(filename string) int {
 	// Check if listed statically and/or open already
 	n,err = FindDirEntry(filename)
 
-	// Open file to host, not in-mem
+	// Add dir_entry to table
 	if (err == -1) {
-		return -1
+		addDirEntry(filename)
+
+		// Search again for DirEntry
+		n,err = FindDirEntry(filename)
 	}
 
 	var f *fd_entry
@@ -142,7 +143,7 @@ func InmemOpen(filename string) int {
 	(*f).used = true
 
 	if ((*n).inode_entry == nil) {
-		fmt.Println("InmemOpen: Attempting to find a new inode")
+		//fmt.Println("InmemOpen: Attempting to find a new inode")
 
 		// Find unused inode to use
 		var in *inode_entry
@@ -152,7 +153,7 @@ func InmemOpen(filename string) int {
 		(*n).inode_entry = in
 		//fmt.Println("Successfully added inode to fd which is", *f.inode_entry)
 	} else {
-		fmt.Println("InmemOpen: Reusing existing inode inode")
+		//fmt.Println("InmemOpen: Reusing existing inode inode")
 		// Reuse pointer from dir_entry
 		f.inode_entry = n.inode_entry
 	}
@@ -169,11 +170,7 @@ func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 	}
 
 	fmt.Println("About to write to fd", fd)
-//	fmt.Println("Contents before write:", fd_table[fd-FD_OFFSET].inode_entry.inode)
-	//fmt.Println("Able to dereference to inode_entry", fd_table[fd-FD_OFFSET].inode_entry)
 	t.CopyInBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode[0:size])
-//	fmt.Println("Successfully wrote to fd", fd)
-//	fmt.Println("Contents of write:", fd_table[fd-FD_OFFSET].inode_entry.inode)
 	return true
 }
 

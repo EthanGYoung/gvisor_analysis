@@ -7,7 +7,7 @@ STATIC_FD = 100
 
 def TEST_1():
 	print("TEST_1: Attempting one write then one write")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
 
 	str1 = b'This is My Test 1 string. YEAHYEAH'
 
@@ -27,7 +27,7 @@ def TEST_1():
 
 def TEST_2():
 	print("TEST_2: Testing multiple writes then one read")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
 	
 	test_string = b'Attempting to write for test_2'
 	
@@ -50,7 +50,7 @@ def TEST_2():
 
 def TEST_3():
 	print("TEST_3: Testing write,read,change var,write,read")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
 	
 	test_string = b'Attempting to write for test_3'
 	
@@ -85,8 +85,8 @@ def TEST_3():
 
 def TEST_4():
 	print("TEST_4: Opening two files to same file, write to first, read from second")
-	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
-	fd2 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
+	fd2 = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
 
 	test_string = b'TEST_4 string read this!'
 
@@ -106,8 +106,8 @@ def TEST_4():
 
 def TEST_5():
 	print("TEST_5: Opening two files in-mem, write to both, read from both")
-	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
-	fd2 = os.open("bop.txt", os.O_RDWR|os.O_CREAT)
+	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
+	fd2 = os.open("bop.txt", os.O_RDWR|os.O_CREAT|346)
 
 	test_string_1 = b'TEST_5 string read this! foo.txt'
 	test_string_2 = b'TEST_5 string this! bop.txt'
