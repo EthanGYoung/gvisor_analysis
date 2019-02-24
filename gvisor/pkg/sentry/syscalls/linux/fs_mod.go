@@ -6,7 +6,7 @@ import (
 )
 
 // Initailize constant values
-const (BLOCK_SIZE = 1048576)
+const (BLOCK_SIZE = 1100000)
 const (TESTFD = 100)
 const (NUM_FDS = 10)
 const (FD_OFFSET = 100) // This is the start FD claimed for in-mem files
