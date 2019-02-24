@@ -11,6 +11,7 @@
 int NUM_TRIALS;
 int WRITE_SIZE;
 char* FILE_PATH;
+int INMEM_FLAG = 346;
 
 // Gets the current time
 struct timespec diff(struct timespec start, struct timespec end)
@@ -34,7 +35,7 @@ float execute(char *file) {
         int fd;
 
         // Open the specific file
-        fd = open(file, O_WRONLY|O_CREAT);
+        fd = open(file, O_WRONLY|O_CREAT|INMEM_FLAG);
         if (fd == 0) {
                 perror ("ERROR: open");
                 return 1;
@@ -49,12 +50,6 @@ float execute(char *file) {
         clock_gettime(CLOCK_REALTIME, &ts0);
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
-		// This is so we don't write large files when writing large chunks	
-		if ((total_written + WRITE_SIZE) > 2000000000) {
-                        lseek(fd, 0, SEEK_SET);
-                        total_written = 0;
-                }
-
 		// Reads total read size
 		if ( (r = write(fd, data, WRITE_SIZE)) == WRITE_SIZE) {
 			total_written = total_written + r;
@@ -63,19 +58,16 @@ float execute(char *file) {
 			exit(1);
 		}
 	}
-       	if (fsync(fd) != 0) {
-		printf("ERROR: fsync returned error");
-	}
  
 	// End timer
         struct timespec ts1;
         clock_gettime(CLOCK_REALTIME, &ts1);
         struct timespec t = diff(ts0,ts1);
 
-        close(fd);
+        //close(fd);
 
 	// Remove the file
-	remove(file);
+	//remove(file);
 
         float elapsed_time = t.tv_sec + t.tv_nsec/(float)1000000000;
 

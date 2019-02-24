@@ -11,6 +11,7 @@
 int NUM_TRIALS;
 int READ_SIZE;
 char* FILE_PATH;
+int INMEM_FLAG = 346;
 
 // Gets the current time
 struct timespec diff(struct timespec start, struct timespec end)
@@ -33,28 +34,26 @@ struct timespec diff(struct timespec start, struct timespec end)
 float execute(char *file) {
         int fd;
 
-        // Open the specific file
-        fd = open(file, O_RDONLY);
+        // Open the specific file inmem
+        fd = open(file, O_RDONLY|INMEM_FLAG);
         if (fd == 0) {
                 perror ("ERROR: open");
                 return 1;
         }
 
+	char *init_write = calloc(READ_SIZE, sizeof(char));
         char data[READ_SIZE];
         int r = 0;
         int total_read = 0;
 
+		
+	write(fd, init_write, READ_SIZE); 
+	
         // Start timer
         struct timespec ts0;
         clock_gettime(CLOCK_REALTIME, &ts0);
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
-		// Reset ptr to front of file ASSUME 2GB file
-		if ((total_read + READ_SIZE) > 2000000000) {
- 			lseek(fd, 0, SEEK_SET);
-			total_read = 0;
-		}
-
 		// Reads total read size
 		if ( (r = read(fd, data, READ_SIZE)) == READ_SIZE) {
 			total_read = total_read + r;
@@ -67,8 +66,7 @@ float execute(char *file) {
         struct timespec ts1;
         clock_gettime(CLOCK_REALTIME, &ts1);
         struct timespec t = diff(ts0,ts1);
-
-        close(fd);
+        //close(fd);
         float elapsed_time = t.tv_sec + t.tv_nsec/(float)1000000000;
 
         return elapsed_time;
@@ -94,4 +92,3 @@ int main(int argc, char *argv[]) {
 
         return 0;
 }
-
