@@ -393,7 +393,7 @@ func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 	flags := uint(args[1].Uint())
 
 	// Specify flag to do inmem open
-	if flags&INMEM_FLAG == INMEM_FLAG {
+	if flags&INMEM_FLAG == INMEM_FLAG || flags&linux.O_CREAT == linux.O_CREAT {
 		// Used for fs_mod
 		path, dirPath, err := copyInPath(t, addr, false /* allowEmpty */)
 		dir, name := fs.SplitLast(path)

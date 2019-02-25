@@ -8,9 +8,9 @@ import (
 // Initailize constant values
 const (BLOCK_SIZE = 1100000)
 const (TESTFD = 100)
-const (NUM_FDS = 10)
+const (NUM_FDS = 100)
 const (FD_OFFSET = 100) // This is the start FD claimed for in-mem files
-const (NUM_INODES = 10)
+const (NUM_INODES = 100)
 const (INMEM_FLAG = 346)
 
 var NUM_FILES = 0
