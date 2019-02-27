@@ -9,7 +9,7 @@ import (
 const (BLOCK_SIZE = 1100000)
 const (NUM_FDS = 100)
 const (FD_OFFSET = 100) // This is the start FD claimed for in-mem files
-const (NUM_INODES = 100)
+const (NUM_INODES = 1500)
 
 var NUM_FILES = 0
 
@@ -209,9 +209,9 @@ func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 
 		f_entry.file_offset += (BLOCK_SIZE - start)
 		size -= (BLOCK_SIZE - start)
-		start = 0
 		// Iffy logic, does this work
 		addr += (usermem.Addr)(BLOCK_SIZE - start)
+		start = 0
 	}
 
 	// Write a partial block
@@ -234,21 +234,25 @@ func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool)
 
 	var f_entry = fd_table[fd-FD_OFFSET]
 	var start = f_entry.file_offset % BLOCK_SIZE
-	var data []byte
+	//var data []byte
 
 	// Keep reading while size is non-zero
 	for ((size/(BLOCK_SIZE-start)) > 0) {
 		index := f_entry.file_offset / BLOCK_SIZE
-		data = append(data, (*f_entry.inodes)[index].inode[start:BLOCK_SIZE]...)
+		//data = append(data, (*f_entry.inodes)[index].inode[start:BLOCK_SIZE]...)
+		t.CopyOutBytes(addr, (*f_entry.inodes)[index].inode[start:BLOCK_SIZE])
 
 		f_entry.file_offset += (BLOCK_SIZE - start)
 		size -= (BLOCK_SIZE - start)
+		//Added
+		addr += (usermem.Addr)(BLOCK_SIZE - start)
 		start = 0
 	}
 
 	// Fill partial block
-	data = append(data, (*f_entry.inodes)[f_entry.file_offset / BLOCK_SIZE].inode[start:start+size]...)
+	//data = append(data, (*f_entry.inodes)[f_entry.file_offset / BLOCK_SIZE].inode[start:start+size]...)
+	t.CopyOutBytes(addr, (*f_entry.inodes)[f_entry.file_offset / BLOCK_SIZE].inode[start:start+size])
 	f_entry.file_offset += size
-	t.CopyOutBytes(addr, data)
+	//t.CopyOutBytes(addr, data)
 	return true
 }
