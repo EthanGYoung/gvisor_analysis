@@ -24,7 +24,7 @@ type fd_entry struct {
 	fd int
 	used bool
 	inodes *[]inode_entry
-	file_offset int	// Current offset into block_index inode
+	file_offset int	// Current offset into file
 	file_size int
 	append_f bool // True if passed in O_APPEND flag on open
 }
@@ -46,14 +46,14 @@ func init() {
 
 func init_fd_table() {
 	for i:=0; i< NUM_FDS; i++ {
-		fd := fd_entry{fd: FD_OFFSET + i, used: false, inodes: []inode_entry{}, block_index: 0, file_offset: 0, file_size: 0, append_f: false}
+		fd := fd_entry{fd: FD_OFFSET + i, used: false, inodes: &[]inode_entry{}, file_offset: 0, file_size: 0, append_f: false}
 		fd_table =append(fd_table, fd)
 	}
 }
 
 func init_inode_table() {
 	for i:=0; i<NUM_INODES; i++ {
-		inode_table = append(inode_table, inode_entry{inode: make([]byte, BLOCK_SIZE), used: false}, ref_count: 0)
+		inode_table = append(inode_table, inode_entry{inode: make([]byte, BLOCK_SIZE), used: false, ref_count: 0})
 	}
 }
 
@@ -121,7 +121,7 @@ func AddInodeToFD(entry *fd_entry) {
 	(*in).used = true
 	(*in).ref_count += 1
 
-	(*f_entry).inodes.append(in)
+	*(*entry).inodes = append(*(*entry).inodes, *in)
 }
 
 // Helper functions for system calls
@@ -134,7 +134,7 @@ func SeekFD(fd int, offset int, whence int) (int) {
 		return -1
 	}
 
-	var f_entry = fd_table[fd-FD_OFFSET]
+	var f_entry = &fd_table[fd-FD_OFFSET]
 
 	switch whence {
 		case 0:
@@ -145,7 +145,7 @@ func SeekFD(fd int, offset int, whence int) (int) {
 			f_entry.file_offset += offset
 		case 2:
 			// Seekend -> set to fileend (Not implementing + offset)
-			f_entry.file_offset = file_size
+			f_entry.file_offset = f_entry.file_size
 	}
 
 	return f_entry.file_offset
@@ -193,7 +193,7 @@ func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 		return false
 	}
 
-	var f_entry = fd_table[fd-FD_OFFSET]
+	var f_entry = &fd_table[fd-FD_OFFSET]
 
 	// Set offset to end of file for appendable files
 	if (f_entry.append_f) {
@@ -203,18 +203,19 @@ func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 	var start = f_entry.file_offset % BLOCK_SIZE
 
 	// Keep writing to new blocks as long as still data to write
-	while ((size/(BLOCK_SIZE - start)) > 0) {
-		t.CopyInBytes(addr, f_entry.inodes[f_entry.file_offset / BlOCK_SIZE].inode[start:BLOCK_SIZE])
+	for ((size/(BLOCK_SIZE - start)) > 0) {
+		t.CopyInBytes(addr, (*(*f_entry).inodes)[f_entry.file_offset / BLOCK_SIZE].inode[start : BLOCK_SIZE])
 		AddInodeToFD(f_entry)
 
 		f_entry.file_offset += (BLOCK_SIZE - start)
 		size -= (BLOCK_SIZE - start)
 		start = 0
-		addr += (BLOCK_SIZE - start)
+		// Iffy logic, does this work
+		addr += (usermem.Addr)(BLOCK_SIZE - start)
 	}
 
 	// Write a partial block
-	t.CopyInBytes(addr, f_entry.inodes[index].inode[start:start + size])
+	t.CopyInBytes(addr, (*(*f_entry).inodes)[f_entry.file_offset / BLOCK_SIZE].inode[start:start + size])
 	f_entry.file_offset += size
 
 	// Update size of file
@@ -232,21 +233,21 @@ func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool)
 	}
 
 	var f_entry = fd_table[fd-FD_OFFSET]
-
-	var data = *[]byte
 	var start = f_entry.file_offset % BLOCK_SIZE
+	var data []byte
 
 	// Keep reading while size is non-zero
-	while ((size/(BLOCK_SIZE-start)) > 0) {
+	for ((size/(BLOCK_SIZE-start)) > 0) {
 		index := f_entry.file_offset / BLOCK_SIZE
-		data = append(data, f_entry.inodes[index].inode[start:BLOCK_SIZE]
+		data = append(data, (*f_entry.inodes)[index].inode[start:BLOCK_SIZE]...)
 
 		f_entry.file_offset += (BLOCK_SIZE - start)
 		size -= (BLOCK_SIZE - start)
 		start = 0
 	}
 
-	data = append(data, f_entry.inodes[index].inode[start:start+size]
+	// Fill partial block
+	data = append(data, (*f_entry.inodes)[f_entry.file_offset / BLOCK_SIZE].inode[start:start+size]...)
 	f_entry.file_offset += size
 	t.CopyOutBytes(addr, data)
 	return true

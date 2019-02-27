@@ -7,14 +7,20 @@ STATIC_FD = 100
 
 def TEST_1():
 	print("TEST_1: Attempting one write then one write")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
-
+	fd = os.open("test_1.txt", os.O_RDWR|os.O_CREAT)
+	
 	str1 = b'This is My Test 1 string. YEAHYEAH'
 
 	ret = os.write(fd, str1)
 
+
 	if (ret != len(str1)):
 		print("TEST 1 FAILED: Expected successful write, but write returned diff number than written.")
+	
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 1 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
 
 	ret = -1
 	ret = os.read(fd, len(str1))
@@ -27,7 +33,7 @@ def TEST_1():
 
 def TEST_2():
 	print("TEST_2: Testing multiple writes then one read")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd = os.open("test_2.txt", os.O_RDWR|os.O_CREAT)
 	
 	test_string = b'Attempting to write for test_2'
 	
@@ -36,6 +42,11 @@ def TEST_2():
 
 	if (ret != len(test_string)):
 		print("TEST 2 FAILED: Expected successful write, but write returned diff number than written.")
+
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 2 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
 
 	ret = -1
 	for i in range(0, 10):
@@ -50,7 +61,7 @@ def TEST_2():
 
 def TEST_3():
 	print("TEST_3: Testing write,read,change var,write,read")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd = os.open("test_3.txt", os.O_RDWR|os.O_CREAT)
 	
 	test_string = b'Attempting to write for test_3'
 	
@@ -58,6 +69,11 @@ def TEST_3():
 
 	if (ret != len(test_string)):
 		print("TEST 3 FAILED: Expected successful write, but write returned diff number than written.")
+
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 3 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
 
 	ret = -1
 	ret = os.read(fd, len(test_string))
@@ -67,11 +83,22 @@ def TEST_3():
 		print("Init: " + str(test_string) + " Got: " + str(ret))
 
 	test_string = b"Short string"	
+	
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 3 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
+
 
 	ret = os.write(fd, test_string)
 
 	if (ret != len(test_string)):
 		print("TEST 3 FAILED: Expected successful write, but write returned diff number than written.")
+
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 3 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
 
 	ret = -1
 	ret = os.read(fd, len(test_string))
@@ -85,8 +112,8 @@ def TEST_3():
 
 def TEST_4():
 	print("TEST_4: Opening two files to same file, write to first, read from second")
-	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
-	fd2 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd1 = os.open("test_4.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("test_4.txt", os.O_RDWR|os.O_CREAT)
 
 	test_string = b'TEST_4 string read this!'
 
@@ -106,11 +133,11 @@ def TEST_4():
 
 def TEST_5():
 	print("TEST_5: Opening two files in-mem, write to both, read from both")
-	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
-	fd2 = os.open("bop.txt", os.O_RDWR|os.O_CREAT)
+	fd1 = os.open("test_5_1.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("test_5_2.txt", os.O_RDWR|os.O_CREAT)
 
-	test_string_1 = b'TEST_5 string read this! foo.txt'
-	test_string_2 = b'TEST_5 string this! bop.txt'
+	test_string_1 = b'TEST_5 string read this! test_5_1.txt'
+	test_string_2 = b'TEST_5 string this! test_5_2.txt'
 
 	ret1 = os.write(fd1, test_string_1)
 	ret2 = os.write(fd2, test_string_2)
@@ -118,11 +145,20 @@ def TEST_5():
 	if (ret1 != len(test_string_1) or ret2 != len(test_string_2)):
 		print("TEST 5 FAILED: Expected successful write, but write returned diff number than written.")
 
+	seek = os.lseek(fd1, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 5 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
+
+	seek = os.lseek(fd2, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 5 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
+
 	ret1 = -1
 	ret2 = -1
 	ret1 = os.read(fd1, len(test_string_1))
 	ret2 = os.read(fd2, len(test_string_2))
-
 	if (ret1 != test_string_1 or ret2 != test_string_2):
 		print("TEST 5 FAILED: Expected successful read, but not same as what was initially written.")
 		print("1 Init: " + str(test_string_1) + " Got: " + str(ret1))
@@ -132,7 +168,7 @@ def TEST_5():
 
 def TEST_6():
 	print("TEST_6: Open file, write to it, lseek to middle, write, read and check if overwrite")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd = os.open("test_6.txt", os.O_RDWR|os.O_CREAT)
 	
 	test_string = b'Test string for test number 6.'
 
@@ -150,9 +186,14 @@ def TEST_6():
 	add_string = b"added"
 	ret = os.write(fd, add_string)
 	
-	if (ret != len(test_string)):
+	if (ret != len(add_string)):
 		print("TEST 6 FAILED: Expected successful write (2), but write returned diff number than written.")
 	
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 6 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
+
 	expected = test_string[0:SEEK_LEN] + add_string + test_string[SEEK_LEN + len(add_string):len(test_string)]
 	ret = os.read(fd, len(test_string))
 	
@@ -190,7 +231,12 @@ def TEST_8():
 	if (ret != len(test_string)):
 		print("TEST 8 FAILED: Expected successful write, but write returned diff number than written.")
 
-	ret = os.read(fd2, len(test_string))
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+
+	if (seek != 0):
+		print("TEST 8 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
+
+	ret = os.read(fd, len(test_string))
 	if (ret != test_string):
 		print("TEST_8 FAILED: Expected to read: " + str(test_string) + " Got: " + str(ret))
 	else:
@@ -198,11 +244,13 @@ def TEST_8():
 
 def TEST_9():
 	print("TEST_9: Open and close file")
-	fd = os.open("test_9.txt", os.O_RDWR)
-	ret = os.close("test_9.txt")
-	
-	if (ret != 0):
-		print("TEST_9 FAILED: Non-zero return value from close")
+	fd = os.open("test_9.txt", os.O_RDWR|os.O_CREAT)
+	os.close(fd)
+	try:
+		os.write(fd, b'Test')
+		print("TEST_9 FAILED: Expected exception.")
+	except:
+		print("Finished TEST_9 successfully")	
 	
 def TEST_10():
 	print("TEST_10: Open same file twice, write to one, close one, and read from the still open fd")
