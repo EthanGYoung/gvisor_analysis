@@ -270,7 +270,43 @@ def TEST_10():
 		print("TEST_10 FAILED: Expected to read: " + str(test_string) + " Got: " + str(ret))
 	else:
 		print("Finished TEST_10 successfully")
-		
+	
+def TEST_11():
+	print("TEST_11: Open file with append, write twice, seek to front, read total and check that it is the length of both")
+	fd = os.open("test_11.txt", os.O_RDWR|os.O_CREAT|os.O_APPEND)	
+	test_string_1 = b'This is the init string.'
+	
+	ret = os.write(fd, test_string_1)
+	if (ret != len(test_string_1)):
+		print("TEST 11 FAILED: Expected successful write, but write returned diff number than written.")
+
+	test_string_2 = b'Second string that I will add'
+	
+	ret = os.write(fd, test_string_2)
+	if (ret != len(test_string_2)):
+		print("TEST 11 FAILED: Expected successful write, but write returned diff number than written.")
+
+	seek = os.lseek(fd, 0, os.SEEK_SET)
+	if (seek != 0):
+		print("TEST 11 FAILED: Attempted to seek to beginning of file. Got: " + str(seek))
+	
+	ret = os.read(fd, len(test_string_1) + len(test_string_2))
+	if (ret != (test_string_1 + test_string_2)):
+		print("TEST_11 FAILED: Expected to read: " + str(test_string_1 + test_string_2) + " Got: " + str(ret))
+	else:
+		print("Finished TEST_11 successfully")
+
+def TEST_12():
+	print("TEST_12: import numpy and use it")
+	import numpy as np
+	a = np.array([[1,2],[3,4]])
+	b = np.array([[5,6],[7,8]])
+	ret = np.multiply(a,b)
+	exp = np.array([[ 5, 12],[21, 32]])
+	if (not np.array_equal(ret,exp)):
+		print("TEST_12 FAILED: Expected: " + str(exp) + " Got: " + str(ret))
+	else:
+		print("Finished TEST_12 successfully")		
 try:
 	TEST_1()
 except Exception as e:
@@ -320,4 +356,14 @@ try:
 	TEST_10()
 except Exception as e:
 	print("Exception on TEST_10")
+	print(e)
+try:
+	TEST_11()
+except Exception as e:
+	print("Exception on TEST_11")
+	print(e)
+try:
+	TEST_12()
+except Exception as e:
+	print("Exception on TEST_12")
 	print(e)
