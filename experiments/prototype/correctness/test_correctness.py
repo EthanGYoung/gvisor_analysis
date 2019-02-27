@@ -7,7 +7,7 @@ STATIC_FD = 100
 
 def TEST_1():
 	print("TEST_1: Attempting one write then one write")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
 
 	str1 = b'This is My Test 1 string. YEAHYEAH'
 
@@ -27,7 +27,7 @@ def TEST_1():
 
 def TEST_2():
 	print("TEST_2: Testing multiple writes then one read")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
 	
 	test_string = b'Attempting to write for test_2'
 	
@@ -50,7 +50,7 @@ def TEST_2():
 
 def TEST_3():
 	print("TEST_3: Testing write,read,change var,write,read")
-	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
 	
 	test_string = b'Attempting to write for test_3'
 	
@@ -85,8 +85,8 @@ def TEST_3():
 
 def TEST_4():
 	print("TEST_4: Opening two files to same file, write to first, read from second")
-	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
-	fd2 = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
+	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
 
 	test_string = b'TEST_4 string read this!'
 
@@ -106,8 +106,8 @@ def TEST_4():
 
 def TEST_5():
 	print("TEST_5: Opening two files in-mem, write to both, read from both")
-	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT|346)
-	fd2 = os.open("bop.txt", os.O_RDWR|os.O_CREAT|346)
+	fd1 = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("bop.txt", os.O_RDWR|os.O_CREAT)
 
 	test_string_1 = b'TEST_5 string read this! foo.txt'
 	test_string_2 = b'TEST_5 string this! bop.txt'
@@ -130,6 +130,99 @@ def TEST_5():
 	else:
 		print("Finished TEST_5 successfully")
 
+def TEST_6():
+	print("TEST_6: Open file, write to it, lseek to middle, write, read and check if overwrite")
+	fd = os.open("foo.txt", os.O_RDWR|os.O_CREAT)
+	
+	test_string = b'Test string for test number 6.'
+
+	ret = os.write(fd, test_string)
+
+	if (ret != len(test_string)):
+		print("TEST 6 FAILED: Expected successful write, but write returned diff number than written.")
+	
+	SEEK_LEN = 5
+	seek = os.lseek(fd, SEEK_LEN, os.SEEK_SET)
+
+	if (seek != SEEK_LEN):
+		print("TEST 6 FAILED: seek position not equal to target SEEK_LEN")
+	
+	add_string = b"added"
+	ret = os.write(fd, add_string)
+	
+	if (ret != len(test_string)):
+		print("TEST 6 FAILED: Expected successful write (2), but write returned diff number than written.")
+	
+	expected = test_string[0:SEEK_LEN] + add_string + test_string[SEEK_LEN + len(add_string):len(test_string)]
+	ret = os.read(fd, len(test_string))
+	
+	if (ret != expected):
+		print("TEST 6 FAILED: Expected " + str(expected) + " Got: " + str(ret))
+	else:
+		print("Finished TEST_6 successfully")
+	
+def TEST_7():
+	print("TEST_7: Open file with create flag, open without, check point to same file")
+
+	fd1 = os.open("test_7.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("test_7.txt", os.O_RDWR)
+
+	test_string = b'Test string for test number 7.'
+
+	ret = os.write(fd1, test_string)
+	if (ret != len(test_string)):
+		print("TEST 7 FAILED: Expected successful write, but write returned diff number than written.")
+
+	ret = os.read(fd2, len(test_string))
+	if (ret != test_string):
+		print("TEST_7 FAILED: Expected to read: " + str(test_string) + " Got: " + str(ret))
+	else:
+		print("Finished TEST_7 successfully")
+	
+def TEST_8():
+	print("TEST_8: Write over boundary block size and read all successfully")
+	BLOCK_SIZE = 1100000
+	test_string = bytearray([1]*2*BLOCK_SIZE)
+
+	fd = os.open("test_8.txt", os.O_RDWR|os.O_CREAT)
+
+	ret = os.write(fd, test_string)
+	if (ret != len(test_string)):
+		print("TEST 8 FAILED: Expected successful write, but write returned diff number than written.")
+
+	ret = os.read(fd2, len(test_string))
+	if (ret != test_string):
+		print("TEST_8 FAILED: Expected to read: " + str(test_string) + " Got: " + str(ret))
+	else:
+		print("Finished TEST_8 successfully")
+
+def TEST_9():
+	print("TEST_9: Open and close file")
+	fd = os.open("test_9.txt", os.O_RDWR)
+	ret = os.close("test_9.txt")
+	
+	if (ret != 0):
+		print("TEST_9 FAILED: Non-zero return value from close")
+	
+def TEST_10():
+	print("TEST_10: Open same file twice, write to one, close one, and read from the still open fd")
+	fd1 = os.open("test_10.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("test_10.txt", os.O_RDWR|os.O_CREAT)
+	
+	test_string = b'Test string for test number 10.'
+
+	ret = os.write(fd1, test_string)
+	if (ret != len(test_string)):
+		print("TEST 10 FAILED: Expected successful write, but write returned diff number than written.")
+
+	os.close(fd1)
+	
+	ret = os.read(fd2, len(test_string))
+	if (ret != test_string):
+		print("TEST_10 FAILED: Expected to read: " + str(test_string) + " Got: " + str(ret))
+	else:
+		print("Finished TEST_10 successfully")
+		
 try:
 	TEST_1()
 except Exception as e:
@@ -154,4 +247,29 @@ try:
 	TEST_5()
 except Exception as e:
 	print("Exception on TEST_5")
+	print(e)
+try:
+	TEST_6()
+except Exception as e:
+	print("Exception on TEST_6")
+	print(e)
+try:
+	TEST_7()
+except Exception as e:
+	print("Exception on TEST_7")
+	print(e)
+try:
+	TEST_8()
+except Exception as e:
+	print("Exception on TEST_8")
+	print(e)
+try:
+	TEST_9()
+except Exception as e:
+	print("Exception on TEST_9")
+	print(e)
+try:
+	TEST_10()
+except Exception as e:
+	print("Exception on TEST_10")
 	print(e)
