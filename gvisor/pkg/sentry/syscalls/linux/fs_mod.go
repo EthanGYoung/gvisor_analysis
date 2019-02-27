@@ -7,11 +7,9 @@ import (
 
 // Initailize constant values
 const (BLOCK_SIZE = 1100000)
-const (TESTFD = 100)
 const (NUM_FDS = 100)
 const (FD_OFFSET = 100) // This is the start FD claimed for in-mem files
 const (NUM_INODES = 100)
-const (INMEM_FLAG = 346)
 
 var NUM_FILES = 0
 
@@ -19,17 +17,21 @@ var NUM_FILES = 0
 type inode_entry struct {
 	inode []byte
 	used bool
+	ref_count int		// Number of unique FD's referring to this inode
 }
 
 type fd_entry struct {
 	fd int
 	used bool
-	inode_entry *inode_entry
+	inodes *[]inode_entry
+	file_offset int	// Current offset into block_index inode
+	file_size int
+	append_f bool // True if passed in O_APPEND flag on open
 }
 
 type dir_entry struct {
 	key string
-	inode_entry *inode_entry
+	inodes *[]inode_entry
 }
 
 var dir_table = []dir_entry{}
@@ -44,19 +46,19 @@ func init() {
 
 func init_fd_table() {
 	for i:=0; i< NUM_FDS; i++ {
-		fd := fd_entry{fd: FD_OFFSET + i, used: false, inode_entry: nil}
+		fd := fd_entry{fd: FD_OFFSET + i, used: false, inodes: []inode_entry{}, block_index: 0, file_offset: 0, file_size: 0, append_f: false}
 		fd_table =append(fd_table, fd)
 	}
 }
 
 func init_inode_table() {
 	for i:=0; i<NUM_INODES; i++ {
-		inode_table = append(inode_table, inode_entry{inode: make([]byte, BLOCK_SIZE), used: false})
+		inode_table = append(inode_table, inode_entry{inode: make([]byte, BLOCK_SIZE), used: false}, ref_count: 0)
 	}
 }
 
 func addDirEntry(filename string) {
-	kv := dir_entry{key: filename, inode_entry: nil}
+	kv := dir_entry{key: filename, inodes: nil}
 	dir_table = append(dir_table, kv)
 	NUM_FILES = NUM_FILES + 1
 }
@@ -113,46 +115,76 @@ func FindUnusedFD() (*fd_entry, int) {
         return f, -1
 }
 
+func AddInodeToFD(entry *fd_entry) {
+	var in *inode_entry
+	in = FindUnusedInode()
+	(*in).used = true
+	(*in).ref_count += 1
+
+	(*f_entry).inodes.append(in)
+}
+
 // Helper functions for system calls
 func CheckFdRange(FD int) bool{
 	return (FD >= FD_OFFSET && FD < FD_OFFSET + NUM_FDS)
 }
 
+func SeekFD(fd int, offset int, whence int) (int) {
+	if (!CheckFdRange(fd)) {
+		return -1
+	}
+
+	var f_entry = fd_table[fd-FD_OFFSET]
+
+	switch whence {
+		case 0:
+			// Seekset -> set file_offset to offset
+			f_entry.file_offset = offset
+		case 1:
+			// Seekcurr -> set to current file_offset + offset
+			f_entry.file_offset += offset
+		case 2:
+			// Seekend -> set to fileend (Not implementing + offset)
+			f_entry.file_offset = file_size
+	}
+
+	return f_entry.file_offset
+}
+
 // Checks if this file is an inmem file and does appropriate steps if it is and returns fd. Else returns nil
-func InmemOpen(filename string) int {
-	var n *dir_entry
+func InmemOpen(filename string, o_append bool) int {
+	var d_entry *dir_entry
 	var err int
 
 	// Check if listed statically and/or open already
-	n,err = FindDirEntry(filename)
+	d_entry,err = FindDirEntry(filename)
 
 	// Add dir_entry to table
 	if (err == -1) {
 		addDirEntry(filename)
 
 		// Search again for DirEntry
-		n,err = FindDirEntry(filename)
+		d_entry,err = FindDirEntry(filename)
 	}
 
-	var f *fd_entry
+	var f_entry *fd_entry
 	// Find unused FD and use as this files FD
-	f,err = FindUnusedFD()
-	(*f).used = true
+	f_entry,err = FindUnusedFD()
+	(*f_entry).used = true
+	(*f_entry).append_f = o_append
 
-	if ((*n).inode_entry == nil) {
+	if ((*d_entry).inodes == nil) {
 		// Find unused inode to use
-		var in *inode_entry
-		in = FindUnusedInode()
-		(*in).used = true
-		(*f).inode_entry = in
-		(*n).inode_entry = in
+		AddInodeToFD(f_entry)
+
+		(*d_entry).inodes = (*f_entry).inodes
 	} else {
 		// Reuse pointer from dir_entry
-		f.inode_entry = n.inode_entry
+		f_entry.inodes = d_entry.inodes
 	}
 
 	// File is now open
-	return f.fd
+	return f_entry.fd
 
 }
 
@@ -161,15 +193,61 @@ func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 		return false
 	}
 
-	t.CopyInBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode[0:size])
+	var f_entry = fd_table[fd-FD_OFFSET]
+
+	// Set offset to end of file for appendable files
+	if (f_entry.append_f) {
+		f_entry.file_offset = f_entry.file_size
+	}
+
+	var start = f_entry.file_offset % BLOCK_SIZE
+
+	// Keep writing to new blocks as long as still data to write
+	while ((size/(BLOCK_SIZE - start)) > 0) {
+		t.CopyInBytes(addr, f_entry.inodes[f_entry.file_offset / BlOCK_SIZE].inode[start:BLOCK_SIZE])
+		AddInodeToFD(f_entry)
+
+		f_entry.file_offset += (BLOCK_SIZE - start)
+		size -= (BLOCK_SIZE - start)
+		start = 0
+		addr += (BLOCK_SIZE - start)
+	}
+
+	// Write a partial block
+	t.CopyInBytes(addr, f_entry.inodes[index].inode[start:start + size])
+	f_entry.file_offset += size
+
+	// Update size of file
+	if (f_entry.file_size < f_entry.file_offset) {
+		f_entry.file_size = f_entry.file_offset
+	}
+
 	return true
 }
 
+// Assume user will only read within bounds of file
 func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
 	if (!CheckFdRange(fd)) {
 		return false
 	}
 
-	t.CopyOutBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode[0:size])
+	var f_entry = fd_table[fd-FD_OFFSET]
+
+	var data = *[]byte
+	var start = f_entry.file_offset % BLOCK_SIZE
+
+	// Keep reading while size is non-zero
+	while ((size/(BLOCK_SIZE-start)) > 0) {
+		index := f_entry.file_offset / BLOCK_SIZE
+		data = append(data, f_entry.inodes[index].inode[start:BLOCK_SIZE]
+
+		f_entry.file_offset += (BLOCK_SIZE - start)
+		size -= (BLOCK_SIZE - start)
+		start = 0
+	}
+
+	data = append(data, f_entry.inodes[index].inode[start:start+size]
+	f_entry.file_offset += size
+	t.CopyOutBytes(addr, data)
 	return true
 }

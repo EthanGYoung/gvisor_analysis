@@ -28,6 +28,12 @@ func Lseek(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscall
 	offset := args[1].Int64()
 	whence := args[2].Int()
 
+	var inmem_seek = SeekFD(fd, offset, whence)
+
+	if (inmem_seek != -1) {
+		return inmem_seek, nil, nil
+	}
+
 	file := t.FDMap().GetFile(fd)
 	if file == nil {
 		return 0, nil, syserror.EBADF
