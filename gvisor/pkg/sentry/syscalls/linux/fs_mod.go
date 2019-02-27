@@ -1,6 +1,10 @@
 package linux
 
 import (
+  "fmt"
+  "os"
+  "path/filepath"
+
   "gvisor.googlesource.com/gvisor/pkg/sentry/kernel"
   "gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
 )
@@ -41,6 +45,35 @@ func init() {
 	init_fd_table()
 	init_inode_table()
 }
+func startPreload(t *kernel.Task, fd int, addr usermem.Addr, path string){
+  size, err := DirSize(path)
+  if(err != nil){
+    return
+  }
+  WriteToUserMem(t,fd,addr,int(size))
+}
+
+func DirSize(path string) (int64, error) {
+    var size int64
+    err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+        if err != nil {
+            return err
+        }
+        if !info.IsDir() {
+            size += info.Size()
+        }
+        return err
+    })
+    return size, err
+}
+
+func printDir(){
+  dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+    if err != nil {
+            fmt.Println(err)
+    }
+    fmt.Println(dir)
+}
 
 func init_fd_table() {
 	for i:=0; i< NUM_FDS; i++ {
@@ -49,6 +82,16 @@ func init_fd_table() {
 	}
 }
 
+func printFDTable(){
+  fmt.Println("The content of FD table is:")
+  fmt.Println(fd_table)
+}
+func printDirTable(){
+  fmt.Println("The content of dir table is:")
+  fmt.Println(dir_table)
+}
+
+
 func init_inode_table() {
 	for i:=0; i<NUM_INODES; i++ {
 		inode_table = append(inode_table, inode_entry{inode: make([]byte, BLOCK_SIZE), used: false})
@@ -56,6 +99,7 @@ func init_inode_table() {
 }
 
 func addDirEntry(filename string) {
+  fmt.Println("Adding file named:",filename)
 	kv := dir_entry{key: filename, inode_entry: nil}
 	dir_table = append(dir_table, kv)
 	NUM_FILES = NUM_FILES + 1
@@ -76,6 +120,7 @@ func FindFDEntry(fd int) (fd_entry,int) {
 }
 
 func FindDirEntry(filename string) (*dir_entry,int) {
+  fmt.Println("Trying to look for:",filename)
 	var d *dir_entry
 	// Search dir_table to find entry cooresponding to filename. Returns nil if not found.
 	for i:=0; i<NUM_FILES; i++ {
@@ -107,10 +152,9 @@ func FindUnusedFD() (*fd_entry, int) {
 		if (!fd_table[i].used) {
 			f = &(fd_table[i])
 			return f, 0
-                }
-        }
-
-        return f, -1
+    }
+  }
+    return f, -1
 }
 
 // Helper functions for system calls
@@ -169,7 +213,7 @@ func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool)
 	if (!CheckFdRange(fd)) {
 		return false
 	}
-
+  fmt.Println("Trying to get access to fd :",fd_table[fd-FD_OFFSET])
 	t.CopyOutBytes(addr, fd_table[fd-FD_OFFSET].inode_entry.inode[0:size])
 	return true
 }

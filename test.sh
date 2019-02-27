@@ -51,23 +51,23 @@ case $RUNTIME in
 		rm $APP_NAME
 		;;
 	"runc" | "runsc")
-		#echo "Building $APP_NAME image"
-		#if [ $BUILD ]
-		#then 
-		#	echo "Executing: $BUILD_CMD"
-		#	$BUILD_CMD
-		#fi
+		echo "Building $APP_NAME image"
+		# if [ $BUILD ]
+		# then
+			echo "Executing: $BUILD_CMD"
+			$BUILD_CMD
+		# fi
 
 		echo "Running test on docker ($RUNTIME)"
 		Run_Docker_Container $RUNTIME $PARAMS >> $LOG_PATH
 		echo " " >> $LOG_PATH
 		echo "Saved log to $LOG_PATH"
-		
-		#if [ $RM ]
-		#then
-		#	echo "Removing build"
-		#	$RM_CMD
-		#fi
+
+		# if [ $RM ]
+		# then
+			echo "Removing build"
+			$RM_CMD
+		# fi
 		;;
 	*)
 		echo "$RUNTIME is not a valid RUNTIME arg for $APP_NAME. Not executing test."

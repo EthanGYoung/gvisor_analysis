@@ -9,12 +9,12 @@ TEST_FILE="test.sh"
 # spinup c
 C_SPINUP_FOLDER_PATH="experiments/spinup/c_spinup/"
 C_SPINUP_APP_NAME="c_spinup"
-C_SPINUP_NUM_TRAILS=1
+C_SPINUP_NUM_TRAILS=100
 
 # spinup python
 PYTHON_FOLDER_PATH="experiments/spinup/python_spinup/"
 PYTHON_SPINUP_APP_NAME="python_spinup"
-PYTHON_SPINUP_NUM_TRAILS=1
+PYTHON_SPINUP_NUM_TRAILS=100
 
 	# Generate list of tests
 generate_cmds() {

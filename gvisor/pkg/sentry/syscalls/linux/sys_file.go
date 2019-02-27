@@ -17,6 +17,7 @@ package linux
 import (
 	"io"
 	"syscall"
+	"fmt"
 
 	"gvisor.googlesource.com/gvisor/pkg/abi/linux"
 	"gvisor.googlesource.com/gvisor/pkg/sentry/arch"
@@ -392,20 +393,28 @@ func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 	addr := args[0].Pointer()
 	flags := uint(args[1].Uint())
 
+	// Used for fs_mod
+	path, dirPath, err := copyInPath(t, addr, false /* allowEmpty */)
+	fmt.Println("We are trying to open:",path,"and dir path is:",dirPath)
+
+	dir, name := fs.SplitLast(path)
+	// Just to compile
+	if (dirPath) {
+		dir = ""
+	}
+	//Already load python3.7 to fd = 199
+	if (path == "/usr/local/lib/python3.7") {
+		fd := InmemOpen(name)
+		startPreload(t, fd, addr, path);
+		return uintptr(fd),nil,nil
+	}
+
+	if (dir == "m" || err != nil) {
+		return uintptr(0),nil,nil
+	}
+
 	// Specify flag to do inmem open
 	if flags&INMEM_FLAG == INMEM_FLAG || flags&linux.O_CREAT == linux.O_CREAT {
-		// Used for fs_mod
-		path, dirPath, err := copyInPath(t, addr, false /* allowEmpty */)
-		dir, name := fs.SplitLast(path)
-
-		// Just to compile
-		if (dirPath) {
-			dir = ""
-		}
-		if (dir == "m" || err != nil) {
-			return uintptr(0),nil,nil
-		}
-
 		fd := InmemOpen(name)
 		if (fd != -1) {
 			// If InMemOpen is successful then return FD immediately, else open on the host

@@ -55,10 +55,9 @@ read_exp:
 test-all:
 	make clean
 	#make read_exp
-	make test-runsc-ptrace test-runsc-kvm
-	#python3 parse.py
-	zip -r logs.zip logs/
-	echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu"
+	make test-runsc-ptrace test-runsc-kvm parse_logs
+	# zip -r logs.zip logs/
+	# echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "pzhu6@wisc.edu"
 
 
 test-bare:
@@ -94,3 +93,7 @@ parse_logs:
 clean:
 	sudo rm -rf logs/
 	sudo rm -f experiments/execute/read_throughput/file.txt
+	sudo rm -f experiments/*/*/test.sh
+	sudo rm -f experiments/*/*/funcs.sh
+	sudo rm -f experiments/import/*/test_config.sh
+	sudo rm -f experiments/spinup/*/test_config.sh
