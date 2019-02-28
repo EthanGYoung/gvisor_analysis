@@ -15,6 +15,13 @@ GETPID_NUM_CALLS=()
 #(100000000)
 GETPID_TESTS=10
 
+# openclose_throughput
+OPENCLOSE_FOLDER_PATH="experiments/execute/openclose_throughput/"
+OPENCLOSE_APP_NAME="openclose"
+OPENCLOSE_TRIALS=100000
+#(100000000)
+OPENCLOSE_TESTS=2
+
 # network_throughput
 NETWORK_FOLDER_PATH="experiments/execute/network_throughput/"
 NETWORK_APP_NAME="net"
@@ -28,7 +35,8 @@ READ_APP_NAME="read"
 READ_TRIALS=100000
 READ_READ_SIZE=(4096 16384 65536 262144 1048576) # Product of Trials and read size must be less than 10MB
 READ_FILE="file.txt"
-READ_TESTS=100
+READ_TESTS=0
+#100
 
 # write_throughput
 WRITE_FOLDER_PATH="experiments/execute/write_throughput/"
@@ -36,7 +44,8 @@ WRITE_APP_NAME="write"
 WRITE_TRIALS=100000
 WRITE_WRITE_SIZE=(4096 16384 65536 262144 1048576)
 WRITE_FILE="file.txt"
-WRITE_TESTS=100
+WRITE_TESTS=0
+#100
 
 	# Generate list of tests
 generate_cmds() {
@@ -65,6 +74,10 @@ generate_cmds() {
 	# 	TEST_EXECUTE_LIST+=("$NETWORK_FOLDER_PATH$TEST_FILE $NETWORK_FOLDER_PATH $NETWORK_APP_NAME $RUNTIME $NETWORK_TRIALS $i")
 	# done
 
+	for (( j=1; j <= $OPENCLOSE_TESTS; ++j ))
+	do
+		TEST_EXECUTE_LIST+=("$OPENCLOSE_FOLDER_PATH$TEST_FILE $OPENCLOSE_FOLDER_PATH $OPENCLOSE_APP_NAME $RUNTIME $OPENCLOSE_TRIALS")
+	done
 	# Read_throughput
 	for i in ${READ_READ_SIZE[@]}
 	do
