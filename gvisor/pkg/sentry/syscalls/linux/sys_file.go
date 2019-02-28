@@ -17,7 +17,6 @@ package linux
 import (
 	"io"
 	"syscall"
-//	"fmt"
 
 	"gvisor.googlesource.com/gvisor/pkg/abi/linux"
 	"gvisor.googlesource.com/gvisor/pkg/sentry/arch"
@@ -415,7 +414,7 @@ func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 	// Specify flag to do inmem open
 	if flags&linux.O_CREAT == linux.O_CREAT || found != nil {
 
-		fd := InmemOpen(name, flags&linux.O_APPEND == linux.O_APPEND)
+		fd := InmemOpen(name, flags&linux.O_APPEND == linux.O_APPEND, flags&linux.O_CREAT == linux.O_CREAT)
 		if (fd != -1) {
 			// If InMemOpen is successful then return FD immediately, else open on the host
 			return uintptr(fd), nil, nil
@@ -725,6 +724,20 @@ func Fchdir(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.Syscal
 // Close implements linux syscall close(2).
 func Close(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallControl, error) {
 	fd := kdefs.FD(args[0].Int())
+
+	found,e := FindFDEntry(int(fd))
+	if (e == 100) {
+		return uintptr(0),nil,nil
+	}
+
+	// File exits in dir table
+	if (found != nil) {
+		retfd := InmemClose(int(fd))
+		if (retfd == 0) {
+			// If InmemClose is successful then return 0 immediately, else close on the host
+			return 0, nil, nil
+		}
+	}
 
 	file, ok := t.FDMap().Remove(fd)
 	if !ok {
