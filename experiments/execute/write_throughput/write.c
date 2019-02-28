@@ -50,6 +50,9 @@ float execute(char *file) {
         clock_gettime(CLOCK_REALTIME, &ts0);
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
+		if ((i % 1000) == 0) {
+			lseek(fd, 0, SEEK_SET);
+		}
 		// Reads total read size
 		if ( (r = write(fd, data, WRITE_SIZE)) == WRITE_SIZE) {
 			total_written = total_written + r;
