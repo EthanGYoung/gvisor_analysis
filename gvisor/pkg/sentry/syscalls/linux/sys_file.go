@@ -414,7 +414,7 @@ func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 	// Specify flag to do inmem open
 	if flags&linux.O_CREAT == linux.O_CREAT || found != nil {
 
-		fd := InmemOpen(name, flags&linux.O_APPEND == linux.O_APPEND, flags&linux.O_CREAT == linux.O_CREAT)
+		fd := InmemOpen(name, flags&linux.O_APPEND == linux.O_APPEND)
 		if (fd != -1) {
 			// If InMemOpen is successful then return FD immediately, else open on the host
 			return uintptr(fd), nil, nil

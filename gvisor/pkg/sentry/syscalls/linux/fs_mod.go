@@ -150,7 +150,7 @@ func SeekFD(fd int, offset int, whence int) (int) {
 }
 
 // Checks if this file is an inmem file and does appropriate steps if it is and returns fd. Else returns nil
-func InmemOpen(filename string, o_append bool, o_create bool) int {
+func InmemOpen(filename string, o_append bool) int {
 	var d_entry *dir_entry
 	var err int
 
