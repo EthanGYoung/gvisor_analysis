@@ -1,8 +1,8 @@
 package linux
 
 import (
-  "gvisor.googlesource.com/gvisor/pkg/sentry/kernel"
-  "gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
+	"gvisor.googlesource.com/gvisor/pkg/sentry/kernel"
+	"gvisor.googlesource.com/gvisor/pkg/sentry/usermem"
 )
 
 // Initailize constant values
@@ -76,14 +76,14 @@ func FindFDEntry(fd int) (*fd_entry,int) {
 
 func FindDirEntry(filename string) (*dir_entry,int) {
 	var d *dir_entry
-  if(dir_table != nil){
-    // Search dir_table to find entry cooresponding to filename. Returns nil if not found.
-  	for i:=0; i<len(dir_table); i++ {
-  		if (dir_table[i].key == filename) {
-  			return &dir_table[i], 0
-  		}
-  	}
-  }
+	if(dir_table != nil){
+	    // Search dir_table to find entry cooresponding to filename. Returns nil if not found.
+		for i:=0; i<len(dir_table); i++ {
+			if (dir_table[i].key == filename) {
+				return &dir_table[i], 0
+			}
+		}
+	}
 	return d, -1
 }
 
@@ -187,82 +187,85 @@ func InmemOpen(filename string, o_append bool) int {
 
 //
 func InmemClose(fd int) int {
-  //Clean up fd entry
-  var f_entry *fd_entry
-  var err int
+	//Clean up fd entry
+	var f_entry *fd_entry
+	var err int
 
 	f_entry, err = FindFDEntry(fd)
-  // Cannot find file in fd table, error
-  if (err == -1) {
+	// Cannot find file in fd table, error
+	if (err == -1) {
 		return -1
 	}
-  CleanFDEntry(f_entry)
+	CleanFDEntry(f_entry)
 
-  dir_table = UpdateDirTable(f_entry.inodes)
-
+	dir_table = UpdateDirTable(f_entry.inodes)
 	// File is now closed
 	return 0
 }
 
 func UpdateDirTable(i_entries *[]inode_entry) []dir_entry{
 
-  for index, dir_entry := range dir_table {
-    if(i_entries == dir_entry.inodes && (*i_entries)[0].used == false){
-      if (len(dir_table) <= 1){
-        return nil
-      }
-      if(index == 0){
-        return dir_table[1:]
-      }
-      if (index == len(dir_table) - 1){
-        return dir_table[0:index]
-      }
-      return append(dir_table[:index], dir_table[index+1:]...)
-    }
-  }
-  return dir_table
+	for index, dir_entry := range dir_table {
+		if(i_entries == dir_entry.inodes && (*i_entries)[0].used == false){
+			if (len(dir_table) <= 1){
+				return nil
+		}
+		if(index == 0){
+			return dir_table[1:]
+		}
+		if (index == len(dir_table) - 1){
+			return dir_table[0:index]
+		}
+		return append(dir_table[:index], dir_table[index+1:]...)
+		}
+	}
+	return dir_table
 }
 
 func CleanFDEntry(f_entry *fd_entry){
-  (*f_entry).used = false
-  (*f_entry).append_f = false
-  for index, _ := range *(*f_entry).inodes {
-    // i_entry is the inode_entry from inodes
-    i_entry := &(*(*f_entry).inodes)[index]
-    (*i_entry).ref_count--
-    if((*i_entry).ref_count <= 0){
-      //No need to clean the inode content because overwriting anyway
-      (*i_entry).ref_count = 0
-      (*i_entry).used = false
-    }
-  }
-  (*f_entry).file_offset = 0
-  (*f_entry).file_size = 0
+	(*f_entry).used = false
+	(*f_entry).append_f = false
+	for index, _ := range *(*f_entry).inodes {
+		// i_entry is the inode_entry from inodes
+		i_entry := &(*(*f_entry).inodes)[index]
+		(*i_entry).ref_count--
+		if((*i_entry).ref_count <= 0){
+			//No need to clean the inode content because overwriting anyway
+			(*i_entry).ref_count = 0
+			(*i_entry).used = false
+		}
+	}
+
+	(*f_entry).file_offset = 0
+	(*f_entry).file_size = 0
 }
+
 func CheckValidFd(fd int) bool{
-  for _, f_entry := range fd_table {
-    if(f_entry.used && f_entry.fd == fd){
-      return true
-    }
-  }
-  return false
+	for _, f_entry := range fd_table {
+		if(f_entry.used && f_entry.fd == fd){
+			return true
+		}
+	}
+
+	return false
 }
+
 func CheckValidRead(fd int) bool{
-  f_entry, err := FindFDEntry(fd)
-  if (err == -1){
-    return false
-  }
-  return (*f_entry).file_size != 0
+	f_entry, err := FindFDEntry(fd)
+	if (err == -1){
+		return false
+	}
+
+	// TODO: Need a file struct to hold file size. Bug because FD's don't know size, so open two pointing to same file not work
+	//return (*f_entry).file_size != 0
+	return (*f_entry).file_size != -1
 }
 
 func WriteToUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool){
-	if (!CheckFdRange(fd)) {
+	// TODO: Need CheckFdRange now?
+	if (!CheckFdRange(fd) || !CheckValidFd(fd)) {
 		return false
 	}
-  if(!CheckValidFd(fd)){
-    return false
-  }
-
 	var f_entry = &fd_table[fd-FD_OFFSET]
 
 	// Set offset to end of file for appendable files
@@ -301,10 +304,11 @@ func ReadFromUserMem(t *kernel.Task, fd int, addr usermem.Addr, size int) (bool)
 		return false
 	}
 
-  if(!CheckValidRead(fd)){
-    t.CopyOutBytes(addr, []byte{})
-    return true
-  }
+	if(!CheckValidRead(fd)){
+		// TODO: I think if not a valid read it is supposed to return 0 bytes
+		t.CopyOutBytes(addr, []byte{})
+		return true
+	}
 
 	var f_entry = fd_table[fd-FD_OFFSET]
 	var start = f_entry.file_offset % BLOCK_SIZE
