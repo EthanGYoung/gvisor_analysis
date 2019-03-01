@@ -343,13 +343,12 @@ def TEST_14():
 	else:
 		print("Finished TEST_14 part B successfully")
 
+
 def TEST_15():
-	print("TEST_15: Open and close file and create a new one with the same name and read directly")
+	print("TEST_15: Open and close file read directly")
 	fd = os.open("test_15.txt", os.O_RDWR|os.O_CREAT)
 	test_string = b'Test string for test number 15.'
-	os.write(fd, test_string)
 	os.close(fd)
-	fd = os.open("test_15.txt", os.O_RDWR|os.O_CREAT)
 	ret = os.read(fd, len(test_string))
 	if (ret == test_string):
 		print("TEST_15 FAILED: Expected to read: None Got: " + str(ret))
@@ -357,10 +356,9 @@ def TEST_15():
 		print("Finished TEST_15 successfully")
 
 def TEST_16():
-	print("TEST_16: Open and close file read directly")
+	print("TEST_16: Open and read directly")
 	fd = os.open("test_16.txt", os.O_RDWR|os.O_CREAT)
 	test_string = b'Test string for test number 16.'
-	os.close(fd)
 	ret = os.read(fd, len(test_string))
 	if (ret == test_string):
 		print("TEST_16 FAILED: Expected to read: None Got: " + str(ret))
@@ -368,12 +366,33 @@ def TEST_16():
 		print("Finished TEST_16 successfully")
 
 def TEST_17():
-	print("TEST_17: Open and read directly")
-	fd = os.open("test_17.txt", os.O_RDWR|os.O_CREAT)
-	test_string = b'Test string for test number 17.'
-	ret = os.read(fd, len(test_string))
+	print("TEST_17: Opening two files to same file, write to first, read from second")
+	fd1 = os.open("test_17.txt", os.O_RDWR|os.O_CREAT)
+	fd2 = os.open("test_17.txt", os.O_RDWR|os.O_CREAT)
+
+	test_string = b'TEST_17 string read this!'
+
+	ret = os.write(fd1, test_string)
+
+	if (ret != len(test_string)):
+		print("TEST 17 FAILED: Expected successful write, but write returned diff number than written.")
+
+	ret = -1
+	ret = os.read(fd2, len(test_string))
+
+	os.close(fd1)
+	os.close(fd2)
+	fd1 = os.open("test_17.txt", os.O_RDWR|os.O_CREAT)
+	ret1 = os.write(fd1, test_string)
+	fd2 = os.open("test_18.txt", os.O_RDWR|os.O_CREAT)
+
+
+	ret2 = os.write(fd2, b'Just Testing U Know')
+	ret = os.read(fd1, len(test_string))
+	os.close(fd1)
+	os.close(fd2)
 	if (ret == test_string):
-		print("TEST_17 FAILED: Expected to read: None Got: " + str(ret))
+		print("TEST 17 FAILED: Expected successful to read gibberish but actually returned meaningful value")
 	else:
 		print("Finished TEST_17 successfully")
 try:
@@ -449,7 +468,7 @@ except Exception as e:
 try:
 	TEST_15()
 except Exception as e:
-	print("Exception on TEST_15")
+	print("Expeting to throw Bad file descriptor Exception on TEST_15")
 	print(e)
 try:
 	TEST_16()
