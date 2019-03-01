@@ -396,8 +396,6 @@ func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 	path, dirPath, err := copyInPath(t, addr, false /* allowEmpty */)
 	dir, name := fs.SplitLast(path)
 
-	//fmt.Println("Opening file at path:", name)
-
 	// Just to compile
 	if (dirPath) {
 		dir = ""
@@ -406,22 +404,19 @@ func Open(t *kernel.Task, args arch.SyscallArguments) (uintptr, *kernel.SyscallC
 		return uintptr(0),nil,nil
 	}
 
-	found,e := FindDirEntry(name)
+	found,e := FindFile(name)
 	if (e == 100) {
 		return uintptr(0),nil,nil
 	}
 
 	// Specify flag to do inmem open
 	if flags&linux.O_CREAT == linux.O_CREAT || found != nil {
-
 		fd := InmemOpen(name, flags&linux.O_APPEND == linux.O_APPEND)
 		if (fd != -1) {
 			// If InMemOpen is successful then return FD immediately, else open on the host
 			return uintptr(fd), nil, nil
 		}
 	}
-
-	//fmt.Println("Opening without inmem")
 
 	if flags&linux.O_CREAT != 0 {
 		mode := linux.FileMode(args[2].ModeT())
