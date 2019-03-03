@@ -35,7 +35,7 @@ float execute(char *file) {
         int fd;
 
         // Open the specific file
-        fd = open(file, O_WRONLY|O_CREAT|INMEM_FLAG);
+        fd = open(file, O_WRONLY|O_CREAT);
         if (fd == 0) {
                 perror ("ERROR: open");
                 return 1;
@@ -50,7 +50,7 @@ float execute(char *file) {
         clock_gettime(CLOCK_REALTIME, &ts0);
 
 	for (int i = 0; i < NUM_TRIALS; i++) {
-		if ((i % 1000) == 0) {
+		if ((i % 1000) == 1) {
 			lseek(fd, 0, SEEK_SET);
 		}
 		// Reads total read size

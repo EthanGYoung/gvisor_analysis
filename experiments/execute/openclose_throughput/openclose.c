@@ -10,7 +10,7 @@
 
 int NUM_TRIALS;
 int READ_SIZE;
-char* FILE_PATH = "./placeholder.txt";
+char* FILE_PATH = "/myapp/placeholder.txt";
 
 // Gets the current time
 struct timespec diff(struct timespec start, struct timespec end)
