@@ -44,47 +44,30 @@ bar_width = 0.05
 opacity = 0.8
 x = []
 
-for i in range(0, len(averages)-2):
+for i in range(0, len(averages)):
 	x.append(index+bar_width*i)	
 
-rects1 = plt.bar(x[3], averages['bare'], bar_width/2,
+rects1 = plt.bar(x[0], averages['bare'], bar_width/2,
 alpha=opacity,
-color='0.3',
+color='0.2',
 label='bare')
 
-rects2 = plt.bar(x[2], averages['runc'], bar_width/2,
-hatch='-',
+rects2 = plt.bar(x[1], averages['runc'], bar_width/2,
 alpha=opacity,
 color='0.5',
 label='runc')
-'''
-rects3 = plt.bar(x[1], averages['runsc_ptrace'], bar_width/2,
-alpha=opacity,
-color='0.7',
-label='runsc_ptrace')
-'''
-rects4 = plt.bar(x[0], averages['runsc_kvm'], bar_width/2,
+
+rects4 = plt.bar(x[3], averages['runsc_kvm'], bar_width/2,
 alpha=opacity,
 hatch='/',
-color='0.9',
+color='0.8',
 label='runsc_kvm')
-
-'''
-rects5 = plt.bar(x[4], averages['mod_ptrace'], bar_width/2,
-alpha=opacity,
-color='r',
-label='mod_ptrace')
-'''
-rects6 = plt.bar(x[1], averages['mod_kvm'], bar_width/2,
-alpha=opacity,
-color='b',
-label='mod_kvm')
 
 plt.ylabel('Ratio Open/Close Time Relative to Runsc_kvm')
 plt.title('Time of Open/Close System Call Relative to Runsc_kvm')
-for i in range(0, len(averages)-2):
+for i in range(0, len(averages)):
 	x[i] = x[i] +  bar_width/4
-plt.xticks(x,["runc_kvm","kvm_mod","runc","bare"])
+plt.xticks(x,["bare","runc","runsc_kvm"])
 plt.xlim(left=0)
 #plt.legend(loc = 'upper right')
  

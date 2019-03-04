@@ -39,7 +39,7 @@ for command in results:
 	if ("openclose" in command):
 		size = 0
 	else:
-		size = int(command.split("100000 ")[1].split(" ./")[0])
+		size = int(command.split("100000 ")[1].split(" /myapp/")[0])
 	if "runsc" in command:
 		if "kvm" in command:
 			if "mod" in command:
