@@ -35,9 +35,9 @@ float execute(char *file) {
         int fd, fd_WR;
 
         // Open the specific file inmem
-        fd_WR = open(file, O_WRONLY|O_CREAT);
-        if (fd == 0) {
-                perror ("ERROR: open");
+        fd_WR = open(file, O_CREAT|O_RDWR);
+        if (fd_WR < 0) {
+                perror ("ERROR: open unfortunate");
                 return 1;
         }
 
@@ -53,7 +53,7 @@ float execute(char *file) {
 	}
         fd = open(file, O_RDONLY);
         if (fd == 0) {
-                perror ("ERROR: open");
+                perror ("ERROR: open2");
                 return 1;
         }
         // Start timer

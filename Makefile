@@ -12,7 +12,7 @@ docker:
 	sudo apt-get update
 	sudo apt-get -y install docker-ce
 	#apt-cache madison docker-ce
-	sudo apt-get -y install docker-ce=5:18.09.2~3-0~ubuntu-xenial
+	sudo apt-get -y install docker-ce=5:18.09.3~3-0~ubuntu-xenial
 
 gvisor:
 	wget https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc
@@ -55,10 +55,10 @@ read_exp:
 test-all:
 	make clean
 	#make read_exp
-	make test-runsc-ptrace test-runsc-kvm
+	make test-bare test-runc test-runsc-ptrace test-runsc-kvm
 	#python3 parse.py
 	zip -r logs.zip logs/
-	echo "Message Body Here" | mutt -s "Log zip" -a logs.zip -- "eyoung8@wisc.edu"
+	echo "Message Body Here" | mutt -s "Read and Write Myapp" -a logs.zip -- "eyoung8@wisc.edu"
 
 
 test-bare:
