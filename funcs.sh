@@ -23,7 +23,7 @@ Run_Bare_Metal() {
   elif [[ $FOLDER_PATH == *"spinup"* ]]; then
     echo "Omitting spinup related tests for bare metal."
   else
-    cmd="./$APP_NAME $PARAMS"
+    cmd="sudo ./$APP_NAME $PARAMS"
     echo "Executing: $cmd"
     $cmd
   fi

@@ -20,7 +20,8 @@ OPENCLOSE_FOLDER_PATH="experiments/execute/openclose_throughput/"
 OPENCLOSE_APP_NAME="openclose"
 OPENCLOSE_TRIALS=100000
 #(100000000)
-OPENCLOSE_TESTS=2
+OPENCLOSE_TESTS=0
+#2
 
 # network_throughput
 NETWORK_FOLDER_PATH="experiments/execute/network_throughput/"
@@ -34,18 +35,16 @@ READ_FOLDER_PATH="experiments/execute/read_throughput/"
 READ_APP_NAME="read"
 READ_TRIALS=100000
 READ_READ_SIZE=(4096 16384 65536 262144 1048576) # Product of Trials and read size must be less than 10MB
-READ_FILE="file.txt"
-READ_TESTS=0
-#100
+READ_FILE="/myapp/file.txt"
+READ_TESTS=100
 
 # write_throughput
 WRITE_FOLDER_PATH="experiments/execute/write_throughput/"
 WRITE_APP_NAME="write"
 WRITE_TRIALS=100000
 WRITE_WRITE_SIZE=(4096 16384 65536 262144 1048576)
-WRITE_FILE="file.txt"
-WRITE_TESTS=0
-#100
+WRITE_FILE="/myapp/file.txt"
+WRITE_TESTS=100
 
 	# Generate list of tests
 generate_cmds() {
