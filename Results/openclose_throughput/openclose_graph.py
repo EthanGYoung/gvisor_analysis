@@ -11,18 +11,17 @@ results = {}
 with open(sys.argv[1]) as f:
 	csv_reader = csv.reader(f, delimiter=',')
 	for row in csv_reader:
+		if ('\xef\xbb\xbf' in row[0]):
+			continue
 		if (row[0] not in results):
+			print(row)
 			results[row[0]] = []
 				
 		results[row[0]].append(float(row[2]))
 
-# Calculate mean throughput (1000 Calls/second) for each
-def throughput(data, control):
-	return control/(data) # 1 second 
-
 averages = {}
 for platform in results:
-	averages[platform] = throughput(statistics.mean(results[platform]), statistics.mean(results["runsc_kvm"]))
+	averages[platform] = statistics.mean(results[platform]) * 1000000 # Microseconds
 
 # Sort keys inorder of size
 def sort_keys(mydict):
@@ -32,8 +31,6 @@ def sort_keys(mydict):
         for key in keylist:
                 mylist.append(mydict[key])
         return mylist
-
-print(averages)
 
 n_groups = 1
 
@@ -46,31 +43,49 @@ x = []
 
 for i in range(0, len(averages)):
 	x.append(index+bar_width*i)	
-
-rects1 = plt.bar(x[0], averages['bare'], bar_width/2,
+size_factor = 1.3
+rects1 = plt.bar(x[0], averages['bare'], bar_width/size_factor,
 alpha=opacity,
-color='0.2',
+color='0.3',
 label='bare')
 
-rects2 = plt.bar(x[1], averages['runc'], bar_width/2,
+rects2 = plt.bar(x[3]+bar_width/size_factor, averages['tmpfs_bare'], bar_width/size_factor,
 alpha=opacity,
 color='0.5',
+label='tmpfs_bare')
+
+rects3 = plt.bar(x[1], averages['runc'], bar_width/size_factor,
+alpha=opacity,
+color='0.7',
 label='runc')
 
-rects4 = plt.bar(x[3], averages['runsc_kvm'], bar_width/2,
+rects4 = plt.bar(x[4]+bar_width/size_factor, averages['tmpfs_runc'], bar_width/size_factor,
 alpha=opacity,
-hatch='/',
-color='0.8',
+color='0.9',
+label='tmpfs_runc')
+
+rects5 = plt.bar(x[2], averages['runsc_kvm'], bar_width/size_factor,
+alpha=opacity,
+color='0.9',
 label='runsc_kvm')
 
-plt.ylabel('Ratio Open/Close Time Relative to Runsc_kvm')
-plt.title('Time of Open/Close System Call Relative to Runsc_kvm')
-for i in range(0, len(averages)):
-	x[i] = x[i] +  bar_width/4
-plt.xticks(x,["bare","runc","runsc_kvm"])
-plt.xlim(left=0)
-#plt.legend(loc = 'upper right')
- 
-plt.tight_layout()
-plt.show()
+rects6 = plt.bar(x[5]+bar_width/size_factor, averages['tmpfs_runsc_kvm'], bar_width/size_factor,
+alpha=opacity,
+color='0.9',
+label='tmpfs_runsc_kvm')
 
+
+plt.ylabel('Openclose System Call Time (Microseconds)')
+plt.title('Time of Openclose System Call Using Different Runtimes and tmpfs')
+for i in range(0, len(averages)/2):
+	x[i] = x[i] +  bar_width/size_factor/2
+
+for i in range(len(averages)/2, len(averages)):
+	x[i] = x[i] +  bar_width/size_factor*1.5
+plt.xticks(x,["bare","runc","runsc","tmpfs_bare","tmpfs_runsc", "tmpfs_runsc"])
+plt.xlim(left=-bar_width/6)
+#plt.legend(loc = 'upper right')
+#ax.yaxis.grid(True) 
+plt.tight_layout()
+plt.savefig('./openclose_time.eps', format='eps', dpi=1000)
+plt.show()

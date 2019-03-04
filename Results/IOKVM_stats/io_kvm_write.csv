@@ -1,0 +1,4 @@
+runsc_kvm_exit,100000,103
+runsc_tmpfs_kvm_exit,100000,251
+runsc_kvm_userspace,100000,99
+runsc_tmpfs_kvm_userspace,100000,1

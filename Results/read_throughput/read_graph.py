@@ -49,13 +49,13 @@ if (sys.argv[2] == "bar"):
 	index = np.arange(n_groups)
 	bar_width = 0.1
 	opacity = 0.8
-
+	'''
 	rects1 = plt.bar(index, averages['bare'], bar_width,
 	alpha=opacity,
 	color='0.7',
 	label='bare')
-
-	rects2 = plt.bar(index + 1*bar_width, averages['runc'], bar_width,
+	'''
+	rects2 = plt.bar(index + 0*bar_width, averages['runc'], bar_width,
 	hatch='-',
 	alpha=opacity,
 	color='0.5',
@@ -66,18 +66,18 @@ if (sys.argv[2] == "bar"):
 	color='0.7',
 	label='runsc_ptrace')
 	'''
-	rects3 = plt.bar(index + 2*bar_width, averages['runsc_kvm'], bar_width,
+	rects3 = plt.bar(index + 1*bar_width, averages['runsc_kvm'], bar_width,
 	alpha=opacity,
 	hatch='/',
 	color='0.5',
 	label='runsc_kvm')
 	'''
-	rects5 = plt.bar(index + 4*bar_width, averages['mod_ptrace'], bar_width,
+	rects5 = plt.bar(index + 2*bar_width, averages['mod_ptrace'], bar_width,
 	alpha=opacity,
 	color='r',
 	label='mod_ptrace')
 	'''
-	rects4 = plt.bar(index + 3*bar_width, averages['mod_kvm'], bar_width,
+	rects4 = plt.bar(index + 2*bar_width, averages['mod_kvm'], bar_width,
 	alpha=opacity,
 	color='0.2',
 	label='mod_kvm')
@@ -85,7 +85,7 @@ if (sys.argv[2] == "bar"):
 	plt.xlabel('Read Size')
 	plt.ylabel('Average Throughput (GB/Sec)')
 	plt.title('Throughput of Read System Call')
-	plt.xticks(index + 2*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
+	plt.xticks(index + 1.5*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
 
 	plt.legend(loc = 'upper left')
 	 

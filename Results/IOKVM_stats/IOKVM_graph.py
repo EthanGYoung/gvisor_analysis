@@ -17,17 +17,13 @@ with open(sys.argv[1]) as f:
 				
 		results[row[0]][row[1]].append(float(row[2]))
 
-# Calculate mean throughput for each
-def throughput(data, size):
-	return int(size)/(data *1000000000) # GB/s
-
 averages = {}
 for platform in results:
 	if (platform not in averages):
 		averages[platform] = {}
 
 	for size in results[platform]:
-		averages[platform][size] = throughput(statistics.mean(results[platform][size]), size)
+		averages[platform][size] = statistics.mean(results[platform][size])
 
 # Sort keys inorder of size
 def sort_keys(mydict):
@@ -40,55 +36,47 @@ def sort_keys(mydict):
 
 for platform in averages:
 		averages[platform] = sort_keys(averages[platform])
-
+print(averages)
 if (sys.argv[2] == "bar"):
-	n_groups = 5
+	n_groups = 2
 
 	# create plot
 	fig, ax = plt.subplots()
 	index = np.arange(n_groups)
 	bar_width = 0.1
 	opacity = 0.8
-	'''
-	rects1 = plt.bar(index, averages['bare'], bar_width,
+	
+	rects1 = plt.bar(index, averages['runsc_kvm_exit'], bar_width,
+	hatch='/',
 	alpha=opacity,
-	color='0.7',
-	label='bare')
+	color='0.2',
+	label='kvm_exit')
 
-	rects2 = plt.bar(index + 1*bar_width, averages['runc'], bar_width,
+	rects2 = plt.bar(index + 1*bar_width, averages['runsc_tmpfs_kvm_exit'], bar_width,
 	hatch='-',
 	alpha=opacity,
 	color='0.5',
-	label='runc')
-	'''
-	'''
-	rects3 = plt.bar(index +  2*bar_width, averages['runsc_ptrace'], bar_width,
-	alpha=opacity,
-	color='0.7',
-	label='runsc_ptrace')
-	'''
-	rects3 = plt.bar(index + 0*bar_width, averages['runsc_kvm'], bar_width,
-	alpha=opacity,
-	hatch='/',
-	color='0.5',
-	label='runsc_kvm')
-	'''
-	rects5 = plt.bar(index + 4*bar_width, averages['mod_ptrace'], bar_width,
-	alpha=opacity,
-	color='r',
-	label='mod_ptrace')
-	'''
-	rects4 = plt.bar(index + 1*bar_width, averages['mod_kvm'], bar_width,
-	alpha=opacity,
-	color='0.2',
-	label='mod_kvm')
+	label='tmpfs_kvm_exit')
+	
 
-	plt.xlabel('Write Size')
-	plt.ylabel('Average Throughput (GB/Sec)')
-	plt.title('Throughput of Write System Call')
-	plt.xticks(index + 0.5*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
+	rects3 = plt.bar(index + 2*bar_width, averages['runsc_kvm_userspace'], bar_width,
+	alpha=opacity,
+	color='0.8',
+	label='kvm_userspace_exit')
+	
+	rects4 = plt.bar(index + 3*bar_width, averages['runsc_tmpfs_kvm_userspace'], bar_width,
+	hatch='.',
+	alpha=opacity,
+	color='0.8',
+	label='tmpfs_kvm_userspace_exit')
 
+	plt.xlabel('Size of Read')
+	plt.ylabel('Number of Calls')
+	plt.title('Number of kvm_exits and kvm_userspace_exits With And Without tmpfs')
+	plt.xticks(index + 2*bar_width, ("4KB", "1MB"))
+	plt.xlim(left=-2*bar_width)
 	plt.legend(loc = 'upper left')
 	 
 	plt.tight_layout()
+#	plt.savefig('./network_throughput.eps', format='eps', dpi=1000)
 plt.show()
