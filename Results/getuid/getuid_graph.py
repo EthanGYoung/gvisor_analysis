@@ -45,23 +45,27 @@ for i in range(0, len(averages)):
 	x.append(index+bar_width*i)	
 size_factor = 1.3
 rects1 = plt.bar(x[0], averages['bare'], bar_width/size_factor,
+edgecolor="0.5",
 alpha=opacity,
-color='0.3',
+color='0.5',
 label='bare')
 
 rects2 = plt.bar(x[1], averages['runc'], bar_width/size_factor,
+edgecolor="0.5",
 alpha=opacity,
 color='0.5',
 label='runc')
 
 rects3 = plt.bar(x[2], averages['runsc_ptrace'], bar_width/size_factor,
+edgecolor="0.5",
 alpha=opacity,
-color='0.7',
+color='0.5',
 label='runsc_ptrace')
 
 rects4 = plt.bar(x[3], averages['runsc_kvm'], bar_width/size_factor,
+edgecolor="0.5",
 alpha=opacity,
-color='0.9',
+color='0.5',
 label='runsc_kvm')
 
 '''
@@ -76,7 +80,7 @@ color='b',
 label='mod_kvm')
 '''
 plt.ylabel('Getuid System Call Time (Microseconds)')
-plt.title('Time of Getuid System Call Using Different Runtimes')
+plt.title('Time of Getuid System Call Vs. Platform')
 for i in range(0, len(averages)):
 	x[i] = x[i] +  bar_width/size_factor/2
 

@@ -39,7 +39,7 @@ def sort_keys(mydict):
         return mylist
 
 for platform in averages:
-	averages[platform] = sort_keys(averages[platform])
+		averages[platform] = sort_keys(averages[platform])
 
 if (sys.argv[2] == "bar"):
 	n_groups = 5
@@ -47,58 +47,40 @@ if (sys.argv[2] == "bar"):
 	# create plot
 	fig, ax = plt.subplots()
 	index = np.arange(n_groups)
-	bar_width = 0.1
+	bar_width = 0.2
 	opacity = 0.8
-	'''
-	rects1 = plt.bar(index, averages['bare'], bar_width,
-	alpha=opacity,
-	color='0.7',
-	label='bare')
-	'''
-	rects2 = plt.bar(index + 0*bar_width, averages['runc'], bar_width,
-	hatch='-',
-	alpha=opacity,
-	color='0.5',
-	label='runc')
-	'''
-	rects3 = plt.bar(index +  2*bar_width, averages['runsc_ptrace'], bar_width,
-	alpha=opacity,
-	color='0.7',
-	label='runsc_ptrace')
-	'''
-	rects3 = plt.bar(index + 1*bar_width, averages['runsc_kvm'], bar_width,
-	alpha=opacity,
-	hatch='/',
-	color='0.5',
-	label='runsc_kvm')
-	'''
-	rects5 = plt.bar(index + 2*bar_width, averages['mod_ptrace'], bar_width,
-	alpha=opacity,
-	color='r',
-	label='mod_ptrace')
-	'''
-	rects4 = plt.bar(index + 2*bar_width, averages['mod_kvm'], bar_width,
-	alpha=opacity,
-	color='0.2',
-	label='mod_kvm')
-
-	plt.xlabel('Read Size')
-	plt.ylabel('Average Throughput (GB/Sec)')
-	plt.title('Throughput of Read System Call')
-	plt.xticks(index + 1.5*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
-
-	plt.legend(loc = 'upper left')
-	 
-	plt.tight_layout()
-
-else:
-	x = [1, 2, 3, 4, 5]
 	
-	# Plot each
-	plt.plot(x, averages["bare"], color = 'g')	
-	plt.plot(x, averages["runc"], color = 'g')	
-	plt.plot(x, averages["runsc_ptrace"], color = 'g')	
-	plt.plot(x, averages["runsc_kvm"], color = 'g')	
-	plt.plot(x, averages["mod_kvm"], color = 'g')	
-	plt.plot(x, averages["mod_ptrace"], color = 'g')	
+	rects1 = plt.bar(index + 0*bar_width, averages['bare'], bar_width,
+	edgecolor='0.8',
+	color='0.8',
+	alpha=opacity,
+	label='bare')
+
+	rects2 = plt.bar(index + 1*bar_width, averages['runc'], bar_width,
+	edgecolor='0.6',
+	color='0.6',
+	alpha=opacity,
+	label='runc')
+	
+	rects3 = plt.bar(index + 2*bar_width, averages['runsc_kvm'], bar_width,
+	alpha=opacity,
+	edgecolor='0.3',
+	color='0.3',
+	label='runsc_kvm')
+	
+	rects4 = plt.bar(index +  3*bar_width, averages['tmpfs_runsc_kvm'], bar_width,
+	alpha=opacity,
+	edgecolor='0.1',
+	color='0.1',
+	label='tmpfs_runsc_kvm')
+
+	plt.xlabel('Size of Read')
+	plt.ylabel('Average Throughput (GB/s)')
+	plt.title('Throughput of Read')
+	plt.xticks(index + 2*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
+	plt.xlim(left=-1*bar_width)
+	plt.legend(loc = 'upper left')
+	plt.ylim(top=13)	 
+	plt.tight_layout()
+	plt.savefig('./read_throughput.eps', format='eps', dpi=1000)
 plt.show()

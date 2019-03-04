@@ -45,45 +45,51 @@ for i in range(0, len(averages)):
 	x.append(index+bar_width*i)	
 size_factor = 1.3
 rects1 = plt.bar(x[0], averages['bare'], bar_width/size_factor,
+edgecolor='0.5',
 alpha=opacity,
-color='0.3',
+color='0.5',
 label='bare')
 
 rects2 = plt.bar(x[3]+bar_width/size_factor, averages['tmpfs_bare'], bar_width/size_factor,
 alpha=opacity,
+edgecolor='0.5',
 color='0.5',
 label='tmpfs_bare')
 
 rects3 = plt.bar(x[1], averages['runc'], bar_width/size_factor,
 alpha=opacity,
-color='0.7',
+edgecolor='0.5',
+color='0.5',
 label='runc')
 
 rects4 = plt.bar(x[4]+bar_width/size_factor, averages['tmpfs_runc'], bar_width/size_factor,
 alpha=opacity,
-color='0.9',
+edgecolor='0.5',
+color='0.5',
 label='tmpfs_runc')
 
 rects5 = plt.bar(x[2], averages['runsc_kvm'], bar_width/size_factor,
 alpha=opacity,
-color='0.9',
+edgecolor='0.5',
+color='0.5',
 label='runsc_kvm')
 
 rects6 = plt.bar(x[5]+bar_width/size_factor, averages['tmpfs_runsc_kvm'], bar_width/size_factor,
 alpha=opacity,
-color='0.9',
+color='0.5',
+edgecolor='0.5',
 label='tmpfs_runsc_kvm')
 
 
 plt.ylabel('Openclose System Call Time (Microseconds)')
 plt.title('Time of Openclose System Call Using Different Runtimes and tmpfs')
 for i in range(0, len(averages)/2):
-	x[i] = x[i] +  bar_width/size_factor/2
-
+	x[i] = x[i] + bar_width/size_factor/2
 for i in range(len(averages)/2, len(averages)):
-	x[i] = x[i] +  bar_width/size_factor*1.5
+	x[i] = x[i] + bar_width/size_factor	#x[i] = x[i] +  bar_width/size_factor*1.5
 plt.xticks(x,["bare","runc","runsc","tmpfs_bare","tmpfs_runsc", "tmpfs_runsc"])
 plt.xlim(left=-bar_width/6)
+plt.xticks(rotation=30)
 #plt.legend(loc = 'upper right')
 #ax.yaxis.grid(True) 
 plt.tight_layout()

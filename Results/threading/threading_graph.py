@@ -95,8 +95,8 @@ else:
 	x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 	fig, ax = plt.subplots()
 	plt.xlabel('Number Concurrent Threads')
-	plt.ylabel('Average Throughput (Containers/sec)')
-	plt.title('Throughput of Container Spinups Per Thread on Each Platform')
+	plt.ylabel('Average Total Throughput (Containers/sec)')
+	plt.title('Throughput of Container Spinups on Each Platform')
 	width = 3	
 	# Plot each
 	plt1, = plt.plot(x, averages["runc"], color = 'gray', linewidth=width,linestyle=':')	

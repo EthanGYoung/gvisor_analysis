@@ -47,48 +47,40 @@ if (sys.argv[2] == "bar"):
 	# create plot
 	fig, ax = plt.subplots()
 	index = np.arange(n_groups)
-	bar_width = 0.1
+	bar_width = 0.2
 	opacity = 0.8
-	'''
+	
 	rects1 = plt.bar(index, averages['bare'], bar_width,
+	edgecolor='0.8',
+	color='0.8',
 	alpha=opacity,
-	color='0.7',
 	label='bare')
 
 	rects2 = plt.bar(index + 1*bar_width, averages['runc'], bar_width,
-	hatch='-',
+	edgecolor='0.6',
+	color='0.6',
 	alpha=opacity,
-	color='0.5',
 	label='runc')
-	'''
-	'''
-	rects3 = plt.bar(index +  2*bar_width, averages['runsc_ptrace'], bar_width,
+	
+	rects3 = plt.bar(index + 2*bar_width, averages['runsc_kvm'], bar_width,
 	alpha=opacity,
-	color='0.7',
-	label='runsc_ptrace')
-	'''
-	rects3 = plt.bar(index + 0*bar_width, averages['runsc_kvm'], bar_width,
-	alpha=opacity,
-	hatch='/',
-	color='0.5',
+	edgecolor='0.3',
+	color='0.3',
 	label='runsc_kvm')
-	'''
-	rects5 = plt.bar(index + 4*bar_width, averages['mod_ptrace'], bar_width,
+	
+	rects4 = plt.bar(index +  3*bar_width, averages['tmpfs_runsc_kvm'], bar_width,
 	alpha=opacity,
-	color='r',
-	label='mod_ptrace')
-	'''
-	rects4 = plt.bar(index + 1*bar_width, averages['mod_kvm'], bar_width,
-	alpha=opacity,
-	color='0.2',
-	label='mod_kvm')
+	edgecolor='0.1',
+	color='0.1',
+	label='tmpfs_runsc_kvm')
 
-	plt.xlabel('Write Size')
-	plt.ylabel('Average Throughput (GB/Sec)')
-	plt.title('Throughput of Write System Call')
-	plt.xticks(index + 0.5*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
-
+	plt.xlabel('Size of Write')
+	plt.ylabel('Average Throughput (GB/s)')
+	plt.title('Throughput of Write')
+	plt.xticks(index + 2*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
+	plt.xlim(left=-1*bar_width)
 	plt.legend(loc = 'upper left')
 	 
 	plt.tight_layout()
+	plt.savefig('./write_throughput.eps', format='eps', dpi=1000)
 plt.show()
