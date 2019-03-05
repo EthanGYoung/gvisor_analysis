@@ -1,0 +1,98 @@
+sudo mount -t tmpfs -o size=1G tmpfs /var/lib/docker/volumes/myvol/_data
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container -v myvol:/myapp write 100000 4096 /myapp/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 4096: Write time average = 0.000011005414 seconds
+101K kvm:kvm_exit
+100K kvm:kvm_userspace_exit
+
+sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data write 100000 4096 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 4096: Write time average = 0.000007116111 seconds
+47K kvm:kvm_exit
+45K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container -v myvol:/myapp write 100000 16384 /myapp/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 16384: Write time average = 0.000016279258 seconds
+101K kvm:kvm_exit
+1K kvm:kvm_page_fault
+100K kvm:kvm_userspace_exit 
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data write 100000 16384 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 16384: Write time average = 0.000008416190 seconds
+47K kvm:kvm_exit
+5K kvm:kvm_page_fault
+41K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container -v myvol:/myapp write 100000 65536 /myapp/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 65536: Write time average = 0.000040122770 seconds
+102K kvm:kvm_exit
+2K kvm:kvm_page_fault
+100K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data write 100000 65536 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 65536: Write time average = 0.000012237411 seconds
+46K kvm:kvm_exit
+17K kvm:kvm_page_fault
+28K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container -v myvol:/myapp write 100000 262144 /myapp/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 262144: Write time average = 0.000098303673 seconds
+102K kvm:kvm_exit
+2K kvm:kvm_page_fault
+100K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data write 100000 262144 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 262144: Write time average = 0.000035065335 seconds
+77K kvm:kvm_exit
+65K kvm:kvm_page_fault
+11K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container -v myvol:/myapp write 100000 1048576 /myapp/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 1048576: Write time average = 0.000269323267 seconds
+103K kvm:kvm_exit
+3K kvm:kvm_page_fault
+100K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data write 100000 1048576 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and WRITE_SIZE = 1048576: Write time average = 0.000226841337 seconds
+264K kvm:kvm_exit
+257K kvm:kvm_page_fault
+762 kvm:kvm_userspace_exit
+
+
+
+
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data read 100000 1048576 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and READ_SIZE = 1048576: Read time average = 0.000174769782 seconds
+516K kvm:kvm_exit
+511K kvm:kvm_page_fault
+95 kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container -v myvol:/myapp read 100000 1048576 /myapp/file.txt
+LOG_OUTPUT: Average for 100000 trials and READ_SIZE = 1048576: Read time average = 0.000212061408 seconds
+362K kvm:kvm_exit
+262K kvm:kvm_page_fault
+100K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data read 100000 262144 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and READ_SIZE = 262144: Read time average = 0.000039415609 seconds
+126K kvm:kvm_exit
+124K kvm:kvm_page_fault
+281 kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data read 100000 65536 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and READ_SIZE = 65536: Read time average = 0.000011355728 seconds
+50K kvm:kvm_exit
+30K kvm:kvm_page_fault
+19K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data read 100000 16384 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and READ_SIZE = 16384: Read time average = 0.000007207045 seconds
+45K kvm:kvm_exit
+7K kvm:kvm_page_fault
+37K kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --name=tmp_container --tmpfs /var/lib/docker/volumes/myvol/_data read 100000 4096 /var/lib/docker/volumes/myvol/_data/file.txt
+LOG_OUTPUT: Average for 100000 trials and READ_SIZE = 4096: Read time average = 0.000007271695 seconds
+49K kvm:kvm_exit
+3K kvm:kvm_page_fault
+46K kvm:kvm_userspace_exit
