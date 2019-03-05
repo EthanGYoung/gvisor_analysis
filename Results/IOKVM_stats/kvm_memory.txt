@@ -1,0 +1,11 @@
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --rm -v myvol:/myapp mallocnofree 10000000 1048576
+LOG_OUTPUT: Average for 10000000 trials: Open/close time average = 0.000000088884 seconds
+79K kvm:kvm_exit
+79K kvm:kvm_page_fault
+43 kvm:kvm_userspace_exit
+
+sudo perf record -a -e kvm:* -- sudo docker run --runtime=runsc --rm -v myvol:/myapp mallocfree 10000000 1048576
+LOG_OUTPUT: Average for 10000000 trials: Open/close time average = 0.000000033355 seconds
+843 kvm:kvm_exit
+719 kvm:kvm_page_fault
+19 kvm:kvm_userspace_exit
