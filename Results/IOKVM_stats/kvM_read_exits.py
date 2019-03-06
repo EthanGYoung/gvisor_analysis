@@ -88,23 +88,24 @@ if (sys.argv[2] == "bar"):
 	plt.xticks(index + 1.5*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
 
 	plt.legend(loc = 'upper left')
+
 	 
 	plt.tight_layout()
 
 else:
-	x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+	x = [0, 1, 2, 3, 4]
 	fig, ax = plt.subplots()
-	plt.xlabel('Number Concurrent Threads')
-	plt.ylabel('Average Total Throughput (Containers/sec)')
+	plt.ylabel('Number of Exits per 100,000 Calls')
 	width = 3	
 
+	plt.xticks(np.arange(5), ('4KB', '16KB', '64KB', '256KB', '1MB'))
+	
 	# Plot each
-	plt1, = plt.plot(x, averages["runc"], color = 'gray', linewidth=width,linestyle=':')	
-	plt2, = plt.plot(x, averages["ptrace"], color = 'gray', linewidth=width, linestyle='-')	
-	plt3, = plt.plot(x, averages["kvm"], color = 'gray', linewidth=width, linestyle='-.')	
-	plt.legend([plt1,plt2,plt3],["runc","runsc_ptrace","runsc_kvm"],loc ='upper left')
-	plt.ylim(top=3.5)
-	plt.ylim(bottom=0)
+	plt1, = plt.plot(x, averages["internal_write_userspace_exit"], color = 'gray', linewidth=width, linestyle='-')	
+	plt2, = plt.plot(x, averages["internal_write_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
+	plt3, = plt.plot(x, averages["external_write_userspace_exit"], color = 'black', linewidth=width,linestyle='-')	
+	plt4, = plt.plot(x, averages["external_write_page_fault"], color = 'black', linewidth=width, linestyle='-.')	
+	plt.legend( [plt1,plt2,plt3,plt4],["Userspace Exit (Internal)","Page Fault (Internal)","Userspace Exit (External)", "Page Fault (External)"],loc ='upper left', frameon=False)
 	plt.tight_layout()
-	plt.savefig('./threading_throughput.eps', format='eps', dpi=1000)
+	plt.savefig('./kvm_write_exits.eps', format='eps', dpi=1000)
 plt.show()

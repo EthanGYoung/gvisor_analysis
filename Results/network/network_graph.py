@@ -52,31 +52,27 @@ if (sys.argv[2] == "bar"):
 	
 	rects1 = plt.bar(index, averages['bare'], bar_width,
 	alpha=opacity,
-	color='0.2',
+	color='0.1',
 	label='bare')
 
 	rects2 = plt.bar(index + 1*bar_width, averages['runc'], bar_width,
 	alpha=opacity,
-	color='0.5',
+	color='0.3',
 	label='runc')
 	
-
-	'''	
 	rects3 = plt.bar(index +  2*bar_width, averages['runsc_ptrace'], bar_width,
 	alpha=opacity,
-	color='0.7',
+	color='0.6',
 	label='runsc_ptrace')
-	'''
-
-	rects3 = plt.bar(index + 2*bar_width, averages['runsc_kvm'], bar_width,
+	
+	rects3 = plt.bar(index + 3*bar_width, averages['runsc_kvm'], bar_width,
 	alpha=opacity,
 	color='0.8',
 	label='runsc_kvm')
 
 	plt.xlabel('Size of Download')
 	plt.ylabel('Average Throughput (Mbps)')
-	plt.title('Throughput of Wget')
-	plt.xticks(index + 1.5*bar_width, ("1MB", "10MB", "100MB", "1GB"))
+	plt.xticks(index + 2*bar_width, ("1MB", "10MB", "100MB", "1GB"))
 	plt.xlim(left=-2*bar_width)
 	plt.legend(loc = 'upper left')
 	 

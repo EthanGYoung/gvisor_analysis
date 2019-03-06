@@ -40,7 +40,7 @@ index = np.arange(n_groups)
 bar_width = 0.05
 opacity = 0.8
 x = []
-
+plt.rcParams["figure.figsize"] = [3.5,2]
 for i in range(0, 4):
 	x.append(index+bar_width*i)	
 size_factor = 1.3
@@ -71,20 +71,17 @@ label='vol_tmpfs_kvm')
 print(averages)
 print(x)
 # Add text boxes (userspace_exit)
-ax.text(0+bar_width/(size_factor*2)-0.015,50,'Exits: 46.00K') #tmpfs_bare
-ax.text(0.05+bar_width/(size_factor*2)-0.015,50,'Exits: 37.00K') #tmpfs_runc
-ax.text(0.1+bar_width/(size_factor*2)-0.015,40,'Exits: 19.00K') #tmpfs_kvm
-ax.text(0.15+bar_width/(size_factor*2)-0.015,525,'Exits: 0.281K') #vol_kvm
+ax.text(0.1+bar_width/(size_factor*2)-0.015,40,'Exits: 0.406K') #tmpfs_kvm
+ax.text(0.15+bar_width/(size_factor*2)-0.015,525,'Exits: 200.0K') #vol_kvm
 
 #Time
-ax.text(0+bar_width/(size_factor*2)-0.005,20,'2.04ms') #tmpfs_bare
-ax.text(0.05+bar_width/(size_factor*2)-0.005,20,'2.40ms') #tmpfs_runc
+ax.text(0+bar_width/(size_factor*2)-0.005,20,u'2.04\u03bcs') #tmpfs_bare
+ax.text(0.05+bar_width/(size_factor*2)-0.005,20,u'2.40\u03bcs') #tmpfs_runc
 '''
 [array([ 0.]), array([ 0.05]), array([ 0.1]), array([ 0.15])]
 {'tmpfs_runsc_kvm': 28.42259046, 'vol_tmpfs_kvm': 518.42740211, 'tmpfs_bare': 2.04492831, 'tmpfs_runc': 2.40981564, 'runc': 2.5179358900000004, 'bare': 2.11011235, 'runsc_kvm': 288.18599882999996}
 '''
-
-plt.ylabel('Openclose System Call Time (Microseconds)')
+plt.ylabel(u'Openclose System Call Time (\u03bcs)')
 plt.title('Time of Openclose System Call Using Different Runtimes and tmpfs')
 for i in range(0,4):
 	x[i] = x[i] + bar_width/(size_factor*2)
