@@ -91,7 +91,7 @@ if (sys.argv[2] == "bar"):
 	# ax.text(4.63,4.0,'100K') #vol 1MB
 
 	plt.xlabel('Malloc Size')
-	plt.ylabel('Execution Time (ms)')
+	plt.ylabel('Average Throughput (GB/s)')
 	#plt.title('Throughput of Read')
 	plt.xticks(index + 2*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
 	plt.xlim(left=-1*bar_width)
