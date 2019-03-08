@@ -36,7 +36,7 @@ plot_results = []
 
 for command in results:
 	print("Command: " + str(command.strip('\n')))
-	if ("openclose" in command):
+	if ("getpid" in command):
 		size = 0
 	else:
 		size = int(command.split("100000 ")[1].split(" /myapp/")[0])
