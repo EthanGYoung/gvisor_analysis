@@ -64,7 +64,7 @@ alpha=opacity,
 color='0.9',
 label='runsc_kvm_tmpfs')
 
-
+print(averages)
 plt.ylabel('Container Spinup Time (ms)')
 for i in range(0, int(len(averages)/2)):
 	x[i] = x[i] +  bar_width/size_factor/2

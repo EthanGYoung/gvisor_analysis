@@ -104,15 +104,16 @@ else:
         ax = fig.add_subplot(1, 1, 1)
 	x = [0, 1, 2, 3, 4]
 	plt.ylabel('Number of Exits (Thousands)',fontsize=10)
-	plt.xlabel('Read Size',fontsize=10)
+	plt.xlabel('Write Size',fontsize=10)
 	width = 3	
 
 	plt.xticks(np.arange(5), ('4KB', '16KB', '64KB', '256KB', '1MB'))
-	
+	print(averages)	
 	# Plot each
-	plt1, = plt.plot(x, averages["internal_read_userspace_exit"], color = 'gray', linewidth=width, linestyle='-')	
-	plt2, = plt.plot(x, averages["internal_read_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
+	plt1, = plt.plot(x, averages["external_write_userspace_exit"], color = 'gray', linewidth=width, linestyle='-')	
+	plt2, = plt.plot(x, averages["external_write_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
 	plt.legend( [plt1,plt2],["Userspace Exit","Page Fault"],loc ='upper left', frameon=False, prop={'size':10})
+	plt.ylim(top=150)
 	plt.tight_layout()
-	plt.savefig('./kvm_read_internal_exits.eps', format='eps', dpi=1000)
-plt.show()
+	plt.savefig('./kvm_write_external_exits.eps', format='eps', dpi=1000)
+	plt.show()

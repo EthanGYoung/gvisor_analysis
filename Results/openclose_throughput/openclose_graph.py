@@ -35,7 +35,11 @@ def sort_keys(mydict):
 n_groups = 1
 
 # create plot
-fig, ax = plt.subplots()
+plt.rc('font', family='serif')
+plt.rc('xtick', labelsize='x-small')
+plt.rc('ytick', labelsize='x-small')
+fig = plt.figure(figsize=(3.5, 2.5))
+ax = fig.add_subplot(1, 1, 1)
 index = np.arange(n_groups)
 bar_width = 0.05
 opacity = 0.8
@@ -71,24 +75,19 @@ label='vol_tmpfs_kvm')
 print(averages)
 print(x)
 # Add text boxes (userspace_exit)
-ax.text(0.1+bar_width/(size_factor*2)-0.015,40,'Exits: 0.406K') #tmpfs_kvm
-ax.text(0.15+bar_width/(size_factor*2)-0.015,525,'Exits: 200.0K') #vol_kvm
+ax.text(0.1+bar_width/(size_factor*2)-0.015,40,'0.406K',fontsize=10) #tmpfs_kvm
+ax.text(0.15+bar_width/(size_factor*2)-0.015,525,'200.0K',fontsize=10) #vol_kvm
 
 #Time
-ax.text(0+bar_width/(size_factor*2)-0.005,20,u'2.04\u03bcs') #tmpfs_bare
-ax.text(0.05+bar_width/(size_factor*2)-0.005,20,u'2.40\u03bcs') #tmpfs_runc
-'''
-[array([ 0.]), array([ 0.05]), array([ 0.1]), array([ 0.15])]
-{'tmpfs_runsc_kvm': 28.42259046, 'vol_tmpfs_kvm': 518.42740211, 'tmpfs_bare': 2.04492831, 'tmpfs_runc': 2.40981564, 'runc': 2.5179358900000004, 'bare': 2.11011235, 'runsc_kvm': 288.18599882999996}
-'''
-plt.ylabel(u'Openclose System Call Time (\u03bcs)')
-plt.title('Time of Openclose System Call Using Different Runtimes and tmpfs')
+ax.text(0+bar_width/(size_factor*2)-0.005,20,u'2.04\u03bcs',fontsize=10) #tmpfs_bare
+ax.text(0.05+bar_width/(size_factor*2)-0.005,20,u'2.40\u03bcs',fontsize=10) #tmpfs_runc
+plt.ylabel(u'Openclose Time (\u03bcs)')
 for i in range(0,4):
 	x[i] = x[i] + bar_width/(size_factor*2)
-plt.xticks(x,["tmpfs_bare","tmpfs_runc","tmpfs_runsc_kvm","vol_tmpfs_runsc"])
+plt.xticks(x,["bare","runc","internal","external"])
 plt.xlim(left=-bar_width/6)
-plt.xticks(rotation=30)
 #plt.legend(loc = 'upper right')
+ax.tick_params(axis=u'both', which=u'both',length=0)
 #ax.yaxis.grid(True) 
 plt.tight_layout()
 plt.savefig('./openclose_time.eps', format='eps', dpi=1000)

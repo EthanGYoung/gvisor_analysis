@@ -45,7 +45,11 @@ if (sys.argv[2] == "bar"):
 	n_groups = 5
 
 	# create plot
-	fig, ax = plt.subplots()
+	plt.rc('font', family='serif')
+        plt.rc('xtick', labelsize='x-small')
+        plt.rc('ytick', labelsize='x-small')
+        fig = plt.figure(figsize=(3.5, 2.5))
+        ax = fig.add_subplot(1, 1, 1)
 	index = np.arange(n_groups)
 	bar_width = 0.1
 	opacity = 0.8
@@ -93,20 +97,22 @@ if (sys.argv[2] == "bar"):
 	plt.tight_layout()
 
 else:
+	plt.rc('font', family='serif')
+        plt.rc('xtick', labelsize='x-small')
+        plt.rc('ytick', labelsize='x-small')
+        fig = plt.figure(figsize=(3.5, 2.5))
+        ax = fig.add_subplot(1, 1, 1)
 	x = [0, 1, 2, 3, 4]
-	fig, ax = plt.subplots()
-	plt.ylabel('Number of Exits in thousands per 100,000 Calls')
+	plt.ylabel('Number of Exits (Thousands)',fontsize=10)
+	plt.xlabel('Read Size',fontsize=10)
 	width = 3	
 
 	plt.xticks(np.arange(5), ('4KB', '16KB', '64KB', '256KB', '1MB'))
 	
 	# Plot each
-	#plt1, = plt.plot(x, averages["internal_write_userspace_exit"], color = 'gray', linewidth=width, linestyle='-')	
-	#plt2, = plt.plot(x, averages["internal_write_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
-	plt3, = plt.plot(x, averages["external_read_userspace_exit"], color = 'gray', linewidth=width,linestyle='-')	
-	plt4, = plt.plot(x, averages["external_read_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
-	plt.legend( [plt3,plt4],["Userspace Exit (External)","Page Fault (External)"],loc ='upper left', frameon=False)
-	#plt.legend( [plt1,plt2,plt3,plt4],["Userspace Exit (Internal)","Page Fault (Internal)","Userspace Exit (External)", "Page Fault (External)"],loc ='upper left', frameon=False)
+	plt1, = plt.plot(x, averages["external_read_userspace_exit"], color = 'gray', linewidth=width, linestyle='-')	
+	plt2, = plt.plot(x, averages["external_read_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
+	plt.legend( [plt1,plt2],["Userspace Exit","Page Fault"],loc ='upper left', frameon=False, prop={'size':10})
 	plt.tight_layout()
 	plt.savefig('./kvm_read_external_exits.eps', format='eps', dpi=1000)
 plt.show()

@@ -42,10 +42,14 @@ for platform in averages:
 		averages[platform] = sort_keys(averages[platform])
 
 if (sys.argv[2] == "bar"):
+	plt.rc('font', family='serif')
+        plt.rc('xtick', labelsize='x-small')
+        plt.rc('ytick', labelsize='x-small')
+        fig = plt.figure(figsize=(3.5, 2.5))
+        ax = fig.add_subplot(1, 1, 1)
 	n_groups = 4
 
 	# create plot
-	fig, ax = plt.subplots()
 	index = np.arange(n_groups)
 	bar_width = 0.2
 	opacity = 0.8
@@ -70,12 +74,13 @@ if (sys.argv[2] == "bar"):
 	color='0.8',
 	label='runsc_kvm')
 
-	plt.xlabel('Size of Download')
-	plt.ylabel('Average Throughput (Mbps)')
+	plt.xlabel('Size of Download', fontsize=10)
+	plt.ylabel('Throughput (Mbps)', fontsize=10)
 	plt.xticks(index + 2*bar_width, ("1MB", "10MB", "100MB", "1GB"))
 	plt.xlim(left=-2*bar_width)
 	plt.legend(loc = 'upper left')
-	 
+	plt.legend(loc = 'upper left', frameon=False, prop={'size':10})
+        ax.tick_params(axis=u'both', which=u'both',length=0)	 
 	plt.tight_layout()
 	plt.savefig('./network_throughput.eps', format='eps', dpi=1000)
 plt.show()

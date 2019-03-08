@@ -34,8 +34,12 @@ def sort_keys(mydict):
 
 n_groups = 1
 
+plt.rc('font', family='serif')
+plt.rc('xtick', labelsize='x-small')
+plt.rc('ytick', labelsize='x-small')
+fig = plt.figure(figsize=(3.5, 2.5))
+ax = fig.add_subplot(1, 1, 1)
 # create plot
-fig, ax = plt.subplots()
 index = np.arange(n_groups)
 bar_width = 0.05
 opacity = 0.8
@@ -79,13 +83,15 @@ alpha=opacity,
 color='b',
 label='mod_kvm')
 '''
-plt.ylabel('Getuid System Call Time (Microseconds)')
-plt.title('Time of Getuid System Call Vs. Platform')
+plt.ylabel('Getuid Time (Microseconds)', fontsize=10)
 for i in range(0, len(averages)):
 	x[i] = x[i] +  bar_width/size_factor/2
 
-plt.xticks(x,["bare","runc","runsc_ptrace","runsc_kvm"])
+print(x)
+
+plt.xticks(x,["bare","runc","ptrace","kvm"])
 plt.xlim(left=-bar_width/6)
+ax.tick_params(axis=u'both', which=u'both',length=0)
 #plt.legend(loc = 'upper right')
 #ax.yaxis.grid(True) 
 plt.tight_layout()
