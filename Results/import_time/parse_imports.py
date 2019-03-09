@@ -34,14 +34,17 @@ def sort_keys(mydict):
 
 	keylist = sorted(mydict.keys())
 	for key in keylist:
+		print(key)
 		mylist.append(mydict[key])
 	return mylist
 
 for platform in averages:
 		averages[platform] = sort_keys(averages[platform])
 
+print(averages)
+
 if (sys.argv[2] == "bar"):
-	n_groups = 10
+	n_groups = 9
 
 	# create plot
 	fig, ax = plt.subplots()
@@ -51,32 +54,34 @@ if (sys.argv[2] == "bar"):
 
 	rects1 = plt.bar(index, averages['bare'], bar_width,
 	alpha=opacity,
-	color='0.1',
+	color='0.7',
 	label='bare')
 
-	rects2 = plt.bar(index + 1*bar_width, averages['runc'], bar_width,
-	alpha=opacity,
-	color='0.3',
-	label='runc')
-
-	rects3 = plt.bar(index + 2*bar_width, averages['runc_tmpfs'], bar_width,
+	rects2 = plt.bar(index + 1*bar_width, averages['runc_host_tmpfs'], bar_width,
 	alpha=opacity,
 	color='0.5',
-	label='runc_tmpfs')
+	label='runc')
 
-	rects4 = plt.bar(index + 3*bar_width, averages['runsc_kvm'], bar_width,
+	rects3 = plt.bar(index + 2*bar_width, averages['runsc_sentry_tmpfs'], bar_width,
 	alpha=opacity,
-	color='0.7',
-	label='runsc_kvm')
+	color='0.3',
+	label='internal')
 
-	rects5 = plt.bar(index + 4*bar_width, averages['runsc_kvm_tmpfs'], bar_width,
+	rects4 = plt.bar(index + 3*bar_width, averages['runsc_host_tmpfs'], bar_width,
 	alpha=opacity,
-	color='0.9',
-	label='runsc_kvm_tmpfs')
+	color='0.1',
+	label='external')
+
+	# rects5 = plt.bar(index + 4*bar_width, averages['runsc_kvm_tmpfs'], bar_width,
+	# alpha=opacity,
+	# color='0.9',
+	# label='runsc_kvm_tmpfs')
+
+	print("I'm here!")
 
 	plt.xlabel('Library Name')
 	plt.ylabel('Average Import Time (ms)')
-	plt.xticks(index + 1.5*bar_width, ("django", "flask", "jinja2", "matplotlib","numpy","pip","requests","setuptools", "sqlalchemy", "werkzeug"))
+	plt.xticks(index + 1.5*bar_width, ("django", "flask", "jinja2", "matplotlib","numpy","requests","setuptools", "sqlalchemy", "werkzeug"))
 	plt.xticks(rotation=30)
 	plt.xlim(left=-2*bar_width)
 	plt.legend(loc = 'upper left')
