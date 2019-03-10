@@ -47,10 +47,15 @@ if (sys.argv[2] == "bar"):
 	n_groups = 9
 
 	# create plot
-	fig, ax = plt.subplots()
+	plt.rc('font', family='serif')
+	plt.rc('xtick', labelsize='x-small')
+	plt.rc('ytick', labelsize='x-small')
+	fig = plt.figure(figsize=(3.5, 2.5))
+	ax = fig.add_subplot(1, 1, 1)
 	index = np.arange(n_groups)
-	bar_width = 0.1
+	bar_width = 0.2
 	opacity = 0.8
+	plt.rcParams["figure.figsize"] = [3.5,2]
 
 	rects1 = plt.bar(index, averages['bare'], bar_width,
 	alpha=opacity,
@@ -79,12 +84,22 @@ if (sys.argv[2] == "bar"):
 
 	print("I'm here!")
 
-	plt.xlabel('Library Name')
-	plt.ylabel('Average Import Time (ms)')
-	plt.xticks(index + 1.5*bar_width, ("django", "flask", "jinja2", "matplotlib","numpy","requests","setuptools", "sqlalchemy", "werkzeug"))
+	plt.xlabel('Library Name',fontsize=10)
+	plt.ylabel('Average Import Time (ms)',fontsize=10)
+	plt.xticks(index + 1.5*bar_width, ("django         ", "flask       ", "jinja2         ", "matplotlib          ","numpy         ","requests         ","setuptools         ", "sqlalchemy          ", "werkzeug         "))
+	ax.xaxis.get_majorticklabels()[0].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[1].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[2].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[3].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[4].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[5].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[6].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[7].set_y(+.1)
+	ax.xaxis.get_majorticklabels()[8].set_y(+.1)
 	plt.xticks(rotation=30)
 	plt.xlim(left=-2*bar_width)
-	plt.legend(loc = 'upper left')
+	#plt.ylim(top=2000)
+	plt.legend(loc = 'upper left', frameon=False, prop={'size':7})
 
 	plt.tight_layout()
 	plt.savefig('./imports_result.eps', format='eps', dpi=1000)
