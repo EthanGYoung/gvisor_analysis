@@ -111,8 +111,10 @@ else:
 	
 	# Plot each
 	plt1, = plt.plot(x, averages["internal_read_userspace_exit"], color = 'gray', linewidth=width, linestyle='-')	
-	plt2, = plt.plot(x, averages["internal_read_page_fault"], color = 'gray', linewidth=width, linestyle='-.')	
-	plt.legend( [plt1,plt2],["Userspace Exit","Page Fault"],loc ='upper left', frameon=False, prop={'size':10})
+	plt2, = plt.plot(x, averages["internal_read_page_fault"], color = 'gray', linewidth=width, linestyle='--')	
+	plt3, = plt.plot(x, averages["external_read_userspace_exit"], color = 'black', linewidth=width, linestyle='-')	
+	plt4, = plt.plot(x, averages["external_read_page_fault"], color = 'black', linewidth=width, linestyle='--')	
+	plt.legend( [plt1,plt2,plt3,plt4],["(Internal) Userspace Exit","(Internal) Page Fault", "(External) Userspace Exit", "(External) Page Fault"],loc ='upper left', frameon=False, prop={'size':10})
 	plt.tight_layout()
-	plt.savefig('./kvm_read_internal_exits.eps', format='eps', dpi=1000)
+	plt.savefig('./kvm_read_exits.eps', format='eps', dpi=1000)
 plt.show()
