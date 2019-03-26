@@ -75,13 +75,13 @@ label='vol_tmpfs_kvm')
 print(averages)
 print(x)
 # Add text boxes (userspace_exit)
-ax.text(0.1+bar_width/(size_factor*2)-0.015,40,'0.406K',fontsize=10) #tmpfs_kvm
-ax.text(0.15+bar_width/(size_factor*2)-0.015,525,'200.0K',fontsize=10) #vol_kvm
+ax.text(0.104+bar_width/(size_factor*2)-0.015,40,'28.4',fontsize=10) #tmpfs_kvm
+ax.text(0.154+bar_width/(size_factor*2)-0.015,525,'518',fontsize=10) #vol_kvm
 
 #Time
-ax.text(0+bar_width/(size_factor*2)-0.005,20,u'2.04\u03bcs',fontsize=10) #tmpfs_bare
-ax.text(0.05+bar_width/(size_factor*2)-0.005,20,u'2.40\u03bcs',fontsize=10) #tmpfs_runc
-plt.ylabel(u'Openclose Time (\u03bcs)')
+ax.text(0+bar_width/(size_factor*2)-0.005,20,'2.04',fontsize=10) #tmpfs_bare
+ax.text(0.05+bar_width/(size_factor*2)-0.005,20,'2.40',fontsize=10) #tmpfs_runc
+plt.ylabel(u'Time (microsec)')
 for i in range(0,4):
 	x[i] = x[i] + bar_width/(size_factor*2)
 plt.xticks(x,["bare","runc","internal","external"])

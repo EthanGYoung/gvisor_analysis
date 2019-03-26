@@ -19,7 +19,9 @@ with open(sys.argv[1]) as f:
 
 # Calculate mean throughput for each
 def throughput(data, size):
-	return int(size)/(data *1000000000) # GB/s
+	if (data == 0):
+		return 0
+	return int(100000)/(data *1000000000) # GB/s
 
 averages = {}
 for platform in results:
@@ -73,11 +75,11 @@ if (sys.argv[2] == "bar"):
 	label='gVisor')
 
 	plt.xlabel('Malloc Size', fontsize=10)
-	plt.ylabel('Throughput (GB/s)', fontsize=10)
+	plt.ylabel('Billions of Allocs/Second', fontsize=10)
 	#plt.title('Throughput of Read')
-	plt.xticks(index + 2*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
+	plt.xticks(index + 1.5*bar_width, ("1KB", "2KB", "4KB", "8KB", "16KB"))
 	plt.xlim(left=-1*bar_width)
-	plt.legend(loc = 'upper left', frameon=False, prop={'size':10})
+	plt.legend(loc = 'upper right', frameon=False, prop={'size':10})
 	ax.tick_params(axis=u'both', which=u'both',length=0)
 	# plt.ylim(top=13)
 	plt.tight_layout()

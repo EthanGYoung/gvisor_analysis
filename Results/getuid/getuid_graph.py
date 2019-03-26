@@ -76,7 +76,7 @@ color='0.8',
 label='runsc_kvm')
 '''
 plt.ylabel('Time (Microseconds)', fontsize=10)
-plt.xticks(index + 0.5*bar_width, ("bare", "runc", "ptrace", "kvm"))
+plt.xticks(index + 1*bar_width, ("bare", "runc", "ptrace", "kvm"))
 plt.xlim(left=-1*bar_width)
 plt.legend(loc = 'upper left')
 plt.legend(loc = 'upper left', frameon=False, prop={'size':10})

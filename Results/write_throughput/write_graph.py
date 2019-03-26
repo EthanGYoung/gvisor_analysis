@@ -61,15 +61,15 @@ if (sys.argv[2] == "bar"):
 	label='bare')
 
 	rects2 = plt.bar(index + 1*bar_width, averages['tmpfs_runc'], bar_width,
-	edgecolor='0.6',
-	color='0.6',
+	edgecolor='0.3',
+	color='0.3',
 	alpha=opacity,
 	label='runc')
 	
 	rect3 = plt.bar(index +  2*bar_width, averages['tmpfs_runsc_kvm'], bar_width,
 	alpha=opacity,
-	edgecolor='0.3',
-	color='0.3',
+	edgecolor='0.6',
+	color='0.6',
 	label='internal')
 	
 	rects4 = plt.bar(index + 3*bar_width, averages['vol_tmpfs_kvm'], bar_width,
@@ -79,6 +79,7 @@ if (sys.argv[2] == "bar"):
 	label='external')
 	
 	# Add text boxes (userspace_exit)
+	'''
         ax.text(0.43,0.7,'47K',fontsize=10) #tmpfs 4k
         ax.text(1.43,2.15,'41K',fontsize=10) #tmpfs 16K
         ax.text(2.43,4.15,'28K',fontsize=10) #tmpfs 64K
@@ -90,16 +91,16 @@ if (sys.argv[2] == "bar"):
         ax.text(2.63,2.33,'100K',fontsize=10) #vol 64K
         ax.text(3.63,3.43,'100K',fontsize=10) #vol 256K
         ax.text(4.63,4.0,'100K',fontsize=10) #vol 1MB
+	'''
 
-
-	plt.xlabel('Size of Write')
-	plt.ylabel('Throughput (GB/s)')
+	plt.xlabel('Size of Write', fontsize=10)
+	plt.ylabel('Throughput (GB/s)', fontsize=10)
 	#plt.title('Throughput of Read')
 	plt.xticks(index + 2*bar_width, ("4KB", "16KB", "64KB", "256KB", "1MB"))
 	plt.xlim(left=-1*bar_width)
-	plt.legend(loc = 'upper left', frameon=False, prop={'size':10})
+	plt.legend(loc = 'upper left', frameon=False, prop={'size':10}, ncol=2)
         ax.tick_params(axis=u'both', which=u'both',length=0)
-	plt.ylim(top=13)	 
+	#plt.ylim(top=13)	 
 	plt.tight_layout()
 	plt.savefig('./write_throughput.eps', format='eps', dpi=1000)
 plt.show()
