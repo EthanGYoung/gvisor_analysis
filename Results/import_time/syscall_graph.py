@@ -20,8 +20,8 @@ with open(sys.argv[1]) as f:
 
 
 averages = {}
-# results['bare']['NUMPY'].append(results['\ufeffbare']['NUMPY'][0])
-# del results['\ufeffbare']
+# results['numpy']= results['\ufeffnumpy']
+# del results['\ufeffnumpy']
 for platform in results:
 	if (platform not in averages):
 		averages[platform] = {}
@@ -50,61 +50,35 @@ if (sys.argv[2] == "bar"):
 	plt.rc('font', family='serif')
 	plt.rc('xtick', labelsize='x-small')
 	plt.rc('ytick', labelsize='x-small')
-	fig = plt.figure(figsize=(3.8, 3))
+	fig = plt.figure(figsize=(3.5, 2.5))
 	ax = fig.add_subplot(1, 1, 1)
 	index = np.arange(n_groups)
-	bar_width = 0.2
+	bar_width = 0.1
 	opacity = 0.8
+	plt.rcParams["figure.figsize"] = [3.5,2]
 
-	rects1 = plt.bar(index, averages['bare'], bar_width,
+	rects1 = plt.bar(index+1.5*bar_width, averages['mmap'], 3*bar_width,
 	alpha=opacity,
-	color='0.8',
-	linewidth=0,
-	label='native')
-
-	rects2 = plt.bar(index + 1*bar_width, averages['runc_host_tmpfs'], bar_width,
-	alpha=opacity,
-	color='0.4',
-	linewidth=0,
-	label='runc')
-
-	rects3 = plt.bar(index + 2*bar_width, averages['runsc_sentry_tmpfs'], bar_width,
-	alpha=opacity,
-	color='0.6',
-	linewidth=0,
-	label='gV+Int')
-
-	rects4 = plt.bar(index + 3*bar_width, averages['runsc_host_tmpfs'], bar_width,
-	alpha=opacity,
-	color='0.2',
-	linewidth=0,
-	label='gV+Ext')
-
-	# rects5 = plt.bar(index + 4*bar_width, averages['runsc_kvm_tmpfs'], bar_width,
-	# alpha=opacity,
-	# color='0.9',
-	# label='runsc_kvm_tmpfs')
-
-	print("I'm here!")
+	color='0.3')
+	x = [0,1,2,3,4,5,6,7,8]
+	plt1, = plt.plot(x, [65,65,65,65,65,65,65,65,65], color = 'gray', linewidth=2, linestyle='dashed')
+	plt.legend( [plt1],["NO-OP"],loc ='upper right', frameon=False, prop={'size':10})
 
 	plt.xlabel('Library Name',fontsize=10)
-	plt.ylabel('Average Import Time (ms)',fontsize=10)
+	plt.ylabel('Number of mmap()',fontsize=10)
 	plt.xticks(index + 1.5*bar_width, ("django         ", "flask       ", "jinja2        ", "matplotlib             ","numpy         ","requests           ","setuptools              ", "sqlalchemy               ", "werkzeug             "),fontsize=8)
-	ax.xaxis.get_majorticklabels()[0].set_y(+.10)
-	ax.xaxis.get_majorticklabels()[1].set_y(+.09)
-	ax.xaxis.get_majorticklabels()[2].set_y(+.09)
-	ax.xaxis.get_majorticklabels()[3].set_y(+.14)
-	ax.xaxis.get_majorticklabels()[4].set_y(+.10)
-	ax.xaxis.get_majorticklabels()[5].set_y(+.12)
-	ax.xaxis.get_majorticklabels()[6].set_y(+.15)
-	ax.xaxis.get_majorticklabels()[7].set_y(+.15)
-	ax.xaxis.get_majorticklabels()[8].set_y(+.14)
+	ax.xaxis.get_majorticklabels()[0].set_y(+.13)
+	ax.xaxis.get_majorticklabels()[1].set_y(+.12)
+	ax.xaxis.get_majorticklabels()[2].set_y(+.12)
+	ax.xaxis.get_majorticklabels()[3].set_y(+.17)
+	ax.xaxis.get_majorticklabels()[4].set_y(+.13)
+	ax.xaxis.get_majorticklabels()[5].set_y(+.15)
+	ax.xaxis.get_majorticklabels()[6].set_y(+.18)
+	ax.xaxis.get_majorticklabels()[7].set_y(+.19)
+	ax.xaxis.get_majorticklabels()[8].set_y(+.18)
 	plt.xticks(rotation=30)
 	plt.xlim(left=-2*bar_width)
-	plt.ylim(top=1500)
-	#plt.ylim(top=2000)
-	plt.legend(loc = 'upper left', frameon=False, prop={'size':10})
 
 	plt.tight_layout()
-	plt.savefig('./imports_result.eps', format='eps', dpi=1000)
+	plt.savefig('./imports_mmap_result.eps', format='eps', dpi=1000)
 plt.show()

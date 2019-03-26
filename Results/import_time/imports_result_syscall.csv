@@ -1,0 +1,9 @@
+mmap,numpy,230
+mmap,requests,169
+mmap,django,76
+mmap,matplotlib,274
+mmap,sqlalchemy,137
+mmap,werkzeug,148
+mmap,flask,197
+mmap,jinja2,111
+mmap,setuptools,182
